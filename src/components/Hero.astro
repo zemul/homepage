@@ -22,14 +22,18 @@ const t = useTranslations(lang);
     <!-- Text Content -->
     <div class="text-left flex-1">
         <h1 class="text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 leading-tight">
-            {t("hero.title")}
+            <span id="typewriter-text" data-text={t("hero.title")}></span><span class="typewriter-cursor">|</span>
         </h1>
         <div class="flex flex-wrap gap-2 mb-6">
-            {t("hero.subtitle").split(' · ').map((tag) => (
-                <div class="inline-flex items-center px-3 py-1 rounded-full bg-blue-50/50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-sm font-medium border border-blue-100 dark:border-blue-800/30 shadow-sm whitespace-nowrap">
-                    {tag}
-                </div>
-            ))}
+            {
+                t("hero.subtitle")
+                    .split(" · ")
+                    .map((tag) => (
+                        <div class="inline-flex items-center px-3 py-1 rounded-full bg-blue-50/50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-sm font-medium border border-blue-100 dark:border-blue-800/30 shadow-sm whitespace-nowrap">
+                            {tag}
+                        </div>
+                    ))
+            }
         </div>
         <p class="text-lg text-[var(--muted-text)] mb-6 max-w-2xl">
             {t("hero.desc")}
@@ -39,6 +43,23 @@ const t = useTranslations(lang);
         </div>
     </div>
 </section>
+
+<style>
+    @keyframes blink {
+        0%,
+        100% {
+            visibility: visible;
+        }
+        50% {
+            visibility: hidden;
+        }
+    }
+    .typewriter-cursor {
+        animation: blink 1s step-end infinite;
+        margin-left: 2px;
+        font-weight: 400; /* Regular weight to ensure visibility */
+    }
+</style>
 
 <script>
     const container = document.getElementById("avatar-container");
@@ -66,5 +87,24 @@ const t = useTranslations(lang);
         container.addEventListener("mouseleave", () => {
             person.style.transform = "scale(0.82) translate(0, 4px)";
         });
+    }
+
+    // Typewriter effect
+    const typewriterEl = document.getElementById("typewriter-text");
+    if (typewriterEl) {
+        const text = typewriterEl.getAttribute("data-text") || "";
+        let i = 0;
+
+        // Start typing after a short delay
+        setTimeout(() => {
+            const typingInterval = setInterval(() => {
+                if (i < text.length) {
+                    typewriterEl.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                }
+            }, 100); // 100ms per character
+        }, 300);
     }
 </script>

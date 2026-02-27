@@ -5,71 +5,436 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const projects = [
-    /*
-    {
-        title: "FrameFlow",
-        desc: "AI-Driven Video Creation Platform",
-        sub: "Designed and built with a product mindset and AI-first workflow.",
-        color: "bg-blue-50/80 dark:bg-[rgba(80,131,255,0.12)]",
-        link: "https://framingflow.com",
-    },
-    {
-        title: "PowerFlow (macOS/iOS)",
-        desc: "Device Intelligence Toolkit",
-        sub: "Driven by SwiftUI craftsmanship + applied AI insights.",
-        color: "bg-indigo-50/80 dark:bg-[rgba(99,102,241,0.12)]",
-        // link: "https://powerflow.app",
-    },
-    */
     {
         title: t("projects.appstore.title"),
         desc: t("projects.appstore.desc"),
         sub: t("projects.appstore.sub"),
-        color: "bg-purple-50/80 dark:bg-[rgba(139,92,246,0.12)]",
+        color: "bg-purple-50 dark:bg-[rgb(30,20,50)]",
         link: "https://appstoreprice.com",
+        image: "/app-store-price.png",
+        imageAlt: "App Store Price project preview",
+    },
+    {
+        title: t("projects.doc2md.title"),
+        desc: t("projects.doc2md.desc"),
+        sub: t("projects.doc2md.sub"),
+        color: "bg-emerald-50 dark:bg-[rgb(18,35,30)]",
+        link: "https://www.doc2md.org",
+        image: "/doc2md.png",
+        imageAlt: "doc2md project preview",
+    },
+    {
+        title: t("projects.weatherCard.title"),
+        desc: t("projects.weatherCard.desc"),
+        sub: t("projects.weatherCard.sub"),
+        color: "bg-sky-50 dark:bg-[rgb(16,30,45)]",
+        link: "https://weather.yizhe.me",
+        image: "/weather-card.png",
+        imageAlt: "Weather Card project preview",
     },
     {
         title: t("projects.feishu.title"),
         desc: t("projects.feishu.desc"),
         sub: t("projects.feishu.sub"),
-        color: "bg-orange-50/80 dark:bg-[rgba(255,159,67,0.12)]",
+        color: "bg-orange-50 dark:bg-[rgb(40,28,16)]",
+        image: "/feishu.png",
+        imageAlt: "Feishu AI Solutions project preview",
     },
 ];
 ---
 
-<section id="projects" class="py-16 px-4 max-w-4xl mx-auto">
-    <div class="text-center mb-12">
+<section id="projects" class="py-16 px-4 max-w-6xl mx-auto">
+    <div class="text-center mb-10">
         <h2 class="text-3xl font-bold mb-2 dark:text-white">{t("projects.title")}</h2>
         <p class="text-[var(--muted-text)]">{t("projects.subtitle")}</p>
     </div>
 
-    <div class="grid gap-6 md:grid-cols-2">
+    <div class="projects-deck" data-project-deck>
         {
-            projects.map((project) =>
-                project.link ? (
-                    <a
-                        href={project.link}
-                        target="_blank"
-                        class="relative block p-6 rounded-xl border border-[var(--border-subtle)] hover:shadow-md transition bg-[var(--panel-bg)] hover:-translate-y-1 overflow-hidden"
-                    >
-                        <div class={`pointer-events-none absolute inset-0 rounded-xl opacity-70 dark:opacity-60 ${project.color}`} />
-                        <div class="relative">
-                            <h3 class="text-xl font-bold mb-2 dark:text-white">{project.title}</h3>
-                            <p class="font-semibold text-gray-800 dark:text-gray-100 mb-2">{project.desc}</p>
-                            <p class="text-sm text-[var(--muted-text)] italic">{project.sub}</p>
+            projects.map((project, index) => (
+                <article class="project-card" data-project-card data-project-index={index} data-project-link={project.link || ""}>
+                    <div class={`project-surface ${project.color}`}>
+                        <div class="project-image-frame">
+                            <img src={project.image} alt={project.imageAlt} loading="lazy" decoding="async" class="project-image" />
                         </div>
-                    </a>
-                ) : (
-                    <div class="relative p-6 rounded-xl border border-[var(--border-subtle)] hover:shadow-md transition bg-[var(--panel-bg)] overflow-hidden">
-                        <div class={`pointer-events-none absolute inset-0 rounded-xl opacity-70 dark:opacity-60 ${project.color}`} />
-                        <div class="relative">
-                            <h3 class="text-xl font-bold mb-2 dark:text-white">{project.title}</h3>
-                            <p class="font-semibold text-gray-800 dark:text-gray-100 mb-2">{project.desc}</p>
-                            <p class="text-sm text-[var(--muted-text)] italic">{project.sub}</p>
+                        <div class="project-content">
+                            <h3 class="project-title dark:text-white">{project.title}</h3>
+                            <p class="project-desc text-gray-800 dark:text-gray-100">{project.desc}</p>
+                            <p class="project-sub text-[var(--muted-text)]">{project.sub}</p>
+                            {project.link && (
+                                <span class="project-cta" data-project-cta>
+                                    {t("projects.view")}
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="12"
+                                        height="12"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M7 17L17 7" />
+                                        <path d="M7 7h10v10" />
+                                    </svg>
+                                </span>
+                            )}
                         </div>
                     </div>
-                ),
-            )
+                </article>
+            ))
         }
     </div>
 </section>
+
+<style>
+    /* ── Deck container ── */
+    #projects .projects-deck {
+        position: relative;
+        width: min(100%, 460px);
+        height: clamp(340px, 50vh, 440px);
+        margin-inline: auto;
+        perspective: 1200px;
+        transform-style: preserve-3d;
+    }
+
+    /* ── Card (absolute, fills deck) ── */
+    #projects .project-card {
+        position: absolute;
+        inset: 0;
+        transform: translate3d(var(--tx, 0px), var(--ty, 0px), var(--tz, 0px)) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) rotateZ(var(--rz, 0deg)) scale(var(--scale, 1));
+        transform-origin: 50% 70%;
+        opacity: var(--alpha, 1);
+        filter: blur(var(--blur, 0px)) saturate(var(--sat, 1));
+        z-index: var(--stack, 1);
+        transition:
+            transform 600ms cubic-bezier(0.22, 0.68, 0, 1.1),
+            opacity 350ms ease-out,
+            filter 400ms ease-out;
+        will-change: transform, opacity, filter;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    #projects .project-card.is-active {
+        cursor: default;
+    }
+
+    /* ── Surface (the visible card face) ── */
+    #projects .project-surface {
+        width: 100%;
+        height: 100%;
+        border: 1px solid var(--border-subtle);
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow:
+            0 4px 12px rgba(15, 23, 42, 0.06),
+            0 12px 32px rgba(15, 23, 42, 0.1);
+        display: flex;
+        flex-direction: column;
+    }
+
+    #projects .project-card.is-active .project-surface {
+        box-shadow:
+            0 8px 24px rgba(15, 23, 42, 0.1),
+            0 24px 48px rgba(15, 23, 42, 0.16);
+    }
+
+    /* ── Image area ── */
+    #projects .project-image-frame {
+        flex: 1 1 0%;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    #projects .project-image {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top center;
+    }
+
+    /* ── Text content ── */
+    #projects .project-content {
+        flex: none;
+        padding: 0.75rem 1rem 0.85rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+    }
+
+    #projects .project-title {
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+    #projects .project-desc {
+        font-size: 0.8rem;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+
+    #projects .project-sub {
+        font-size: 0.7rem;
+        font-style: italic;
+        line-height: 1.5;
+    }
+
+    /* ── CTA button ── */
+    #projects .project-cta {
+        display: inline-flex;
+        align-items: center;
+        align-self: flex-start;
+        gap: 0.25rem;
+        margin-top: 0.5rem;
+        font-size: 0.72rem;
+        line-height: 1;
+        font-weight: 600;
+        color: #fff;
+        padding: 0.4rem 0.72rem;
+        border-radius: 999px;
+        background: #2563eb;
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(4px);
+        pointer-events: none;
+        transition:
+            opacity 250ms ease-out,
+            transform 250ms ease-out,
+            background-color 150ms ease;
+    }
+
+    #projects .project-cta:hover {
+        background: #1d4ed8;
+    }
+
+    #projects .project-card.is-active .project-cta {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 767px) {
+        #projects .projects-deck {
+            width: min(100%, 370px);
+            height: 360px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        #projects .project-card,
+        #projects .project-cta {
+            transition: none !important;
+        }
+    }
+</style>
+
+<script>
+    (() => {
+        const deck = document.querySelector("[data-project-deck]") as HTMLElement | null;
+        if (!deck) return;
+
+        const cards = Array.from(deck.querySelectorAll("[data-project-card]")) as HTMLElement[];
+        if (cards.length === 0) return;
+
+        let activeIndex = 0;
+        const count = cards.length;
+        const wrap = (n: number) => ((n % count) + count) % count;
+
+        /**
+         * Per-card "personality" offsets for the scattered pile look.
+         * Larger x values = wider horizontal spread.
+         */
+        const seeds = [
+            { x: -18, y: -6, rz: -3.2 },
+            { x: 26, y: 10, rz: 4.0 },
+            { x: -24, y: 18, rz: -4.8 },
+            { x: 22, y: 24, rz: 3.2 },
+            { x: -16, y: 30, rz: -2.4 },
+        ];
+
+        const layout = (next: number) => {
+            activeIndex = wrap(next);
+            const half = Math.floor(count / 2);
+
+            cards.forEach((card, i) => {
+                let rel = i - activeIndex;
+                if (rel > half) rel -= count;
+                if (rel < -half) rel += count;
+                const d = Math.abs(rel);
+
+                // Dynamically change seeds when activeIndex changes to create a "wobble/reshuffle" effect
+                // Using 11 instead of 3 ensures i=activeIndex doesn't sum to a multiple of 5 (seed length)
+                const seedIndex = (i * 7 + activeIndex * 11) % seeds.length;
+                const s = seeds[seedIndex];
+
+                let tx: number, ty: number, tz: number;
+                let rx: number, ry: number, rz: number;
+                let scale: number, alpha: number, blur: number, sat: number, z: number;
+
+                if (rel === 0) {
+                    // Active card also gets a bit of randomness (not perfectly horizontal)
+                    tx = s.x * 0.15;
+                    ty = s.y * 0.15;
+                    tz = 0;
+                    rx = s.y * 0.08;
+                    ry = s.x * 0.08;
+                    rz = s.rz * 0.4;
+                    scale = 1;
+                    alpha = 1;
+                    blur = 0;
+                    sat = 1;
+                    z = 50;
+                } else if (count % 2 === 0 && d === count / 2) {
+                    // The exactly opposite card in an even deck - keep it centered in the back so left & right have equal protruding cards
+                    tx = s.x * 0.4;
+                    ty = s.y * 0.6 + 24 * d;
+                    tz = -55 * d;
+                    rx = s.y * 0.05;
+                    ry = s.x * 0.05;
+                    rz = (activeIndex % 2 === 0 ? 1 : -1) * Math.abs(s.rz) * 0.4;
+                    scale = 1 - Math.min(d * 0.055, 0.2);
+                    alpha = Math.max(1 - d * 0.15, 0.45);
+                    blur = 0;
+                    sat = Math.max(0.9 - d * 0.08, 0.6);
+                    z = 20 - d;
+                } else if (rel > 0) {
+                    // Right / upcoming
+                    // Make sure tx is large enough to poke out despite positive/negative s.x
+                    tx = s.x * 0.8 + 64 * rel;
+                    ty = s.y * 0.8 + 26 * rel;
+                    tz = -40 * rel;
+                    rx = 2 * rel + s.y * 0.05;
+                    ry = -3 * rel + s.x * 0.05;
+                    // Force background right cards to only tilt outwards to the right (+rz)
+                    rz = Math.abs(s.rz) + 2 * rel;
+                    scale = 1 - Math.min(rel * 0.05, 0.18);
+                    alpha = Math.max(1 - rel * 0.08, 0.65);
+                    blur = 0;
+                    sat = Math.max(0.92 - rel * 0.06, 0.7);
+                    z = 40 - rel;
+                } else {
+                    // Left / passed
+                    // Make sure -tx is negative enough to poke out despite positive s.x
+                    tx = s.x * 0.8 - 64 * d;
+                    ty = s.y * 0.8 + 22 * d;
+                    tz = -50 * d;
+                    rx = -2.5 * d + s.y * 0.05;
+                    ry = 4 * d + s.x * 0.05;
+                    // Force background left cards to only tilt outwards to the left (-rz)
+                    rz = -Math.abs(s.rz) - 1.8 * d;
+                    scale = 1 - Math.min(d * 0.06, 0.2);
+                    alpha = Math.max(1 - d * 0.1, 0.6);
+                    blur = 0;
+                    sat = Math.max(0.9 - d * 0.08, 0.65);
+                    z = 20 - d;
+                }
+
+                if (d >= 4) alpha = 0;
+
+                card.style.setProperty("--tx", `${tx}px`);
+                card.style.setProperty("--ty", `${ty}px`);
+                card.style.setProperty("--tz", `${tz}px`);
+                card.style.setProperty("--rx", `${rx}deg`);
+                card.style.setProperty("--ry", `${ry}deg`);
+                card.style.setProperty("--rz", `${rz}deg`);
+                card.style.setProperty("--scale", String(scale));
+                card.style.setProperty("--alpha", String(alpha));
+                card.style.setProperty("--blur", `${blur}px`);
+                card.style.setProperty("--sat", String(sat));
+                card.style.setProperty("--stack", String(z));
+                card.classList.toggle("is-active", rel === 0);
+
+                const cta = card.querySelector("[data-project-cta]") as HTMLElement | null;
+                if (cta) cta.tabIndex = rel === 0 ? 0 : -1;
+            });
+        };
+
+        // Click: background card → bring to front; front card → nothing
+        cards.forEach((card) => {
+            card.addEventListener("click", (e) => {
+                const idx = Number(card.getAttribute("data-project-index"));
+                if (Number.isNaN(idx)) return;
+                if (idx !== activeIndex) {
+                    e.preventDefault();
+                    layout(idx);
+                }
+            });
+        });
+
+        // CTA: open link in new tab
+        cards.forEach((card) => {
+            const cta = card.querySelector("[data-project-cta]") as HTMLElement | null;
+            if (!cta) return;
+            cta.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const link = card.getAttribute("data-project-link") || "";
+                if (link) window.open(link, "_blank", "noopener");
+            });
+        });
+
+        // Touch swipe (circular)
+        let tx0 = 0,
+            ty0 = 0;
+        deck.addEventListener(
+            "touchstart",
+            (e) => {
+                const t = (e as TouchEvent).touches[0];
+                tx0 = t.clientX;
+                ty0 = t.clientY;
+            },
+            { passive: true },
+        );
+        deck.addEventListener(
+            "touchend",
+            (e) => {
+                const t = (e as TouchEvent).changedTouches[0];
+                const dx = t.clientX - tx0,
+                    dy = t.clientY - ty0;
+                if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+                    layout(activeIndex + (dx < 0 ? 1 : -1));
+                }
+            },
+            { passive: true },
+        );
+
+        // Wheel (mouse / trackpad) scroll support
+        let wheelAccumulator = 0;
+        let lastWheelSwapTime = 0;
+        let lastWheelEventTime = 0;
+
+        deck.addEventListener(
+            "wheel",
+            (e: WheelEvent) => {
+                e.preventDefault(); // Prevent page from scrolling
+
+                const now = Date.now();
+
+                // Reset accumulator if user stops scrolling for a short moment
+                if (now - lastWheelEventTime > 50) {
+                    wheelAccumulator = 0;
+                }
+                lastWheelEventTime = now;
+
+                const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+                wheelAccumulator += delta;
+
+                if (Math.abs(wheelAccumulator) >= 60) {
+                    // Throttle swap rate to prevent frantic spinning (max 1 swap per 250ms)
+                    if (now - lastWheelSwapTime > 250) {
+                        layout(activeIndex + (wheelAccumulator > 0 ? 1 : -1));
+                        lastWheelSwapTime = now;
+                    }
+                    wheelAccumulator = 0;
+                }
+            },
+            { passive: false },
+        );
+
+        layout(0);
+    })();
+</script>
