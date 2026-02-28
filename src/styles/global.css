@@ -25,6 +25,8 @@ html.dark {
 body {
     background-color: var(--page-bg);
     transition: background-color 200ms ease, color 200ms ease;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

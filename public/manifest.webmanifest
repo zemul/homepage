@@ -1,0 +1,17 @@
+{
+    "name": "Ethan Zhao",
+    "short_name": "Ethan",
+    "description": "Ethan Zhao - AI-Driven Product Builder",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f7f9fc",
+    "theme_color": "#f7f9fc",
+    "icons": [
+        {
+            "src": "/favorite.png",
+            "sizes": "192x192 512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

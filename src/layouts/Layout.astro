@@ -19,15 +19,28 @@ const { title, noindex = false } = Astro.props;
     <head>
         <meta charset="UTF-8" />
         <meta name="description" content="Ethan Zhao - AI-Driven Product Builder" />
-        <meta name="viewport" content="width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
         <link rel="icon" type="image/png" href="/favorite.png" />
         <meta name="generator" content={Astro.generator} />
         {noindex && <meta name="robots" content="noindex,nofollow" />}
         <title>{title}</title>
+
+        <!-- PWA / Mobile optimization -->
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Ethan Zhao" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="theme-color" content="#f7f9fc" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)" />
+        <link rel="apple-touch-icon" href="/favorite.png" />
+        <link rel="manifest" href="/manifest.webmanifest" />
     </head>
-    <body class="min-h-screen bg-[var(--page-bg)] text-gray-900 dark:text-gray-100 antialiased transition-[background-color,color] duration-300">
+    <body
+        class="min-h-screen bg-[var(--page-bg)] text-gray-900 dark:text-gray-100 antialiased transition-[background-color,color] duration-300 overscroll-none touch-pan-y"
+        style="padding-bottom: env(safe-area-inset-bottom);"
+    >
         <!-- Header Controls Container -->
-        <div class="fixed top-0 right-0 p-6 z-50 group">
+        <div class="fixed right-0 z-50 group" style="top: env(safe-area-inset-top, 0px); padding: 1.5rem; padding-right: max(1.5rem, env(safe-area-inset-right));">
             <div
                 class="flex items-center gap-2 bg-white/80 dark:bg-[rgba(27,32,43,0.85)] backdrop-blur-md p-1.5 rounded-full border border-gray-200 dark:border-[var(--border-subtle)] shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             >
