@@ -48,6 +48,9 @@ export const ui = {
     'projects.feishu.title': 'Feishu AI Solution',
     'projects.feishu.desc': 'Retail Process Digitalization & Automation',
     'projects.feishu.sub': 'Combining AI capabilities, business process design, and enterprise-grade architecture to improve execution efficiency and maintainability of complex processes.',
+    'projects.feishuLottery.title': 'Feishu Lottery Bot',
+    'projects.feishuLottery.desc': 'A lightweight and efficient lottery system based on the Feishu open platform.',
+    'projects.feishuLottery.sub': 'The same lottery bot used by @Tim.',
   },
   zh: {
     'nav.home': '首页',
@@ -91,5 +94,8 @@ export const ui = {
     'projects.feishu.title': '飞书 AI 解决方案',
     'projects.feishu.desc': '零售流程数字化与自动化',
     'projects.feishu.sub': '结合 AI 能力、业务流程设计和企业级工程架构，提升复杂流程的执行效率与可维护性。',
+    'projects.feishuLottery.title': '飞书抽奖机器人',
+    'projects.feishuLottery.desc': '点赞参与，一句「开奖」即抽奖。基于飞书开放平台，轻量高效。',
+    'projects.feishuLottery.sub': '影视飓风 @Tim 同款抽奖机器人。',
   },
 } as const;
