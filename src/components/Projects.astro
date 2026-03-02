@@ -72,7 +72,7 @@ const projects = [
                                 <p class="project-desc text-gray-800 dark:text-gray-100">{project.desc}</p>
                                 <p class="project-sub text-[var(--muted-text)]">{project.sub}</p>
                                 {project.link && (
-                                    <span class="project-cta" data-project-cta>
+                                    <a href={project.link} target="_blank" rel="noreferrer" class="project-cta" data-project-cta>
                                         {t("projects.view")}
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +88,7 @@ const projects = [
                                             <path d="M7 17L17 7" />
                                             <path d="M7 7h10v10" />
                                         </svg>
-                                    </span>
+                                    </a>
                                 )}
                             </div>
                         </div>
@@ -379,14 +379,12 @@ const projects = [
             });
         });
 
-        // CTA: open link in new tab
+        // CTA: let the anchor navigate, but don't trigger card switching.
         cards.forEach((card) => {
             const cta = card.querySelector("[data-project-cta]") as HTMLElement | null;
             if (!cta) return;
             cta.addEventListener("click", (e) => {
                 e.stopPropagation();
-                const link = card.getAttribute("data-project-link") || "";
-                if (link) window.open(link, "_blank", "noopener");
             });
         });
 
