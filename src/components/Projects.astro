@@ -207,10 +207,13 @@ const projects = [
         line-height: 1;
         font-weight: 600;
         color: #fff;
+        text-decoration: none;
         padding: 0.4rem 0.72rem;
         border-radius: 999px;
         background: #2563eb;
         cursor: pointer;
+        position: relative;
+        z-index: 10;
         opacity: 0;
         transform: translateY(4px);
         pointer-events: none;
@@ -368,10 +371,10 @@ const projects = [
                 if (cta) cta.tabIndex = rel === 0 ? 0 : -1;
             });
 
-            // Keep the active card as the last painted node so its CTA is never covered by
-            // overlapping background cards in pointer hit-testing.
-            if (activeCard && activeCard !== deck.lastElementChild) {
-                deck.appendChild(activeCard);
+            // Ensure the active card's CTA is clickable by giving it a much higher z-index
+            // so no sibling card can intercept pointer events over the CTA area.
+            if (activeCard) {
+                activeCard.style.setProperty("--stack", "100");
             }
         };
 
