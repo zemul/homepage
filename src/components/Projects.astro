@@ -273,6 +273,7 @@ const projects = [
         const layout = (next: number) => {
             activeIndex = wrap(next);
             const half = Math.floor(count / 2);
+            let activeCard: HTMLElement | null = null;
 
             cards.forEach((card, i) => {
                 let rel = i - activeIndex;
@@ -361,10 +362,17 @@ const projects = [
                 card.style.setProperty("--sat", String(sat));
                 card.style.setProperty("--stack", String(z));
                 card.classList.toggle("is-active", rel === 0);
+                if (rel === 0) activeCard = card;
 
                 const cta = card.querySelector("[data-project-cta]") as HTMLElement | null;
                 if (cta) cta.tabIndex = rel === 0 ? 0 : -1;
             });
+
+            // Keep the active card as the last painted node so its CTA is never covered by
+            // overlapping background cards in pointer hit-testing.
+            if (activeCard && activeCard !== deck.lastElementChild) {
+                deck.appendChild(activeCard);
+            }
         };
 
         // Click: background card → bring to front; front card → nothing
