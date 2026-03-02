@@ -94,11 +94,24 @@ const t = useTranslations(lang);
     if (typewriterEl) {
         const text = typewriterEl.getAttribute("data-text") || "";
         const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        const pauseChars = new Set([".", ",", "!", "?", ";", ":", "。", "，", "！", "？", "；", "："]);
+        const pauseMap = {
+            ",": 1000,
+            "，": 1000,
+            ".": 360,
+            "。": 420,
+            "!": 340,
+            "！": 380,
+            "?": 340,
+            "？": 380,
+            ";": 280,
+            "；": 320,
+            ":": 260,
+            "：": 300,
+        };
         let i = 0;
 
         const getDelay = (char) => {
-            if (pauseChars.has(char)) return 320;
+            if (char in pauseMap) return pauseMap[char];
             if (char === " ") return 45;
             return 82 + Math.floor(Math.random() * 36);
         };
