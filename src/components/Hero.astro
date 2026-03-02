@@ -89,22 +89,36 @@ const t = useTranslations(lang);
         });
     }
 
-    // Typewriter effect
+    // Typewriter effect with punctuation pauses for more natural cadence.
     const typewriterEl = document.getElementById("typewriter-text");
     if (typewriterEl) {
         const text = typewriterEl.getAttribute("data-text") || "";
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const pauseChars = new Set([".", ",", "!", "?", ";", ":", "。", "，", "！", "？", "；", "："]);
         let i = 0;
 
-        // Start typing after a short delay
-        setTimeout(() => {
-            const typingInterval = setInterval(() => {
-                if (i < text.length) {
-                    typewriterEl.textContent += text.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(typingInterval);
-                }
-            }, 100); // 100ms per character
-        }, 300);
+        const getDelay = (char) => {
+            if (pauseChars.has(char)) return 320;
+            if (char === " ") return 45;
+            return 82 + Math.floor(Math.random() * 36);
+        };
+
+        const typeNext = () => {
+            if (i >= text.length) return;
+
+            const char = text.charAt(i);
+            typewriterEl.textContent += char;
+            i++;
+
+            if (i < text.length) {
+                window.setTimeout(typeNext, getDelay(char));
+            }
+        };
+
+        if (prefersReducedMotion) {
+            typewriterEl.textContent = text;
+        } else {
+            window.setTimeout(typeNext, 280);
+        }
     }
 </script>
