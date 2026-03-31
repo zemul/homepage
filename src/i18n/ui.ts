@@ -5,8 +5,7 @@ export const languages = {
 
 export const defaultLang = 'en';
 
-export const ui = {
-  en: {
+const en = {
     'nav.home': 'Home',
     'nav.about': 'About',
     'nav.projects': 'Projects',
@@ -41,6 +40,9 @@ export const ui = {
     'projects.doc2md.title': 'doc2md',
     'projects.doc2md.desc': 'Universal File to Markdown Converter',
     'projects.doc2md.sub': 'Converts documents, slides, tables, and notes into clean Markdown for AI workflows, publishing, and knowledge base ingestion.',
+    'projects.pinlist.title': 'Pinlist',
+    'projects.pinlist.desc': 'A Focused Watchlist App for iOS',
+    'projects.pinlist.sub': 'Built for saving, organizing, and revisiting the people, topics, and items worth keeping an eye on.',
     'projects.weatherCard.title': 'Weather Card',
     'projects.weatherCard.desc': 'Random Weather Visual Generator for Global Cities',
     'projects.weatherCard.sub': 'Generates stylized weather cards and images for random cities worldwide, useful for content snippets, demos, and visual experiments.',
@@ -51,8 +53,11 @@ export const ui = {
     'projects.feishuLottery.title': 'Feishu Lottery Bot',
     'projects.feishuLottery.desc': 'A lightweight and efficient lottery system based on the Feishu open platform.',
     'projects.feishuLottery.sub': 'The same lottery bot used by @Tim.',
-  },
-  zh: {
+} as const;
+
+export type TranslationKey = keyof typeof en;
+
+const zh: Record<TranslationKey, string> = {
     'nav.home': '首页',
     'nav.about': '关于',
     'nav.projects': '项目',
@@ -87,6 +92,9 @@ export const ui = {
     'projects.doc2md.title': 'doc2md',
     'projects.doc2md.desc': '通用文件转 Markdown 工具',
     'projects.doc2md.sub': '将文档、幻灯片、表格和笔记转换为结构清晰的 Markdown，便于 AI 工作流、内容发布与知识库入库。',
+    'projects.pinlist.title': 'Pinlist',
+    'projects.pinlist.desc': 'iOS 关注清单应用',
+    'projects.pinlist.sub': '用更轻的方式保存、整理与回看值得长期关注的人、话题和事项。',
     'projects.weatherCard.title': 'Weather Card',
     'projects.weatherCard.desc': '全球城市随机天气图片生成工具',
     'projects.weatherCard.sub': '为全球随机城市生成风格化天气卡片与图片，适合内容配图、演示场景和视觉实验。',
@@ -97,5 +105,9 @@ export const ui = {
     'projects.feishuLottery.title': '飞书抽奖机器人',
     'projects.feishuLottery.desc': '点赞参与，一句「开奖」即抽奖。基于飞书开放平台，轻量高效。',
     'projects.feishuLottery.sub': '影视飓风 @Tim 同款抽奖机器人。',
-  },
+};
+
+export const ui = {
+  en,
+  zh,
 } as const;

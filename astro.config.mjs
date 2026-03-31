@@ -7,7 +7,10 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   integrations: [
     icon({
-      include: ['simple-icons:*', 'devicon:*']
+      include: {
+        'simple-icons': ['*'],
+        devicon: ['*']
+      }
     })
   ],
   vite: {
