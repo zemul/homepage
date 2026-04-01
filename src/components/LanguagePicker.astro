@@ -3,10 +3,15 @@ import { languages } from "../i18n/ui";
 import { getLangFromUrl } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
+const currentPath = Astro.url.pathname;
+// English (default, no prefix) → prepend /zh; Chinese → strip /zh prefix
+const targetPath = lang === "en"
+    ? `/zh${currentPath === "/" ? "/" : currentPath}`
+    : currentPath.replace(/^\/zh\/?/, "/");
 ---
 
 <a
-    href={lang === "en" ? "/zh/" : "/en/"}
+    href={targetPath}
     class="p-2 rounded-full bg-gray-100 dark:bg-[var(--panel-bg)] text-gray-600 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-[#1f2631] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
     aria-label="Switch Language"
 >
