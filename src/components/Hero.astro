@@ -21,8 +21,10 @@ const t = useTranslations(lang);
 
     <!-- Text Content -->
     <div class="text-left flex-1 w-full flex flex-col items-center md:items-start text-center md:text-left">
-        <h1 class="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 leading-tight whitespace-nowrap">
-            <span id="typewriter-text" data-text={t("hero.title")}></span><span class="typewriter-cursor">|</span>
+        <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight whitespace-nowrap">
+            <span id="typewriter-text" class="title-gradient" data-text={t("hero.title")}></span>
+            <span id="hero-wave" class="hero-wave" aria-hidden="true"> 👋🏻</span>
+            <span class="typewriter-cursor">|</span>
         </h1>
         <div class="flex flex-wrap justify-center md:justify-start gap-2 mb-6">
             {
@@ -54,16 +56,51 @@ const t = useTranslations(lang);
             visibility: hidden;
         }
     }
+    .title-gradient,
+    .typewriter-cursor {
+        background: linear-gradient(to right, rgb(37 99 235), rgb(139 92 246));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
     .typewriter-cursor {
         animation: blink 1s step-end infinite;
         margin-left: 2px;
         font-weight: 400; /* Regular weight to ensure visibility */
+    }
+
+    .hero-wave {
+        display: none;
+        margin-left: 0.08em;
+        font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+        background: none;
+        -webkit-background-clip: initial;
+        background-clip: initial;
+        color: initial;
+        opacity: 0;
+        transform: translateX(-0.08em);
+        transition:
+            opacity 180ms ease,
+            transform 180ms ease;
+    }
+
+    .hero-wave.is-visible {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    @media (min-width: 768px) {
+        .hero-wave {
+            display: inline-block;
+        }
     }
 </style>
 
 <script>
     const container = document.getElementById("avatar-container");
     const person = document.getElementById("avatar-person");
+    const waveEl = document.getElementById("hero-wave");
 
     if (container && person) {
         container.addEventListener("mousemove", (e) => {
@@ -93,43 +130,57 @@ const t = useTranslations(lang);
     const typewriterEl = document.getElementById("typewriter-text");
     if (typewriterEl) {
         const text = typewriterEl.getAttribute("data-text") || "";
+        const chars = Array.from(text);
         const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         const pauseMap = {
-            ",": 1000,
-            "，": 1000,
-            ".": 360,
-            "。": 420,
-            "!": 340,
-            "！": 380,
-            "?": 340,
-            "？": 380,
-            ";": 280,
-            "；": 320,
-            ":": 260,
-            "：": 300,
+            ",": 180,
+            "，": 220,
+            ".": 220,
+            "。": 260,
+            "!": 220,
+            "！": 260,
+            "?": 220,
+            "？": 260,
+            ";": 180,
+            "；": 220,
+            ":": 160,
+            "：": 200,
         };
+        const rhythmOffsets = [0, 8, -4, 6];
         let i = 0;
 
-        const getDelay = (char) => {
+        const getDelay = (char, index) => {
             if (char in pauseMap) return pauseMap[char];
-            if (char === " ") return 45;
-            return 82 + Math.floor(Math.random() * 36);
+            if (char === " ") return 36;
+
+            const isAsciiWord = /[A-Za-z0-9]/.test(char);
+            const baseDelay = isAsciiWord ? 68 : 80;
+            return baseDelay + rhythmOffsets[index % rhythmOffsets.length];
+        };
+
+        const showWave = () => {
+            if (waveEl && window.matchMedia("(min-width: 768px)").matches) {
+                waveEl.classList.add("is-visible");
+            }
         };
 
         const typeNext = () => {
-            if (i >= text.length) return;
+            if (i >= chars.length) return;
 
-            const char = text.charAt(i);
+            const char = chars[i];
             typewriterEl.textContent += char;
             i++;
 
-            if (i < text.length) {
-                window.setTimeout(typeNext, getDelay(char));
+            if (i < chars.length) {
+                window.setTimeout(typeNext, getDelay(char, i - 1));
+            } else {
+                showWave();
             }
         };
 
         if (prefersReducedMotion) {
             typewriterEl.textContent = text;
+            showWave();
         } else {
             window.setTimeout(typeNext, 280);
         }
