@@ -4,10 +4,11 @@ import { getLangFromUrl } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const currentPath = Astro.url.pathname;
+const normalizedPath = currentPath.replace(/^\/en(?=\/|$)/, "") || "/";
 // English (default, no prefix) → prepend /zh; Chinese → strip /zh prefix
 const targetPath = lang === "en"
-    ? `/zh${currentPath === "/" ? "/" : currentPath}`
-    : currentPath.replace(/^\/zh\/?/, "/");
+    ? normalizedPath === "/" ? "/zh/" : `/zh${normalizedPath}`
+    : currentPath.replace(/^\/zh(?=\/|$)/, "") || "/";
 ---
 
 <a
