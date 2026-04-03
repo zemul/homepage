@@ -92,6 +92,28 @@ const t = useTranslations(lang);
                 </div>
             </div>
         </div>
+
+        <!-- Token Usage -->
+        <div class="toolkit-group">
+            <h3 class="toolkit-label">
+                {t("toolkit.tokenUsage")}
+                <a href="https://aiusage.yizhe.me" target="_blank" rel="noopener noreferrer" class="toolkit-label-link">{t("toolkit.tokenUsageLink")}</a>
+            </h3>
+            <div class="ai-usage-embed">
+                <iframe
+                    src="https://aiusage.yizhe.me/embed?widget=stats-row1&items=0,1,2,3"
+                    width="100%"
+                    height="120"
+                    frameborder="0"
+                ></iframe>
+                <iframe
+                    src="https://aiusage.yizhe.me/embed?widget=cost-trend"
+                    width="100%"
+                    height="420"
+                    frameborder="0"
+                ></iframe>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -119,6 +141,7 @@ const t = useTranslations(lang);
         flex: 1;
         height: 1px;
         background: var(--border-subtle);
+        order: 2;
     }
 
     .toolkit-items {
@@ -262,5 +285,38 @@ const t = useTranslations(lang);
         .toolkit-pill {
             transition: none !important;
         }
+    }
+
+    /* ── AI Usage Embed ── */
+    .ai-usage-embed {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .ai-usage-embed iframe {
+        border-radius: 0.75rem;
+        display: block;
+    }
+
+    /* ── Label link ── */
+    .toolkit-label-link {
+        font-size: 0.58rem;
+        font-weight: 500;
+        color: var(--muted-text);
+        text-decoration: none;
+        letter-spacing: 0.02em;
+        text-transform: none;
+        transition: color 200ms ease;
+        order: 3;
+        margin-left: -0.25rem;
+    }
+
+    .toolkit-label-link:hover {
+        color: #64748b;
+    }
+
+    :global(.dark) .toolkit-label-link:hover {
+        color: #94a3b8;
     }
 </style>
