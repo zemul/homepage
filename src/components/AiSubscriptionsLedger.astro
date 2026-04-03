@@ -1,0 +1,941 @@
+---
+import { aiSubscriptions } from "../data/aiSubscriptions";
+
+interface Props {
+    lang: "en" | "zh";
+    homeHref: string;
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+    en: {
+        title: "AI Subscriptions",
+        subtitle: "Recurring plans, monthly cost, cumulative spend, and a reserved token trend module.",
+        snapshot: "Snapshot",
+        pending: "Pending",
+        tokenStatus: "Token chart",
+        tokenStatusValue: "Waiting for data",
+        totalSpend: "Total Spend",
+        monthlySpend: "Monthly Spend",
+        activeTools: "Active Tools",
+        totalSpendHint: "Recorded cumulative",
+        monthlySpendHint: "Currencies shown separately",
+        activeToolsHint: "5 seats in use",
+        listTitle: "Subscription Ledger",
+        listSubtitle: "Operational view of each paid tool and account.",
+        breakdownTitle: "Monthly Breakdown",
+        breakdownSubtitle: "Grouped by tool and currency.",
+        pendingTitle: "Pending Fields",
+        pendingSubtitle: "Still tracked, excluded only when data is incomplete.",
+        tokenTitle: "30-Day Token Trend",
+        tokenSubtitle: "Reserved for the line chart once you send the last 30 days of token data.",
+        tokenEmpty: "Waiting for 30-day token data",
+        tokenEmptyHint: "After you send the series, this module will switch from placeholder to a real trend line.",
+        listHead: {
+            tool: "Tool",
+            account: "Account",
+            start: "Start",
+            monthly: "Monthly",
+            months: "Months",
+            total: "Cumulative",
+            status: "Status",
+        },
+        states: {
+            complete: "Recorded",
+            missingStart: "Missing start month",
+            missingPrice: "Missing monthly fee",
+            missingStartAndPrice: "Missing start month and monthly fee",
+        },
+        noValue: "Pending",
+        toolsUnit: "tools",
+        seatsUnit: "seats",
+        cnyLabel: "CNY / month",
+        usdLabel: "USD / month",
+        monthSuffix: "mo",
+        accountPrimary: "Primary",
+        accountPrefix: "Account",
+    },
+    zh: {
+        title: "AI 订阅",
+        subtitle: "固定计划、月费、累计支出，以及预留给最近 30 天 Token 趋势的图表模块。",
+        snapshot: "统计截至",
+        pending: "待补录",
+        tokenStatus: "Token 图",
+        tokenStatusValue: "等待数据",
+        totalSpend: "累计支出",
+        monthlySpend: "当前月费",
+        activeTools: "使用中",
+        totalSpendHint: "仅统计已录入累计",
+        monthlySpendHint: "按币种分别显示",
+        activeToolsHint: "当前共 5 个席位",
+        listTitle: "订阅清单",
+        listSubtitle: "把每个工具、账号、起始月和累计金额放进一个操作面板里看。",
+        breakdownTitle: "月费结构",
+        breakdownSubtitle: "按工具归并后再看币种。",
+        pendingTitle: "待补录",
+        pendingSubtitle: "暂时缺失的数据继续保留，但不会混入错误累计。",
+        tokenTitle: "最近 30 天 Token 消耗",
+        tokenSubtitle: "等你把数据发来后，这里直接换成真实折线图。",
+        tokenEmpty: "等待最近 30 天 Token 数据",
+        tokenEmptyHint: "收到序列后，这块会从占位模块切换成真实趋势图。",
+        listHead: {
+            tool: "工具",
+            account: "账号",
+            start: "开始时间",
+            monthly: "月费",
+            months: "累计月份",
+            total: "累计支出",
+            status: "状态",
+        },
+        states: {
+            complete: "已录入",
+            missingStart: "待补开始时间",
+            missingPrice: "待补月费",
+            missingStartAndPrice: "待补开始时间与月费",
+        },
+        noValue: "待补",
+        toolsUnit: "个工具",
+        seatsUnit: "个席位",
+        cnyLabel: "人民币 / 月",
+        usdLabel: "美元 / 月",
+        monthSuffix: "个月",
+        accountPrimary: "主账号",
+        accountPrefix: "账号",
+    },
+} as const;
+
+const dictionary = copy[lang];
+const locale = lang === "zh" ? "zh-CN" : "en-US";
+const asOf = new Date();
+
+const formatDate = new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+});
+
+const formatMonth = new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+    month: "2-digit",
+});
+
+const formatCurrency = (currency: "CNY" | "USD", value?: number) => {
+    if (typeof value !== "number") return dictionary.noValue;
+
+    return new Intl.NumberFormat(locale, {
+        style: "currency",
+        currency,
+        currencyDisplay: "narrowSymbol",
+        maximumFractionDigits: 0,
+    }).format(value);
+};
+
+const parseYearMonth = (value?: string) => {
+    if (!value) return undefined;
+    const [year, month] = value.split("-").map(Number);
+    return new Date(year, month - 1, 1);
+};
+
+const countInclusiveMonths = (startMonth?: string) => {
+    const start = parseYearMonth(startMonth);
+    if (!start) return undefined;
+
+    const months = (asOf.getFullYear() - start.getFullYear()) * 12 + (asOf.getMonth() - start.getMonth()) + 1;
+    return months > 0 ? months : 0;
+};
+
+const formatAccount = (label: string) => {
+    if (label === "Primary") return dictionary.accountPrimary;
+    if (/^\d+$/.test(label)) return `${dictionary.accountPrefix} ${label}`;
+    return label;
+};
+
+const records = aiSubscriptions.map((item) => {
+    const activeMonths = countInclusiveMonths(item.startMonth);
+    const cumulative =
+        typeof item.monthlyFee === "number" && typeof activeMonths === "number"
+            ? item.monthlyFee * activeMonths
+            : undefined;
+
+    return {
+        ...item,
+        accountLabelDisplay: formatAccount(item.accountLabel),
+        startLabel: item.startMonth ? formatMonth.format(parseYearMonth(item.startMonth)!) : dictionary.noValue,
+        monthlyLabel: formatCurrency(item.currency, item.monthlyFee),
+        monthsLabel: typeof activeMonths === "number" ? `${activeMonths}${dictionary.monthSuffix}` : dictionary.noValue,
+        totalLabel: formatCurrency(item.currency, cumulative),
+        noteLabel: dictionary.states[item.noteKey ?? "complete"],
+        activeMonths,
+        cumulative,
+    };
+});
+
+const totals = records.reduce(
+    (acc, item) => {
+        if (typeof item.cumulative === "number") acc[item.currency] += item.cumulative;
+        if (typeof item.monthlyFee === "number") acc.monthly[item.currency] += item.monthlyFee;
+        return acc;
+    },
+    {
+        CNY: 0,
+        USD: 0,
+        monthly: { CNY: 0, USD: 0 },
+    },
+);
+
+const activeTools = new Set(records.map((item) => item.tool)).size;
+const activeSeats = records.length;
+const pendingRecords = records.filter((item) => item.noteKey !== "complete");
+
+const groupedBreakdown = (currency: "CNY" | "USD") => {
+    const grouped = records.reduce((acc, item) => {
+        if (item.currency !== currency || typeof item.monthlyFee !== "number") return acc;
+        acc.set(item.tool, (acc.get(item.tool) ?? 0) + item.monthlyFee);
+        return acc;
+    }, new Map<string, number>());
+
+    const total = Array.from(grouped.values()).reduce((sum, value) => sum + value, 0);
+
+    return Array.from(grouped.entries()).map(([tool, value]) => ({
+        tool,
+        value,
+        label: formatCurrency(currency, value),
+        width: total > 0 ? `${Math.max((value / total) * 100, 12)}%` : "0%",
+    }));
+};
+
+const cnyBreakdown = groupedBreakdown("CNY");
+const usdBreakdown = groupedBreakdown("USD");
+---
+
+<main class="subscriptions-dashboard">
+    <header class="dashboard-head">
+        <div class="dashboard-title">
+            <h1>{dictionary.title}</h1>
+            <p>{dictionary.subtitle}</p>
+        </div>
+
+        <div class="dashboard-meta">
+            <span class="meta-chip">
+                <span>{dictionary.snapshot}</span>
+                <strong>{formatDate.format(asOf)}</strong>
+            </span>
+            <span class="meta-chip">
+                <span>{dictionary.pending}</span>
+                <strong>{pendingRecords.length}</strong>
+            </span>
+            <span class="meta-chip is-muted">
+                <span>{dictionary.tokenStatus}</span>
+                <strong>{dictionary.tokenStatusValue}</strong>
+            </span>
+        </div>
+    </header>
+
+    <section class="summary-strip">
+        <article class="summary-cell">
+            <span class="summary-label">{dictionary.totalSpend}</span>
+            <strong class="summary-value">{formatCurrency("CNY", totals.CNY)}</strong>
+            <span class="summary-secondary">{formatCurrency("USD", totals.USD)}</span>
+            <p>{dictionary.totalSpendHint}</p>
+        </article>
+
+        <article class="summary-cell">
+            <span class="summary-label">{dictionary.monthlySpend}</span>
+            <strong class="summary-value">{formatCurrency("CNY", totals.monthly.CNY)}</strong>
+            <span class="summary-secondary">{formatCurrency("USD", totals.monthly.USD)}</span>
+            <p>{dictionary.monthlySpendHint}</p>
+        </article>
+
+        <article class="summary-cell">
+            <span class="summary-label">{dictionary.activeTools}</span>
+            <strong class="summary-value">{activeTools}</strong>
+            <span class="summary-secondary">{activeSeats} {dictionary.seatsUnit}</span>
+            <p>{dictionary.activeToolsHint}</p>
+        </article>
+    </section>
+
+    <section class="workspace-surface">
+        <div class="surface-head">
+            <div>
+                <h2>{dictionary.listTitle}</h2>
+                <p>{dictionary.listSubtitle}</p>
+            </div>
+            <div class="surface-tabs" aria-label="Sections">
+                <span class="is-active">{dictionary.listTitle}</span>
+                <span>{dictionary.breakdownTitle}</span>
+                <span>{dictionary.tokenTitle}</span>
+            </div>
+        </div>
+
+        <div class="surface-grid">
+            <div class="ledger-list">
+                <div class="ledger-row ledger-row-head">
+                    <span>{dictionary.listHead.tool}</span>
+                    <span>{dictionary.listHead.account}</span>
+                    <span>{dictionary.listHead.start}</span>
+                    <span>{dictionary.listHead.monthly}</span>
+                    <span>{dictionary.listHead.months}</span>
+                    <span>{dictionary.listHead.total}</span>
+                    <span>{dictionary.listHead.status}</span>
+                </div>
+
+                {
+                    records.map((item) => (
+                        <article class="ledger-row">
+                            <div class="tool-slot">
+                                <span class="tool-mark">{item.tool.slice(0, 1)}</span>
+                                <div>
+                                    <strong>{item.tool}</strong>
+                                    <small>{item.currency}</small>
+                                </div>
+                            </div>
+                            <span class="row-field" data-label={dictionary.listHead.account}>{item.accountLabelDisplay}</span>
+                            <span class="row-field" data-label={dictionary.listHead.start}>{item.startLabel}</span>
+                            <span class="row-field" data-label={dictionary.listHead.monthly}>{item.monthlyLabel}</span>
+                            <span class="row-field" data-label={dictionary.listHead.months}>{item.monthsLabel}</span>
+                            <span class="row-field" data-label={dictionary.listHead.total}>{item.totalLabel}</span>
+                            <span
+                                class:list={["status-chip", "row-field", item.noteKey !== "complete" && "is-pending"]}
+                                data-label={dictionary.listHead.status}
+                            >
+                                {item.noteLabel}
+                            </span>
+                        </article>
+                    ))
+                }
+            </div>
+
+            <aside class="side-stack">
+                <section class="side-panel">
+                    <div class="panel-head">
+                        <h3>{dictionary.breakdownTitle}</h3>
+                        <p>{dictionary.breakdownSubtitle}</p>
+                    </div>
+
+                    <div class="breakdown-group">
+                        <p class="breakdown-label">{dictionary.cnyLabel}</p>
+                        {
+                            cnyBreakdown.map((item) => (
+                                <div class="bar-row">
+                                    <div class="bar-row-head">
+                                        <span>{item.tool}</span>
+                                        <strong>{item.label}</strong>
+                                    </div>
+                                    <div class="bar-track"><span style={`width:${item.width}`}></span></div>
+                                </div>
+                            ))
+                        }
+                    </div>
+
+                    <div class="breakdown-group">
+                        <p class="breakdown-label">{dictionary.usdLabel}</p>
+                        {
+                            usdBreakdown.map((item) => (
+                                <div class="bar-row">
+                                    <div class="bar-row-head">
+                                        <span>{item.tool}</span>
+                                        <strong>{item.label}</strong>
+                                    </div>
+                                    <div class="bar-track"><span style={`width:${item.width}`}></span></div>
+                                </div>
+                            ))
+                        }
+                    </div>
+                </section>
+
+                <section class="side-panel">
+                    <div class="panel-head">
+                        <h3>{dictionary.pendingTitle}</h3>
+                        <p>{dictionary.pendingSubtitle}</p>
+                    </div>
+
+                    <ul class="pending-list">
+                        {
+                            pendingRecords.length > 0 ? pendingRecords.map((item) => (
+                                <li>
+                                    <strong>{item.tool}</strong>
+                                    <span>{item.noteLabel}</span>
+                                </li>
+                            )) : (
+                                <li class="is-empty">
+                                    <strong>{dictionary.pending}</strong>
+                                    <span>0</span>
+                                </li>
+                            )
+                        }
+                    </ul>
+                </section>
+            </aside>
+        </div>
+    </section>
+
+    <section class="token-surface">
+        <div class="surface-head">
+            <div>
+                <h2>{dictionary.tokenTitle}</h2>
+                <p>{dictionary.tokenSubtitle}</p>
+            </div>
+        </div>
+
+        <div class="token-placeholder">
+            <div class="token-grid" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="token-empty">
+                <strong>{dictionary.tokenEmpty}</strong>
+                <p>{dictionary.tokenEmptyHint}</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<style>
+    :root {
+        --dash-bg: #f3f5f7;
+        --dash-surface: rgba(255, 255, 255, 0.82);
+        --dash-line: rgba(15, 23, 42, 0.08);
+        --dash-ink: #111827;
+        --dash-muted: #667085;
+        --dash-soft: #f8fafc;
+        --dash-accent: #0f172a;
+        --dash-pending: #b45309;
+    }
+
+    .subscriptions-dashboard {
+        width: min(1320px, calc(100% - 2rem));
+        margin: 0 auto;
+        padding: 5.5rem 0 4rem;
+    }
+
+    .dashboard-head,
+    .summary-strip,
+    .workspace-surface,
+    .token-surface {
+        border: 1px solid var(--dash-line);
+        background: var(--dash-surface);
+        backdrop-filter: blur(18px);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    }
+
+    .dashboard-head,
+    .summary-strip {
+        border-radius: 2rem;
+    }
+
+    .workspace-surface,
+    .token-surface {
+        border-radius: 2rem;
+    }
+
+    .dashboard-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 1.5rem;
+        padding: 1.75rem 1.9rem;
+    }
+
+    .dashboard-title h1,
+    .surface-head h2 {
+        margin: 0;
+        color: var(--dash-ink);
+        letter-spacing: -0.05em;
+    }
+
+    .dashboard-title h1 {
+        font-size: clamp(2.2rem, 5vw, 3.8rem);
+        line-height: 0.95;
+    }
+
+    .dashboard-title p,
+    .surface-head p,
+    .panel-head p,
+    .summary-cell p,
+    .token-empty p {
+        margin: 0;
+        color: var(--dash-muted);
+        line-height: 1.65;
+    }
+
+    .dashboard-title p {
+        margin-top: 0.75rem;
+        max-width: 42rem;
+        font-size: 1rem;
+    }
+
+    .dashboard-meta {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: end;
+        gap: 0.7rem;
+    }
+
+    .meta-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        min-height: 2.75rem;
+        padding: 0.55rem 0.9rem;
+        border-radius: 999px;
+        border: 1px solid var(--dash-line);
+        background: #fff;
+        color: var(--dash-muted);
+        font-size: 0.86rem;
+    }
+
+    .meta-chip strong {
+        color: var(--dash-ink);
+        font-weight: 600;
+    }
+
+    .meta-chip.is-muted {
+        background: transparent;
+    }
+
+    .summary-strip {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin-top: 1rem;
+        overflow: hidden;
+    }
+
+    .summary-cell {
+        padding: 1.4rem 1.5rem 1.35rem;
+        border-right: 1px solid var(--dash-line);
+    }
+
+    .summary-cell:last-child {
+        border-right: 0;
+    }
+
+    .summary-label,
+    .breakdown-label,
+    .ledger-row-head,
+    .tool-slot small {
+        color: var(--dash-muted);
+        font-size: 0.78rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
+
+    .summary-value {
+        display: block;
+        margin-top: 0.65rem;
+        color: var(--dash-ink);
+        font-size: clamp(2.1rem, 4vw, 3.25rem);
+        line-height: 1;
+        letter-spacing: -0.06em;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .summary-secondary {
+        display: inline-block;
+        margin-top: 0.45rem;
+        color: var(--dash-ink);
+        font-size: 1rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .summary-cell p {
+        margin-top: 0.6rem;
+        font-size: 0.9rem;
+    }
+
+    .workspace-surface,
+    .token-surface {
+        margin-top: 1rem;
+        padding: 1.3rem;
+    }
+
+    .surface-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.2rem 0.2rem 1rem;
+    }
+
+    .surface-head h2 {
+        font-size: 1.7rem;
+        line-height: 1;
+    }
+
+    .surface-tabs {
+        display: inline-flex;
+        gap: 0.35rem;
+        padding: 0.25rem;
+        border-radius: 999px;
+        background: #eef2f6;
+    }
+
+    .surface-tabs span {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.35rem;
+        padding: 0.45rem 0.95rem;
+        border-radius: 999px;
+        color: var(--dash-muted);
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+
+    .surface-tabs .is-active {
+        color: var(--dash-ink);
+        background: #fff;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+    }
+
+    .surface-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.72fr);
+        gap: 1rem;
+    }
+
+    .ledger-list,
+    .side-panel {
+        border: 1px solid var(--dash-line);
+        border-radius: 1.5rem;
+        background: rgba(255, 255, 255, 0.74);
+    }
+
+    .ledger-list {
+        overflow: hidden;
+    }
+
+    .ledger-row {
+        display: grid;
+        grid-template-columns: 1.4fr 0.9fr 0.8fr 0.8fr 0.8fr 0.95fr 0.9fr;
+        gap: 1rem;
+        align-items: center;
+        padding: 1rem 1.2rem;
+        border-bottom: 1px solid var(--dash-line);
+        color: var(--dash-ink);
+        font-size: 0.94rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .ledger-row:last-child {
+        border-bottom: 0;
+    }
+
+    .ledger-row-head {
+        background: var(--dash-soft);
+        font-weight: 600;
+    }
+
+    .tool-slot {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        min-width: 0;
+    }
+
+    .tool-slot strong {
+        display: block;
+        font-size: 0.96rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .tool-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.2rem;
+        height: 2.2rem;
+        border-radius: 0.9rem;
+        background: #e8edf3;
+        color: var(--dash-ink);
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .status-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2rem;
+        padding: 0.3rem 0.7rem;
+        border-radius: 999px;
+        background: #eef2f6;
+        color: var(--dash-muted);
+        font-size: 0.82rem;
+        white-space: nowrap;
+    }
+
+    .status-chip.is-pending {
+        background: rgba(180, 83, 9, 0.1);
+        color: var(--dash-pending);
+    }
+
+    .side-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .side-panel {
+        padding: 1rem 1.05rem;
+    }
+
+    .panel-head h3 {
+        margin: 0;
+        color: var(--dash-ink);
+        font-size: 1.05rem;
+        letter-spacing: -0.03em;
+    }
+
+    .panel-head p {
+        margin-top: 0.45rem;
+        font-size: 0.9rem;
+    }
+
+    .breakdown-group + .breakdown-group {
+        margin-top: 1rem;
+    }
+
+    .breakdown-label {
+        margin: 0 0 0.7rem;
+    }
+
+    .bar-row + .bar-row {
+        margin-top: 0.85rem;
+    }
+
+    .bar-row-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        color: var(--dash-ink);
+        font-size: 0.92rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .bar-track {
+        height: 0.56rem;
+        margin-top: 0.45rem;
+        background: #edf2f7;
+        border-radius: 999px;
+        overflow: hidden;
+    }
+
+    .bar-track span {
+        display: block;
+        height: 100%;
+        background: var(--dash-accent);
+        border-radius: inherit;
+    }
+
+    .pending-list {
+        margin: 1rem 0 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .pending-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.8rem 0;
+        border-top: 1px solid var(--dash-line);
+        color: var(--dash-muted);
+        font-size: 0.92rem;
+    }
+
+    .pending-list strong {
+        color: var(--dash-ink);
+    }
+
+    .token-placeholder {
+        position: relative;
+        min-height: 320px;
+        border: 1px solid var(--dash-line);
+        border-radius: 1.6rem;
+        background:
+            linear-gradient(to top, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0)),
+            rgba(255, 255, 255, 0.74);
+        overflow: hidden;
+    }
+
+    .token-grid {
+        position: absolute;
+        inset: 1.2rem 1.2rem 1.4rem;
+        display: grid;
+        grid-template-rows: repeat(4, 1fr);
+        pointer-events: none;
+    }
+
+    .token-grid span {
+        border-top: 1px solid var(--dash-line);
+    }
+
+    .token-empty {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 1.5rem;
+    }
+
+    .token-empty strong {
+        color: var(--dash-ink);
+        font-size: 1.15rem;
+        letter-spacing: -0.03em;
+    }
+
+    .token-empty p {
+        max-width: 28rem;
+        margin-top: 0.55rem;
+        font-size: 0.94rem;
+    }
+
+    @media (max-width: 1120px) {
+        .dashboard-head,
+        .surface-head,
+        .surface-grid {
+            grid-template-columns: 1fr;
+            display: grid;
+        }
+
+        .dashboard-head {
+            align-items: start;
+        }
+
+        .dashboard-meta {
+            justify-content: start;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .summary-strip {
+            grid-template-columns: 1fr;
+        }
+
+        .summary-cell {
+            border-right: 0;
+            border-bottom: 1px solid var(--dash-line);
+        }
+
+        .summary-cell:last-child {
+            border-bottom: 0;
+        }
+
+        .ledger-row {
+            grid-template-columns: 1fr;
+            gap: 0.45rem;
+            align-items: start;
+        }
+
+        .ledger-row-head {
+            display: none;
+        }
+
+        .ledger-row article {
+            display: block;
+        }
+
+        .ledger-list {
+            padding: 0.35rem 0;
+        }
+
+        .ledger-row {
+            padding: 1rem;
+        }
+
+        .row-field {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            min-height: 1.75rem;
+        }
+
+        .row-field::before {
+            content: attr(data-label);
+            color: var(--dash-muted);
+            font-size: 0.76rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .subscriptions-dashboard {
+            width: min(100% - 1rem, 100%);
+            padding-top: 5rem;
+        }
+
+        .dashboard-head,
+        .summary-strip,
+        .workspace-surface,
+        .token-surface {
+            border-radius: 1.5rem;
+        }
+
+        .dashboard-head,
+        .workspace-surface,
+        .token-surface {
+            padding: 1rem;
+        }
+
+        .surface-tabs {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .meta-chip {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .pending-list li {
+            flex-direction: column;
+            align-items: start;
+        }
+    }
+
+    :global(.dark) {
+        --dash-bg: #0f1115;
+        --dash-surface: rgba(22, 27, 35, 0.84);
+        --dash-line: rgba(255, 255, 255, 0.08);
+        --dash-ink: #f3f4f6;
+        --dash-muted: #aeb8c5;
+        --dash-soft: rgba(255, 255, 255, 0.04);
+        --dash-accent: #f3f4f6;
+    }
+
+    :global(.dark) .meta-chip,
+    :global(.dark) .ledger-list,
+    :global(.dark) .side-panel,
+    :global(.dark) .token-placeholder {
+        background: rgba(15, 17, 21, 0.72);
+    }
+
+    :global(.dark) .surface-tabs {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    :global(.dark) .surface-tabs .is-active {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    :global(.dark) .tool-mark,
+    :global(.dark) .status-chip,
+    :global(.dark) .bar-track {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    :global(.dark) .status-chip.is-pending {
+        background: rgba(180, 83, 9, 0.16);
+    }
+ </style>

@@ -12,7 +12,7 @@ const t = useTranslations(lang);
         <div class="absolute inset-0 bg-[url('/bg.png')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105"></div>
 
         <!-- Dynamic Foreground (Person) -->
-        <div id="avatar-person" class="absolute inset-0 bg-[url('/person.png')] bg-cover bg-center transition-transform duration-300 ease-out origin-bottom" style="transform: scale(0.82) translate(0, 4px);">
+        <div id="avatar-person" class="absolute inset-0 bg-[url('/person.png')] bg-cover bg-center transition-transform duration-200 ease-out origin-bottom will-change-transform" style="transform: scale(0.82) translate(0, 4px);">
         </div>
 
         <!-- Inner Shadow/Highlight for depth -->
@@ -103,27 +103,75 @@ const t = useTranslations(lang);
     const waveEl = document.getElementById("hero-wave");
 
     if (container && person) {
-        container.addEventListener("mousemove", (e) => {
-            const rect = container.getBoundingClientRect();
-            const x = e.clientX - rect.left; // x position within the element.
-            const y = e.clientY - rect.top; // y position within the element.
+        const baseOffsetY = 4;
+        const subtleIntensity = 4;
+        const hoverIntensity = 10;
+        let pointerX = window.innerWidth / 2;
+        let pointerY = window.innerHeight / 2;
+        let isHovered = false;
 
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-
-            // Calculate distance from center (-1 to 1)
-            const moveX = (x - centerX) / centerX;
-            const moveY = (y - centerY) / centerY;
-
-            // Move person slightly following the mouse to create a 3D looking effect (Opposite direction)
-            const intensity = 5; // Reduced intensity
-            // Invert direction (-moveX, -moveY) and maintain the translate-y-1 offset (4px)
-            person.style.transform = `scale(0.82) translate(${-moveX * intensity}px, ${-moveY * intensity + 4}px)`;
-        });
-
-        container.addEventListener("mouseleave", () => {
+        const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+        const isInViewport = (rect) => rect.bottom > 0 && rect.right > 0 && rect.top < window.innerHeight && rect.left < window.innerWidth;
+        const resetAvatar = () => {
             person.style.transform = "scale(0.82) translate(0, 4px)";
+        };
+
+        const updateAvatar = () => {
+            const rect = container.getBoundingClientRect();
+
+            if (!isInViewport(rect)) {
+                resetAvatar();
+                return;
+            }
+
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const globalMoveX = clamp((pointerX - centerX) / (window.innerWidth / 2), -1, 1);
+            const globalMoveY = clamp((pointerY - centerY) / (window.innerHeight / 2), -1, 1);
+
+            let offsetX = -globalMoveX * subtleIntensity;
+            let offsetY = -globalMoveY * subtleIntensity + baseOffsetY;
+
+            if (isHovered) {
+                const localMoveX = clamp(((pointerX - rect.left) / rect.width) * 2 - 1, -1, 1);
+                const localMoveY = clamp(((pointerY - rect.top) / rect.height) * 2 - 1, -1, 1);
+
+                offsetX += -localMoveX * hoverIntensity;
+                offsetY += -localMoveY * hoverIntensity;
+            }
+
+            person.style.transform = `scale(0.82) translate(${offsetX.toFixed(2)}px, ${offsetY.toFixed(2)}px)`;
+        };
+
+        const handlePointerMove = (event) => {
+            pointerX = event.clientX;
+            pointerY = event.clientY;
+            updateAvatar();
+        };
+
+        container.addEventListener("pointerenter", () => {
+            isHovered = true;
+            updateAvatar();
         });
+
+        container.addEventListener("pointerleave", () => {
+            isHovered = false;
+            updateAvatar();
+        });
+
+        window.addEventListener("pointermove", handlePointerMove, { passive: true });
+        window.addEventListener("scroll", updateAvatar, { passive: true });
+        window.addEventListener("resize", updateAvatar);
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                resetAvatar();
+                return;
+            }
+
+            updateAvatar();
+        });
+
+        updateAvatar();
     }
 
     // Typewriter effect with punctuation pauses for more natural cadence.

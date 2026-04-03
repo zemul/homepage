@@ -4,6 +4,7 @@ import { getLangFromUrl, useTranslations } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const aiSubscriptionsHref = Astro.url.pathname.startsWith("/zh/") ? "/zh/ai-subscriptions" : Astro.url.pathname.startsWith("/en/") ? "/en/ai-subscriptions" : "/ai-subscriptions";
 ---
 
 <section id="toolkit" class="py-16 px-4 max-w-4xl mx-auto">
@@ -12,7 +13,10 @@ const t = useTranslations(lang);
     <div class="toolkit-groups">
         <!-- AI Subscriptions -->
         <div class="toolkit-group">
-            <h3 class="toolkit-label">{t("toolkit.aiSubs")}</h3>
+            <div class="toolkit-heading">
+                <h3 class="toolkit-label">{t("toolkit.aiSubs")}</h3>
+                <a class="toolkit-link" href={aiSubscriptionsHref}>{t("toolkit.aiSubsDetail")}</a>
+            </div>
             <div class="toolkit-items">
                 <div class="toolkit-pill">
                     <Icon name="simple-icons:claude" class="toolkit-icon icon-claude" />
@@ -119,6 +123,39 @@ const t = useTranslations(lang);
         flex: 1;
         height: 1px;
         background: var(--border-subtle);
+    }
+
+    .toolkit-heading {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+    }
+
+    .toolkit-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2rem;
+        padding: 0.35rem 0.8rem;
+        border-radius: 999px;
+        border: 1px solid var(--border-subtle);
+        background: var(--panel-bg);
+        color: var(--muted-text);
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition:
+            transform 220ms cubic-bezier(0.22, 0.68, 0, 1.1),
+            border-color 220ms ease,
+            color 220ms ease;
+    }
+
+    .toolkit-link:hover {
+        transform: translateY(-1px);
+        color: #b45309;
+        border-color: rgba(180, 83, 9, 0.22);
     }
 
     .toolkit-items {
@@ -246,6 +283,9 @@ const t = useTranslations(lang);
 
     /* ── Responsive ── */
     @media (max-width: 480px) {
+        .toolkit-heading {
+            flex-wrap: wrap;
+        }
         .toolkit-items {
             gap: 0.5rem;
         }
