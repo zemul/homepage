@@ -46,6 +46,10 @@ const en = {
     "projects.appstore.desc": "Global App Store Price Comparison & Tracking",
     "projects.appstore.sub":
         "Real-time collection and comparison of App Store pricing across countries, helping developers understand global pricing differences and providing users with more transparent subscription references.",
+    "projects.aiusage.title": "AI Token Usage Statistics",
+    "projects.aiusage.desc": "Self-hosted AI Coding Cost Tracker",
+    "projects.aiusage.sub":
+        "Scans local session logs to track token usage and costs across Claude Code, Codex, and other AI coding tools — syncs across devices via your own Cloudflare Worker, with a public dashboard to visualize spending trends.",
     "projects.doc2md.title": "doc2md",
     "projects.doc2md.desc": "Universal File to Markdown Converter",
     "projects.doc2md.sub": "Converts documents, slides, tables, and notes into clean Markdown for AI workflows, publishing, and knowledge base ingestion.",
@@ -105,6 +109,10 @@ const zh: Record<TranslationKey, string> = {
     "projects.appstore.title": "App Store 价格查询",
     "projects.appstore.desc": "全球 App Store 价格对比与追踪工具",
     "projects.appstore.sub": "实时采集和对比不同国家和地区的 App Store 定价，帮助开发者理解全球定价差异，也为用户提供更透明的订阅参考。",
+    "projects.aiusage.title": "AI Token 用量统计",
+    "projects.aiusage.desc": "自托管 AI 编码成本追踪工具",
+    "projects.aiusage.sub":
+        "扫描本地会话日志，统计 Claude Code、Codex 等 AI 编码工具的 token 用量与花费，通过自部署的 Cloudflare Worker 跨设备同步，并在公开 Dashboard 上可视化消费趋势。",
     "projects.doc2md.title": "doc2md",
     "projects.doc2md.desc": "通用文件转 Markdown 工具",
     "projects.doc2md.sub": "将文档、幻灯片、表格和笔记转换为结构清晰的 Markdown，便于 AI 工作流、内容发布与知识库入库。",
