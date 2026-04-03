@@ -1,0 +1,44 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import { useTranslations } from '../../../i18n/utils';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => data.lang === 'en');
+  return posts.map((post) => {
+    const parts = post.id.split('/');
+    return {
+      params: { period: parts[0], slug: parts[1] },
+      props: { post },
+    };
+  });
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const t = useTranslations('en');
+
+const { period, slug } = Astro.params;
+const zhUrl = `/zh/blog/${period}/${slug}`;
+---
+
+<Layout title={`${post.data.title} — Ethan Zhao`}>
+  <main class="max-w-2xl mx-auto px-6 py-24">
+    <div class="flex items-center justify-between mb-10">
+      <a href="/blog" class="text-sm text-gray-400 hover:text-gray-600 transition-colors">
+        {t('blog.backToList')}
+      </a>
+      <a href={zhUrl} class="text-sm text-blue-500 hover:underline">
+        {t('blog.switchLang')}
+      </a>
+    </div>
+    <p class="text-sm text-gray-400 mb-2">{post.data.date}</p>
+    <h1 class="text-3xl font-bold mb-4">{post.data.title}</h1>
+    <p class="text-gray-500 dark:text-gray-400 mb-12 text-base leading-relaxed">
+      {post.data.description}
+    </p>
+    <article class="prose dark:prose-invert max-w-none">
+      <Content />
+    </article>
+  </main>
+</Layout>

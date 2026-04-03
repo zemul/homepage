@@ -69,6 +69,11 @@ const en = {
     "projects.feishuLottery.title": "Feishu Lottery Bot",
     "projects.feishuLottery.desc": "A lightweight and efficient lottery system based on the Feishu open platform.",
     "projects.feishuLottery.sub": "The same lottery bot used by @Tim.",
+    "blog.title": "Blog",
+    "blog.readMore": "Read more",
+    "blog.backToList": "Back to Blog",
+    "blog.switchLang": "中文版",
+    "blog.noZh": "Chinese version not available",
 } as const;
 
 export type TranslationKey = keyof typeof en;
@@ -133,6 +138,11 @@ const zh: Record<TranslationKey, string> = {
     "projects.feishuLottery.title": "飞书抽奖机器人",
     "projects.feishuLottery.desc": "点赞参与，一句「开奖」即抽奖。基于飞书开放平台，轻量高效。",
     "projects.feishuLottery.sub": "影视飓风 @Tim 同款抽奖机器人。",
+    "blog.title": "博客",
+    "blog.readMore": "阅读全文",
+    "blog.backToList": "返回博客",
+    "blog.switchLang": "English Version",
+    "blog.noZh": "暂无中文版本",
 };
 
 export const ui = {
