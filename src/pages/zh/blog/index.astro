@@ -1,0 +1,63 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import { useTranslations } from '../../../i18n/utils';
+
+const t = useTranslations('zh');
+
+const posts = (await getCollection('blog', ({ data }) => data.lang === 'zh'))
+  .sort((a, b) => b.data.date.localeCompare(a.data.date));
+
+function getPostUrl(id: string) {
+  const parts = id.split('/');
+  return `/zh/blog/${parts[0]}/${parts[1]}`;
+}
+---
+
+<Layout title={`博客 — 小哲`}>
+  <main class="max-w-2xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+
+    <!-- Page header with avatar -->
+    <header class="flex flex-col items-center text-center mb-12 sm:mb-16">
+      <div class="relative w-20 h-20 rounded-full overflow-hidden shrink-0 shadow-xl mb-4 sm:mb-5 border-2 border-white/60 dark:border-[rgba(36,43,53,0.7)]">
+        <div class="absolute inset-0 bg-[url('/bg.png')] bg-cover bg-center"></div>
+        <div class="absolute inset-0 bg-[url('/person.png')] bg-cover bg-center" style="transform: scale(0.82) translate(0, 4px);"></div>
+        <div class="absolute inset-0 rounded-full shadow-[inset_0_0_16px_rgba(0,0,0,0.18)] pointer-events-none"></div>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight mb-1.5">小哲的博客</h1>
+      <p class="text-sm sm:text-base text-[var(--muted-text)]">记录想法、技术与生活</p>
+    </header>
+
+    <!-- Post list -->
+    <ul class="space-y-0.5">
+      {posts.map((post) => (
+        <li>
+          <a
+            href={getPostUrl(post.id)}
+            class="group relative flex items-start justify-between gap-3 sm:gap-4 px-3 sm:px-4 py-4 sm:py-3.5 rounded-xl transition-all duration-200 hover:bg-[var(--panel-bg)] hover:shadow-sm"
+          >
+            {/* Left accent bar */}
+            <span
+              class="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-0 rounded-full bg-blue-500 group-hover:h-5 transition-all duration-200"
+              aria-hidden="true"
+            />
+            <div class="flex-1 min-w-0">
+              <h2 class="text-base sm:text-base font-medium text-gray-800 dark:text-gray-100 group-hover:text-blue-500 transition-colors duration-200 leading-snug">
+                {post.data.title}
+              </h2>
+              {post.data.description && (
+                <p class="text-sm text-[var(--muted-text)] mt-1.5 leading-relaxed line-clamp-2">
+                  {post.data.description}
+                </p>
+              )}
+            </div>
+            <time class="text-xs text-[var(--muted-text)] shrink-0 tabular-nums mt-0.5">
+              {post.data.date}
+            </time>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+  </main>
+</Layout>
