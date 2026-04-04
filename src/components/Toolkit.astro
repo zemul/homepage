@@ -104,26 +104,44 @@ const t = useTranslations(lang);
                     class="stats-desktop"
                     src="https://aiusage.yizhe.me/embed?widget=stats-row1&items=0,1,2,3"
                     width="100%"
-                    height="120"
                     frameborder="0"
+                    scrolling="no"
                 ></iframe>
                 <iframe
                     class="stats-mobile"
                     src="https://aiusage.yizhe.me/embed?widget=stats-row1&items=0,1"
                     width="100%"
-                    height="120"
                     frameborder="0"
+                    scrolling="no"
                 ></iframe>
                 <iframe
+                    class="cost-trend"
                     src="https://aiusage.yizhe.me/embed?widget=cost-trend"
                     width="100%"
-                    height="420"
                     frameborder="0"
+                    scrolling="no"
                 ></iframe>
             </div>
         </div>
     </div>
 </section>
+
+<script>
+    // Auto-resize iframes via postMessage from embed
+    window.addEventListener("message", (e) => {
+        if (e.origin !== "https://aiusage.yizhe.me") return;
+        const { widget, height } = e.data || {};
+        if (!widget || !height) return;
+
+        const iframes = document.querySelectorAll<HTMLIFrameElement>(".ai-usage-embed iframe");
+        for (const iframe of iframes) {
+            if (iframe.contentWindow === e.source) {
+                iframe.style.height = `${height}px`;
+                break;
+            }
+        }
+    });
+</script>
 
 <style>
     .toolkit-groups {
@@ -305,6 +323,17 @@ const t = useTranslations(lang);
     .ai-usage-embed iframe {
         border-radius: 0.75rem;
         display: block;
+        overflow: hidden;
+    }
+
+    /* Fallback heights before postMessage auto-resize kicks in */
+    .ai-usage-embed .stats-desktop,
+    .ai-usage-embed .stats-mobile {
+        height: 120px;
+    }
+
+    .ai-usage-embed .cost-trend {
+        height: 420px;
     }
 
     .ai-usage-embed .stats-mobile {
