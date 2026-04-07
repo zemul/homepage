@@ -25,7 +25,7 @@ function getPostUrl(id: string) {
         <div class="absolute inset-0 rounded-full shadow-[inset_0_0_16px_rgba(0,0,0,0.18)] pointer-events-none"></div>
       </div>
       <h1 class="text-2xl sm:text-3xl font-bold tracking-tight mb-1.5">小哲的博客</h1>
-      <p class="text-sm sm:text-base text-[var(--muted-text)]">记录想法、技术与生活</p>
+      <p class="text-sm sm:text-base text-[var(--muted-text)]">{t('blog.subtitle')}</p>
     </header>
 
     <!-- Post list -->
@@ -42,7 +42,7 @@ function getPostUrl(id: string) {
               aria-hidden="true"
             />
             <div class="flex-1 min-w-0">
-              <h2 class="text-base sm:text-base font-medium text-gray-800 dark:text-gray-100 group-hover:text-blue-500 transition-colors duration-200 leading-snug">
+              <h2 class="text-base font-medium text-gray-800 dark:text-gray-100 group-hover:text-blue-500 transition-colors duration-200 leading-snug">
                 {post.data.title}
               </h2>
               {post.data.description && (
