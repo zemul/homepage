@@ -26,7 +26,7 @@ const giscusLang = lang === 'zh' ? 'zh-CN' : 'en';
 </section>
 
 <script>
-  const observer = new MutationObserver(() => {
+  function syncGiscusTheme() {
     const isDark = document.documentElement.classList.contains('dark');
     const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
     if (iframe) {
@@ -35,6 +35,14 @@ const giscusLang = lang === 'zh' ? 'zh-CN' : 'en';
         'https://giscus.app'
       );
     }
-  });
+  }
+
+  // 主题切换时同步
+  const observer = new MutationObserver(syncGiscusTheme);
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+  // giscus iframe 加载完成后立即同步一次
+  window.addEventListener('message', (event) => {
+    if (event.origin === 'https://giscus.app') syncGiscusTheme();
+  }, { once: true });
 </script>
