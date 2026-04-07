@@ -72,6 +72,8 @@ const en = {
     "blog.title": "Blog",
     "blog.readMore": "Read more",
     "blog.backToList": "Back to Blog",
+    "blog.subtitle": "Thoughts on AI, tools & building",
+    "blog.readTime": "{n} min read",
     "blog.switchLang": "中文版",
     "blog.noZh": "Chinese version not available",
 } as const;
@@ -141,6 +143,8 @@ const zh: Record<TranslationKey, string> = {
     "blog.title": "博客",
     "blog.readMore": "阅读全文",
     "blog.backToList": "返回博客",
+    "blog.subtitle": "记录想法、技术与生活",
+    "blog.readTime": "{n} 分钟阅读",
     "blog.switchLang": "English Version",
     "blog.noZh": "暂无中文版本",
 };
