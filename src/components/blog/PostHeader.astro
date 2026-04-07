@@ -1,0 +1,79 @@
+---
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  post: {
+    data: {
+      title: string;
+      date: string;
+      description: string;
+      lang: 'en' | 'zh';
+      tags?: string[];
+    };
+  };
+  body: string;
+  lang: 'en' | 'zh';
+  switchUrl: string;
+}
+
+const { post, body, lang, switchUrl } = Astro.props;
+const t = useTranslations(lang);
+
+// 阅读时间估算
+function estimateReadTime(text: string, lang: 'en' | 'zh'): number {
+  if (lang === 'zh') {
+    const chars = text.replace(/\s/g, '').length;
+    return Math.max(1, Math.round(chars / 400));
+  }
+  const words = text.trim().split(/\s+/).length;
+  return Math.max(1, Math.round(words / 200));
+}
+
+const readTime = estimateReadTime(body, lang);
+const readTimeText = t('blog.readTime').replace('{n}', String(readTime));
+const backUrl = lang === 'zh' ? '/zh/blog' : '/blog';
+const tags = post.data.tags ?? [];
+---
+
+<nav class="flex items-center justify-between mb-10 sm:mb-14">
+  <a
+    href={backUrl}
+    class="inline-flex items-center gap-1.5 text-sm text-[var(--muted-text)] hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-150"
+  >
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    {t('blog.backToList')}
+  </a>
+  <a
+    href={switchUrl}
+    class="text-sm text-[var(--muted-text)] hover:text-blue-500 transition-colors duration-150 border border-[var(--border-subtle)] rounded-full px-3 py-1 hover:border-blue-400"
+  >
+    {t('blog.switchLang')}
+  </a>
+</nav>
+
+<header class="mb-10 sm:mb-12">
+  <div class="flex items-center gap-3 text-sm text-[var(--muted-text)] tabular-nums mb-3">
+    <time>{post.data.date}</time>
+    <span class="text-[var(--border-subtle)]">·</span>
+    <span>{readTimeText}</span>
+  </div>
+  {tags.length > 0 && (
+    <div class="flex flex-wrap gap-1.5 mb-3">
+      {tags.map((tag: string) => (
+        <span class="text-xs px-2 py-0.5 rounded-md bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+          {tag}
+        </span>
+      ))}
+    </div>
+  )}
+  <h1 class="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
+    {post.data.title}
+  </h1>
+  {lang === 'en' && post.data.description && (
+    <p class="text-gray-500 dark:text-gray-400 mt-4 text-base leading-relaxed">
+      {post.data.description}
+    </p>
+  )}
+</header>

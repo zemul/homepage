@@ -1,0 +1,23 @@
+---
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  lang: 'en' | 'zh';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const backUrl = lang === 'zh' ? '/zh/blog' : '/blog';
+---
+
+<footer class="mt-16 pt-8 border-t border-[var(--border-subtle)]">
+  <a
+    href={backUrl}
+    class="inline-flex items-center gap-1.5 text-sm text-[var(--muted-text)] hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-150"
+  >
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    {t('blog.backToList')}
+  </a>
+</footer>
