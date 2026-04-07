@@ -88,6 +88,20 @@ html.dark .prose blockquote {
     border-radius: 0.75rem;
 }
 
+html.dark .prose {
+    --tw-prose-body: #d1d5db;
+    --tw-prose-headings: #f9fafb;
+    --tw-prose-links: #93c5fd;
+    --tw-prose-bold: #f3f4f6;
+    --tw-prose-counters: #9ca3af;
+    --tw-prose-bullets: #6b7280;
+    --tw-prose-quotes: #d1d5db;
+    --tw-prose-code: #f3f4f6;
+    --tw-prose-hr: #374151;
+    --tw-prose-th-borders: #374151;
+    --tw-prose-td-borders: #1f2937;
+}
+
 .prose a {
     text-underline-offset: 3px;
 }
