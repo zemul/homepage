@@ -5,15 +5,15 @@ interface Props {
 }
 
 const { headings, lang } = Astro.props;
-
-// Only show h2 and h3
 const tocItems = headings.filter(h => h.depth === 2 || h.depth === 3);
+const tocLabel = lang === 'zh' ? '目录' : 'On this page';
 ---
 
 <aside class="toc-sidebar">
   {tocItems.length > 0 && (
-    <nav class="toc-nav">
-      <ul class="space-y-1.5">
+    <nav class="toc-nav" aria-label={tocLabel}>
+      <p class="toc-title">{tocLabel}</p>
+      <ul class="toc-list">
         {tocItems.map((item) => (
           <li>
             <a
@@ -72,7 +72,20 @@ const tocItems = headings.filter(h => h.depth === 2 || h.depth === 3);
   .toc-sidebar {
     max-height: calc(100vh - 8rem);
     overflow-y: auto;
-    padding-right: 1.5rem;
+    scrollbar-width: none;
+  }
+  .toc-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .toc-title {
+    font-family: 'JetBrains Mono', 'SF Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-text);
+    margin-bottom: 0.75rem;
+    padding-left: 1rem;
   }
 
   .toc-nav {
@@ -80,41 +93,38 @@ const tocItems = headings.filter(h => h.depth === 2 || h.depth === 3);
     padding-left: 0;
   }
 
+  .toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
   .toc-link {
     display: block;
-    padding: 0.25rem 0 0.25rem 1rem;
-    font-size: 0.8rem;
-    line-height: 1.5;
+    padding: 0.2rem 0 0.2rem 1rem;
+    font-size: 0.75rem;
+    line-height: 1.6;
     color: var(--muted-text);
     text-decoration: none;
     border-left: 2px solid transparent;
     margin-left: -1px;
-    transition: color 150ms ease, border-color 150ms ease;
+    transition: color 200ms ease, border-color 200ms ease;
   }
 
   .toc-link:hover {
-    color: #1e293b;
-  }
-
-  :global(html.dark) .toc-link:hover {
-    color: #e2e8f0;
+    color: var(--text-secondary);
   }
 
   .toc-link.toc-active {
-    color: #3b82f6;
-    border-left-color: #3b82f6;
+    color: var(--accent);
+    border-left-color: var(--accent);
   }
 
   .toc-h3 {
-    padding-left: 2rem;
-    font-size: 0.75rem;
-  }
-
-  /* Hide scrollbar in toc */
-  .toc-sidebar::-webkit-scrollbar {
-    display: none;
-  }
-  .toc-sidebar {
-    scrollbar-width: none;
+    padding-left: 1.75rem;
+    font-size: 0.7rem;
   }
 </style>

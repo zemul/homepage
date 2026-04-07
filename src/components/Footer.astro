@@ -6,6 +6,11 @@ const t = useTranslations(lang);
 const year = new Date().getFullYear();
 ---
 
-<footer class="py-10 px-4 text-center text-[var(--muted-text)] text-sm">
-    <p>{t("footer.copyright")}{t("footer.builtWith")}</p>
+<footer class="py-12 sm:py-16 px-5 text-center">
+    <div class="max-w-2xl mx-auto">
+        <div class="h-px bg-[var(--border-subtle)] mb-8"></div>
+        <p class="text-sm text-[var(--muted-text)] leading-relaxed">
+            {t("footer.copyright").replace('2025', String(year))}{t("footer.builtWith")}
+        </p>
+    </div>
 </footer>

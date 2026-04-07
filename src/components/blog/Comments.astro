@@ -1,12 +1,21 @@
 ---
+import { useTranslations } from '../../i18n/utils';
+
 interface Props {
   lang: 'en' | 'zh';
 }
 const { lang } = Astro.props;
+const t = useTranslations(lang);
 const giscusLang = lang === 'zh' ? 'zh-CN' : 'en';
 ---
 
-<section class="giscus-wrapper mt-16 pt-8 border-t border-[var(--border-subtle)]">
+<section class="giscus-wrapper mt-16 sm:mt-20 pt-10 sm:pt-12">
+  <!-- Section label -->
+  <div class="flex items-center gap-4 mb-8">
+    <span class="font-mono text-[11px] tracking-widest uppercase text-[var(--muted-text)]">{t('blog.comments')}</span>
+    <div class="flex-1 h-px bg-[var(--border-subtle)]"></div>
+  </div>
+
   <script
     src="https://giscus.app/client.js"
     data-repo="ennann/homepage"
@@ -37,11 +46,9 @@ const giscusLang = lang === 'zh' ? 'zh-CN' : 'en';
     }
   }
 
-  // 主题切换时同步
   const observer = new MutationObserver(syncGiscusTheme);
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
-  // giscus iframe 加载完成后立即同步一次
   window.addEventListener('message', (event) => {
     if (event.origin === 'https://giscus.app') syncGiscusTheme();
   }, { once: true });

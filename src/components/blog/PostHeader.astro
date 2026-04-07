@@ -28,39 +28,58 @@ function estimateReadTime(text: string, lang: 'en' | 'zh'): number {
   return Math.max(1, Math.round(words / 200));
 }
 
+function formatDate(dateStr: string, lang: 'en' | 'zh') {
+  const [year, month] = dateStr.split('-');
+  if (lang === 'zh') {
+    return `${year} 年 ${parseInt(month)} 月`;
+  }
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  return `${monthNames[parseInt(month) - 1]} ${year}`;
+}
+
 const readTime = estimateReadTime(body, lang);
 const readTimeText = t('blog.readTime').replace('{n}', String(readTime));
 const tags = post.data.tags ?? [];
 ---
 
-<header class="mb-10 sm:mb-12">
-  <!-- Title first -->
-  <h1 class="text-3xl sm:text-4xl font-bold tracking-tight leading-tight text-balance text-gray-900 dark:text-white">
+<header class="mb-12 sm:mb-16" style="animation: fadeIn 500ms ease-out both;">
+  <!-- Meta line -->
+  <div class="flex items-center gap-3 mb-5">
+    <time class="font-mono text-xs tracking-wide uppercase text-[var(--muted-text)]" style="font-feature-settings: 'tnum';">
+      {formatDate(post.data.date, lang)}
+    </time>
+    <span class="w-1 h-1 rounded-full bg-[var(--border-subtle)]" aria-hidden="true"></span>
+    <span class="font-mono text-xs tracking-wide text-[var(--muted-text)]">{readTimeText}</span>
+  </div>
+
+  <!-- Title -->
+  <h1 class="font-display text-3xl sm:text-4xl md:text-[2.75rem] font-bold leading-[1.15] text-[var(--text-primary)] text-balance" style="letter-spacing: -0.03em;">
     {post.data.title}
   </h1>
 
-  <!-- Meta row: date · read time · tags · lang switch -->
-  <div class="flex flex-wrap items-center gap-x-3 gap-y-2 mt-4 text-sm text-[var(--muted-text)]">
-    <time class="tabular-nums">{post.data.date}</time>
-    <span class="text-[var(--border-subtle)]">&middot;</span>
-    <span>{readTimeText}</span>
-    {tags.length > 0 && (
-      <>
-        <span class="text-[var(--border-subtle)]">&middot;</span>
-        {tags.map((tag: string) => (
-          <span class="text-xs px-2 py-0.5 rounded-md bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
-            {tag}
-          </span>
-        ))}
-      </>
-    )}
-    <span class="ml-auto">
-      <a
-        href={switchUrl}
-        class="text-xs text-[var(--muted-text)] hover:text-blue-500 transition-colors duration-150 border border-[var(--border-subtle)] rounded-full px-2.5 py-0.5 hover:border-blue-400"
-      >
-        {t('blog.switchLang')}
-      </a>
-    </span>
+  <!-- Tags + lang switch -->
+  <div class="flex flex-wrap items-center gap-2 mt-5 sm:mt-6">
+    {tags.map((tag: string) => (
+      <span class="font-mono text-[10px] tracking-wider uppercase text-[var(--muted-text)] px-2 py-1 rounded-md bg-[var(--panel-subtle)] border border-[var(--border-subtle)]">
+        {tag}
+      </span>
+    ))}
+    {tags.length > 0 && <span class="flex-1"></span>}
+    <a
+      href={switchUrl}
+      class="font-mono text-[11px] tracking-wide text-[var(--muted-text)] hover:text-[var(--accent)] transition-colors duration-200 border border-[var(--border-subtle)] hover:border-[var(--accent)] rounded-full px-3 py-1 ml-auto"
+    >
+      {t('blog.switchLang')}
+    </a>
   </div>
+
+  <!-- Divider -->
+  <div class="mt-8 sm:mt-10 h-px bg-[var(--border-subtle)]"></div>
 </header>
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
