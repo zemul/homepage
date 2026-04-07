@@ -76,6 +76,7 @@ const en = {
     "blog.readTime": "{n} min read",
     "blog.switchLang": "中文版",
     "blog.noZh": "Chinese version not available",
+    "blog.comments": "Comments",
 } as const;
 
 export type TranslationKey = keyof typeof en;
@@ -147,6 +148,7 @@ const zh: Record<TranslationKey, string> = {
     "blog.readTime": "{n} 分钟阅读",
     "blog.switchLang": "English Version",
     "blog.noZh": "暂无中文版本",
+    "blog.comments": "评论",
 };
 
 export const ui = {

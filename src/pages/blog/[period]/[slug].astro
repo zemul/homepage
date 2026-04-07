@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
 import PostHeader from '../../../components/blog/PostHeader.astro';
 import PostFooter from '../../../components/blog/PostFooter.astro';
+import Comments from '../../../components/blog/Comments.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => data.lang === 'en');
@@ -28,6 +29,7 @@ const zhUrl = `/zh/blog/${period}/${slug}`;
     <article class="prose prose-base sm:prose-lg dark:prose-invert max-w-none prose-p:leading-relaxed prose-headings:tracking-tight">
       <Content />
     </article>
+    <Comments lang="en" />
     <PostFooter lang="en" />
   </main>
 </Layout>
