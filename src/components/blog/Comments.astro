@@ -1,0 +1,40 @@
+---
+interface Props {
+  lang: 'en' | 'zh';
+}
+const { lang } = Astro.props;
+const giscusLang = lang === 'zh' ? 'zh-CN' : 'en';
+---
+
+<section class="giscus-wrapper mt-16 pt-8 border-t border-[var(--border-subtle)]">
+  <script
+    src="https://giscus.app/client.js"
+    data-repo="ennann/homepage"
+    data-repo-id="R_kgDOQhx7tQ"
+    data-category="General"
+    data-category-id="DIC_kwDOQhx7tc4C6SF7"
+    data-mapping="pathname"
+    data-strict="1"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="top"
+    data-theme="preferred_color_scheme"
+    data-lang={giscusLang}
+    crossorigin="anonymous"
+    async
+  ></script>
+</section>
+
+<script>
+  const observer = new MutationObserver(() => {
+    const isDark = document.documentElement.classList.contains('dark');
+    const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+    if (iframe) {
+      iframe.contentWindow?.postMessage(
+        { giscus: { setConfig: { theme: isDark ? 'dark' : 'light' } } },
+        'https://giscus.app'
+      );
+    }
+  });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+</script>

@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
+import Comments from '../../../components/blog/Comments.astro';
 import { useTranslations } from '../../../i18n/utils';
 
 export async function getStaticPaths() {
@@ -40,5 +41,6 @@ const zhUrl = `/zh/blog/${period}/${slug}`;
     <article class="prose dark:prose-invert max-w-none">
       <Content />
     </article>
+    <Comments lang="en" />
   </main>
 </Layout>
