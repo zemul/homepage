@@ -21,7 +21,7 @@ That's the core problem: every tool manages its own logs, stored locally on its 
 
 And more important than "how much have I used so far" is this: **permanently recording that data**. Token consumption is the true history of your collaboration depth with AI — it evolves with your working style, reflects your focus during different periods, and tells you whether a tool has genuinely become part of your workflow. That record is worth keeping.
 
-<iframe src="https://aiusage.yizhe.me/embed?widget=stats-row1&items=0,1,2,3" width="100%" height="100" frameborder="0"></iframe>
+<iframe src="https://aiusage.yizhe.me/embed?widget=stats-row1&items=0,1,2,3&transparent=true" width="100%" height="100" frameborder="0"></iframe>
 
 ## Building AIUsage
 
@@ -59,15 +59,15 @@ The Dashboard is for your own reference, but sometimes you want to share the dat
 
 Here's my current token cost trend, embedded right here:
 
-<iframe src="https://aiusage.yizhe.me/embed?widget=cost-trend&locale=en&range=30d&theme=auto" width="100%" height="360" frameborder="0"></iframe>
+<iframe src="https://aiusage.yizhe.me/embed?widget=cost-trend&locale=en&range=30d&theme=auto&transparent=true" width="100%" height="360" frameborder="0"></iframe>
 
 Tool, model, and device share breakdown:
 
-<iframe src="https://aiusage.yizhe.me/embed?widget=share&locale=en&range=30d&items=0&theme=auto" width="100%" height="480" frameborder="0"></iframe>
+<iframe src="https://aiusage.yizhe.me/embed?widget=share&locale=en&range=30d&items=0&theme=auto&transparent=true" width="100%" height="480" frameborder="0"></iframe>
 
 And my favorite — the Token Flow diagram. It shows you exactly which models are handling which projects, and how consumption is distributed:
 
-<iframe src="https://aiusage.yizhe.me/embed?widget=flow&locale=en&theme=auto" width="100%" height="420" frameborder="0"></iframe>
+<iframe src="https://aiusage.yizhe.me/embed?widget=flow&locale=en&theme=auto&transparent=true" width="100%" height="420" frameborder="0"></iframe>
 
 This is all real-time data from my own AIUsage instance. You can embed the same widgets into your blog or website with a single line of HTML.
 
@@ -92,3 +92,18 @@ For cross-device sync, Dashboard visualization, and Widget embedding, send the p
 - **Live Demo**: [aiusage.yizhe.me](https://aiusage.yizhe.me)
 
 If you find this useful, a star on GitHub would mean a lot.
+
+<script>
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.source === 'aiusage-embed' && e.data.height) {
+    document.querySelectorAll('iframe').forEach(function(f) {
+      try {
+        var url = new URL(f.src, location.origin);
+        if (url.searchParams.get('widget') === e.data.widget) {
+          f.style.height = e.data.height + 'px';
+        }
+      } catch(err) {}
+    });
+  }
+});
+</script>

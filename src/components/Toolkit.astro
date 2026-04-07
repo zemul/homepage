@@ -102,21 +102,21 @@ const t = useTranslations(lang);
             <div class="ai-usage-embed">
                 <iframe
                     class="stats-desktop"
-                    src="https://aiusage.yizhe.me/embed?widget=stats-row1&items=0,1,2,3"
+                    src="https://aiusage.yizhe.me/embed?widget=stats-row1&items=0,1,2,3&transparent=true"
                     width="100%"
                     frameborder="0"
                     scrolling="no"
                 ></iframe>
                 <iframe
                     class="stats-mobile"
-                    src="https://aiusage.yizhe.me/embed?widget=stats-row1&items=0,1"
+                    src="https://aiusage.yizhe.me/embed?widget=stats-row1&items=0,1&transparent=true"
                     width="100%"
                     frameborder="0"
                     scrolling="no"
                 ></iframe>
                 <iframe
                     class="cost-trend"
-                    src="https://aiusage.yizhe.me/embed?widget=cost-trend"
+                    src="https://aiusage.yizhe.me/embed?widget=cost-trend&transparent=true"
                     width="100%"
                     frameborder="0"
                     scrolling="no"
@@ -370,3 +370,18 @@ const t = useTranslations(lang);
         color: #94a3b8;
     }
 </style>
+
+<script>
+    window.addEventListener('message', function(e) {
+        if (e.data && e.data.source === 'aiusage-embed' && e.data.height) {
+            document.querySelectorAll('.ai-usage-embed iframe').forEach(function(f) {
+                try {
+                    var url = new URL(f.src, location.origin);
+                    if (url.searchParams.get('widget') === e.data.widget) {
+                        f.style.height = e.data.height + 'px';
+                    }
+                } catch(err) {}
+            });
+        }
+    });
+</script>
