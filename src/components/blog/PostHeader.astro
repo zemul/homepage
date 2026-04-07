@@ -35,6 +35,17 @@ const tags = post.data.tags ?? [];
 ---
 
 <header class="mb-10 sm:mb-12">
+  <!-- Back link (visible on mobile, hidden on desktop where TOC has it) -->
+  <a
+    href={backUrl}
+    class="inline-flex items-center gap-1.5 text-sm text-[var(--muted-text)] hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-150 mb-6 xl:hidden"
+  >
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    {t('blog.backToList')}
+  </a>
+
   <!-- Title first -->
   <h1 class="text-3xl sm:text-4xl font-bold tracking-tight leading-tight text-balance">
     {post.data.title}
