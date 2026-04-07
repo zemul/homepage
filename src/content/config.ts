@@ -7,6 +7,8 @@ const blog = defineCollection({
     date: z.string(), // "2026-04"
     description: z.string(),
     lang: z.enum(['en', 'zh']),
+    tags: z.array(z.string()).optional().default([]),
+    cover: z.string().optional(),
   }),
 });
 

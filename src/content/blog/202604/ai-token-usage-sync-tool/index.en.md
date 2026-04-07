@@ -3,6 +3,7 @@ title: "Token Usage Is the Best Metric for Measuring AI Collaboration"
 date: "2026-04"
 description: "I built a self-hosted Token tracking tool to measure real AI usage across devices — and here's why token consumption tells you more about a person's AI fluency than any other metric."
 lang: en
+tags: ["AI", "Token", "Tools"]
 ---
 
 Someone asked me recently: how do you tell if a person is genuinely using AI, or just talking about it?
