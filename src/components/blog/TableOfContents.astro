@@ -1,0 +1,136 @@
+---
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+  lang: 'en' | 'zh';
+}
+
+const { headings, lang } = Astro.props;
+const t = useTranslations(lang);
+const backUrl = lang === 'zh' ? '/zh/blog' : '/blog';
+
+// Only show h2 and h3
+const tocItems = headings.filter(h => h.depth === 2 || h.depth === 3);
+---
+
+<aside class="toc-sidebar">
+  <a
+    href={backUrl}
+    class="inline-flex items-center gap-1.5 text-sm text-[var(--muted-text)] hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-150 mb-6"
+  >
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    {t('blog.backToList')}
+  </a>
+
+  {tocItems.length > 0 && (
+    <nav class="toc-nav">
+      <ul class="space-y-1.5">
+        {tocItems.map((item) => (
+          <li>
+            <a
+              href={`#${item.slug}`}
+              class:list={[
+                'toc-link',
+                { 'toc-h3': item.depth === 3 }
+              ]}
+              data-slug={item.slug}
+            >
+              {item.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )}
+</aside>
+
+<script>
+  function initToc() {
+    const links = document.querySelectorAll<HTMLAnchorElement>('.toc-link');
+    if (!links.length) return;
+
+    const slugs = Array.from(links).map(l => l.dataset.slug!);
+    const headingEls = slugs
+      .map(s => document.getElementById(s))
+      .filter(Boolean) as HTMLElement[];
+
+    if (!headingEls.length) return;
+
+    let current = slugs[0];
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            current = entry.target.id;
+            break;
+          }
+        }
+        links.forEach(link => {
+          link.classList.toggle('toc-active', link.dataset.slug === current);
+        });
+      },
+      { rootMargin: '-80px 0px -60% 0px', threshold: 0 }
+    );
+
+    headingEls.forEach(el => observer.observe(el));
+  }
+
+  initToc();
+</script>
+
+<style>
+  .toc-sidebar {
+    position: sticky;
+    top: 6rem;
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+    padding-right: 1.5rem;
+  }
+
+  .toc-nav {
+    border-left: 1px solid var(--border-subtle);
+    padding-left: 0;
+  }
+
+  .toc-link {
+    display: block;
+    padding: 0.25rem 0 0.25rem 1rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--muted-text);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    margin-left: -1px;
+    transition: color 150ms ease, border-color 150ms ease;
+  }
+
+  .toc-link:hover {
+    color: #1e293b;
+  }
+
+  :global(html.dark) .toc-link:hover {
+    color: #e2e8f0;
+  }
+
+  .toc-link.toc-active {
+    color: #3b82f6;
+    border-left-color: #3b82f6;
+  }
+
+  .toc-h3 {
+    padding-left: 2rem;
+    font-size: 0.75rem;
+  }
+
+  /* Hide scrollbar in toc */
+  .toc-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+  .toc-sidebar {
+    scrollbar-width: none;
+  }
+</style>
