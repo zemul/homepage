@@ -50,6 +50,15 @@ function getPostUrl(id: string) {
                   {post.data.description}
                 </p>
               )}
+              {post.data.tags && post.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-1.5 mt-2">
+                  {post.data.tags.map((tag: string) => (
+                    <span class="text-xs px-2 py-0.5 rounded-md bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
             <time class="text-xs text-[var(--muted-text)] shrink-0 tabular-nums mt-0.5">
               {post.data.date}
