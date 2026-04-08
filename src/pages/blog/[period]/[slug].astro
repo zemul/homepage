@@ -37,7 +37,7 @@ const zhUrl = `/zh/blog/${period}/${slug}`;
         style="animation: fadeInContent 600ms 200ms ease-out both;">
         <Content />
       </article>
-      <Comments lang="en" />
+      <Comments lang="en" term={`blog/${period}/${slug}`} />
     </main>
   </div>
 </Layout>

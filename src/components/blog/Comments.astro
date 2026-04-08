@@ -3,8 +3,9 @@ import { useTranslations } from '../../i18n/utils';
 
 interface Props {
   lang: 'en' | 'zh';
+  term: string;
 }
-const { lang } = Astro.props;
+const { lang, term } = Astro.props;
 const t = useTranslations(lang);
 const giscusLang = lang === 'zh' ? 'zh-CN' : 'en';
 ---
@@ -22,7 +23,8 @@ const giscusLang = lang === 'zh' ? 'zh-CN' : 'en';
     data-repo-id="R_kgDOQhx7tQ"
     data-category="General"
     data-category-id="DIC_kwDOQhx7tc4C6SF7"
-    data-mapping="pathname"
+    data-mapping="specific"
+    data-term={term}
     data-strict="1"
     data-reactions-enabled="1"
     data-emit-metadata="0"
