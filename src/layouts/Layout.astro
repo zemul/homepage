@@ -40,7 +40,7 @@ const { title, noindex = false } = Astro.props;
         style="padding-bottom: env(safe-area-inset-bottom); font-family: 'Inter', system-ui, -apple-system, sans-serif;"
     >
         <!-- Header Controls Container -->
-        <div class="fixed right-0 z-50 group" style="top: env(safe-area-inset-top, 0px); padding: 1.25rem; padding-right: max(1.25rem, env(safe-area-inset-right));">
+        <div class="hidden sm:block fixed right-0 z-50 group" style="top: env(safe-area-inset-top, 0px); padding: 1.25rem; padding-right: max(1.25rem, env(safe-area-inset-right));">
             <div
                 class="flex items-center gap-1.5 bg-[var(--panel-bg)]/80 backdrop-blur-md p-1 rounded-full border border-[var(--border-subtle)] shadow-sm opacity-60 hover:opacity-100 transition-opacity duration-300"
             >
