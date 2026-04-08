@@ -22,7 +22,7 @@ const t = useTranslations(lang);
   <div class="grid grid-cols-3 items-start gap-4">
     <!-- Previous post -->
     <div class="min-w-0">
-      {prevPost ? (
+      {prevPost && (
         <a href={prevPost.url} class="group block scroll-top" aria-label={`${t('blog.prevPost')}: ${prevPost.title}`}>
           <span class="font-mono text-[10px] tracking-widest uppercase text-[var(--muted-text)] flex items-center gap-1.5 mb-1.5">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
@@ -35,7 +35,7 @@ const t = useTranslations(lang);
             {prevPost.title}
           </span>
         </a>
-      ) : <div />}
+      )}
     </div>
 
     <!-- Back to list -->
@@ -57,7 +57,7 @@ const t = useTranslations(lang);
 
     <!-- Next post -->
     <div class="min-w-0 text-right">
-      {nextPost ? (
+      {nextPost && (
         <a href={nextPost.url} class="group block scroll-top" aria-label={`${t('blog.nextPost')}: ${nextPost.title}`}>
           <span class="font-mono text-[10px] tracking-widest uppercase text-[var(--muted-text)] flex items-center justify-end gap-1.5 mb-1.5">
             {t('blog.nextPost')}
@@ -70,7 +70,7 @@ const t = useTranslations(lang);
             {nextPost.title}
           </span>
         </a>
-      ) : <div />}
+      )}
     </div>
   </div>
 </nav>
