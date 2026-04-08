@@ -20,7 +20,7 @@ function formatDate(dateStr: string) {
 ---
 
 <Layout title={`博客 — 小哲`}>
-  <main class="max-w-2xl mx-auto px-5 sm:px-8 pt-20 sm:pt-28 pb-16">
+  <main class="max-w-3xl mx-auto px-5 sm:px-8 pt-20 sm:pt-28 pb-16">
 
     <!-- Page header -->
     <header class="mb-14 sm:mb-20">
@@ -40,7 +40,7 @@ function formatDate(dateStr: string) {
     <!-- Post list -->
     <ul class="space-y-0">
       {posts.map((post, index) => (
-        <li class="group" style={`animation: fadeInUp 400ms ${index * 60}ms both ease-out;`}>
+        <li class="group" data-post-url={getPostUrl(post.id)} style={`animation: fadeInUp 400ms ${index * 60}ms both ease-out;`}>
           <a
             href={getPostUrl(post.id)}
             class="block py-6 sm:py-7 border-b border-[var(--border-subtle)] transition-colors duration-200 hover:border-[var(--accent)]"
@@ -102,3 +102,16 @@ function formatDate(dateStr: string) {
     }
   }
 </style>
+
+<script>
+  const target = sessionStorage.getItem('blog-scroll-target');
+  if (target) {
+    sessionStorage.removeItem('blog-scroll-target');
+    requestAnimationFrame(() => {
+      const el = document.querySelector(`[data-post-url="${target}"]`);
+      if (el) {
+        el.scrollIntoView({ block: 'center', behavior: 'instant' });
+      }
+    });
+  }
+</script>

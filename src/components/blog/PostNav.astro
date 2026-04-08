@@ -1,0 +1,95 @@
+---
+import { useTranslations } from '../../i18n/utils';
+
+interface NavPost {
+  title: string;
+  url: string;
+}
+
+interface Props {
+  lang: 'en' | 'zh';
+  prevPost?: NavPost;
+  nextPost?: NavPost;
+  listUrl: string;
+  currentUrl: string;
+}
+
+const { lang, prevPost, nextPost, listUrl, currentUrl } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<nav class="post-nav mt-14 sm:mt-16 pt-8 border-t border-[var(--border-subtle)]" aria-label="Post navigation">
+  <div class="grid grid-cols-3 items-start gap-4">
+    <!-- Previous post -->
+    <div class="min-w-0">
+      {prevPost ? (
+        <a href={prevPost.url} class="group block scroll-top" aria-label={`${t('blog.prevPost')}: ${prevPost.title}`}>
+          <span class="font-mono text-[10px] tracking-widest uppercase text-[var(--muted-text)] flex items-center gap-1.5 mb-1.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+              <path d="M19 12H5"></path>
+              <path d="m12 19-7-7 7-7"></path>
+            </svg>
+            {t('blog.prevPost')}
+          </span>
+          <span class="text-sm font-medium text-[var(--text-secondary)] group-hover:text-[var(--accent)] transition-colors duration-200 line-clamp-2 leading-snug">
+            {prevPost.title}
+          </span>
+        </a>
+      ) : <div />}
+    </div>
+
+    <!-- Back to list -->
+    <div class="flex justify-center">
+      <a
+        href={listUrl}
+        class="back-to-list inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wider uppercase text-[var(--muted-text)] hover:text-[var(--accent)] transition-colors duration-200 px-3 py-2 rounded-full border border-[var(--border-subtle)] hover:border-[var(--accent)]"
+        data-current-url={currentUrl}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+          <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+        </svg>
+        {t('blog.backToList')}
+      </a>
+    </div>
+
+    <!-- Next post -->
+    <div class="min-w-0 text-right">
+      {nextPost ? (
+        <a href={nextPost.url} class="group block scroll-top" aria-label={`${t('blog.nextPost')}: ${nextPost.title}`}>
+          <span class="font-mono text-[10px] tracking-widest uppercase text-[var(--muted-text)] flex items-center justify-end gap-1.5 mb-1.5">
+            {t('blog.nextPost')}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </span>
+          <span class="text-sm font-medium text-[var(--text-secondary)] group-hover:text-[var(--accent)] transition-colors duration-200 line-clamp-2 leading-snug">
+            {nextPost.title}
+          </span>
+        </a>
+      ) : <div />}
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Scroll to top for prev/next links
+  document.querySelectorAll<HTMLAnchorElement>('.scroll-top').forEach(link => {
+    link.addEventListener('click', () => {
+      sessionStorage.removeItem('blog-scroll-target');
+    });
+  });
+
+  // Back to list: save current post URL for scroll restoration
+  document.querySelectorAll<HTMLAnchorElement>('.back-to-list').forEach(link => {
+    link.addEventListener('click', () => {
+      const currentUrl = link.dataset.currentUrl;
+      if (currentUrl) {
+        sessionStorage.setItem('blog-scroll-target', currentUrl);
+      }
+    });
+  });
+</script>

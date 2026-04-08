@@ -3,7 +3,16 @@ import { getCollection, render } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
 import PostHeader from '../../../components/blog/PostHeader.astro';
 import TableOfContents from '../../../components/blog/TableOfContents.astro';
+import PostNav from '../../../components/blog/PostNav.astro';
 import Comments from '../../../components/blog/Comments.astro';
+
+const allPosts = (await getCollection('blog', ({ data }) => data.lang === 'en'))
+  .sort((a, b) => b.data.date.localeCompare(a.data.date));
+
+function getPostUrl(id: string) {
+  const parts = id.split('/');
+  return `/blog/${parts[0]}/${parts[1]}`;
+}
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => data.lang === 'en');
@@ -21,22 +30,33 @@ const { Content, headings } = await render(post);
 
 const { period, slug } = Astro.params;
 const zhUrl = `/zh/blog/${period}/${slug}`;
+const currentUrl = `/blog/${period}/${slug}`;
+
+// Find prev/next posts
+const currentIndex = allPosts.findIndex(p => p.id === post.id);
+const prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : undefined;
+const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : undefined;
 ---
 
 <Layout title={`${post.data.title} — Ethan Zhao`}>
   <div class="blog-page">
-    <!-- TOC floats in left margin on wide screens -->
     <aside class="blog-toc-float">
       <TableOfContents headings={headings} lang="en" />
     </aside>
 
-    <!-- Content area stays centered -->
-    <main class="max-w-2xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-16">
+    <main class="max-w-3xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-16">
       <PostHeader post={post} body={post.body ?? ''} lang="en" switchUrl={zhUrl} />
       <article class="prose prose-base sm:prose-lg max-w-none prose-p:leading-[1.8] prose-headings:tracking-tight prose-p:text-[var(--text-primary)] prose-headings:text-[var(--text-primary)]"
         style="animation: fadeInContent 600ms 200ms ease-out both;">
         <Content />
       </article>
+      <PostNav
+        lang="en"
+        listUrl="/blog"
+        currentUrl={currentUrl}
+        prevPost={prevPost ? { title: prevPost.data.title, url: getPostUrl(prevPost.id) } : undefined}
+        nextPost={nextPost ? { title: nextPost.data.title, url: getPostUrl(nextPost.id) } : undefined}
+      />
       <Comments lang="en" term={`blog/${period}/${slug}`} />
     </main>
   </div>
@@ -56,7 +76,7 @@ const zhUrl = `/zh/blog/${period}/${slug}`;
       display: block;
       position: fixed;
       top: 6rem;
-      left: max(1rem, calc((100vw - 42rem) / 2 - 16rem));
+      left: max(1rem, calc((100vw - 48rem) / 2 - 16rem));
       width: 13rem;
     }
   }
