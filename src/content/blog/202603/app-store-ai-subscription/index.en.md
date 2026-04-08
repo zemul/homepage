@@ -178,4 +178,29 @@ Going forward, I'll continue sharing AI subscription and usage tutorials on GitH
 - FAQ: account security, auto-renewal, ban prevention
 - Tips for efficient daily AI tool usage (prompts, workflows, etc.)
 
-If you found this guide helpful, feel free to star the [GitHub project page](https://github.com/ennann/apple-id-subscribe-ai).
+If you found this guide helpful, feel free to star the GitHub project page.
+
+<div style="margin-top: 3rem; display: flex; flex-direction: column; gap: 1rem;">
+
+<a href="https://appstoreprice.net/en/apps" target="_blank" rel="noopener noreferrer" style="display: block; position: relative; overflow: hidden; border-radius: 1rem; background: linear-gradient(135deg, #2563eb, #3b82f6, #06b6d4); padding: 1.25rem 1.5rem; color: white; text-decoration: none; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.15); transition: transform 0.3s, box-shadow 0.3s;" onmouseover="this.style.transform='scale(1.02)';this.style.boxShadow='0 20px 40px -5px rgba(37,99,235,0.3)'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 10px 25px -5px rgba(37,99,235,0.15)'">
+<div style="position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.5rem;">
+<strong style="font-size: 1.125rem;">Check App Subscription Prices</strong>
+<span style="font-size: 0.875rem; opacity: 0.8;">Find ChatGPT, Claude, and other popular apps' prices across all App Store regions on App Store Price</span>
+</div>
+</a>
+
+<a href="https://github.com/ennann/apple-id-subscribe-ai" target="_blank" rel="noopener noreferrer" style="display: block; position: relative; overflow: hidden; border-radius: 1rem; background: linear-gradient(135deg, #1f2937, #111827, #000); padding: 1.25rem 1.5rem; color: white; text-decoration: none; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15); transition: transform 0.3s, box-shadow 0.3s;" onmouseover="this.style.transform='scale(1.02)';this.style.boxShadow='0 20px 40px -5px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 10px 25px -5px rgba(0,0,0,0.15)'">
+<div style="position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.5rem;">
+<strong style="font-size: 1.125rem;">Found this helpful? Star it on GitHub</strong>
+<span style="font-size: 0.875rem; opacity: 0.65;">More Apple ID tutorials coming — star to stay updated</span>
+</div>
+</a>
+
+<a href="https://api-flowercloud.com/aff.php?aff=5358" target="_blank" rel="noopener noreferrer" style="display: block; position: relative; overflow: hidden; border-radius: 1rem; background: linear-gradient(135deg, #f59e0b, #f97316, #eab308); padding: 1.25rem 1.5rem; color: white; text-decoration: none; box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.15); transition: transform 0.3s, box-shadow 0.3s;" onmouseover="this.style.transform='scale(1.02)';this.style.boxShadow='0 20px 40px -5px rgba(245,158,11,0.3)'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 10px 25px -5px rgba(245,158,11,0.15)'">
+<div style="position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.5rem;">
+<strong style="font-size: 1.125rem;">VPN Recommendation: FlowerCloud</strong>
+<span style="font-size: 0.875rem; opacity: 0.8;">No Turkey or Nigeria nodes? FlowerCloud is a solid alternative</span>
+</div>
+</a>
+
+</div>

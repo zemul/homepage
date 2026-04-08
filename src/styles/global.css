@@ -130,9 +130,10 @@ html.dark .blog-card:hover {
 
 .prose img {
     border-radius: 0.75rem;
-    box-shadow: var(--shadow-md);
     margin-left: auto;
     margin-right: auto;
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-md);
 }
 
 .prose blockquote {
@@ -223,9 +224,6 @@ html.dark .prose {
     --tw-prose-td-borders: var(--panel-subtle);
 }
 
-html.dark .prose img {
-    box-shadow: var(--shadow-lg);
-}
 
 html.dark .prose blockquote {
     background-color: var(--accent-subtle);
