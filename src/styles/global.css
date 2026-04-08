@@ -131,6 +131,8 @@ html.dark .blog-card:hover {
 .prose img {
     border-radius: 0.75rem;
     box-shadow: var(--shadow-md);
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .prose blockquote {

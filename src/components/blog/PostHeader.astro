@@ -43,16 +43,7 @@ const tags = post.data.tags ?? [];
 ---
 
 <header class="mb-12 sm:mb-16" style="animation: fadeIn 500ms ease-out both;">
-  <!-- Meta line -->
-  <div class="flex items-center gap-3 mb-5">
-    <time class="font-mono text-xs tracking-wide uppercase text-[var(--muted-text)]" style="font-feature-settings: 'tnum';">
-      {formatDate(post.data.date, lang)}
-    </time>
-    <span class="w-1 h-1 rounded-full bg-[var(--border-subtle)]" aria-hidden="true"></span>
-    <span class="font-mono text-xs tracking-wide text-[var(--muted-text)]">{readTimeText}</span>
-  </div>
-
-  <!-- Title -->
+  <!-- Title first -->
   <h1 class="font-display text-3xl sm:text-4xl md:text-[2.75rem] font-bold leading-[1.15] text-[var(--text-primary)] text-balance" style="letter-spacing: -0.03em;">
     {post.data.title}
   </h1>
@@ -71,6 +62,15 @@ const tags = post.data.tags ?? [];
     >
       {t('blog.switchLang')}
     </a>
+  </div>
+
+  <!-- Meta line: date · read time -->
+  <div class="flex items-center gap-3 mt-4">
+    <time class="font-mono text-xs tracking-wide uppercase text-[var(--muted-text)]" style="font-feature-settings: 'tnum';">
+      {formatDate(post.data.date, lang)}
+    </time>
+    <span class="w-1 h-1 rounded-full bg-[var(--border-subtle)]" aria-hidden="true"></span>
+    <span class="font-mono text-xs tracking-wide text-[var(--muted-text)]">{readTimeText}</span>
   </div>
 
   <!-- Divider -->

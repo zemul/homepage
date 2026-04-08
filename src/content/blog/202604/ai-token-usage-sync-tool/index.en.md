@@ -64,7 +64,6 @@ Here's my current token cost trend, embedded right here:
 
 Tool, model, and device share breakdown:
 
-<iframe src="https://aiusage.yizhe.me/embed?widget=share&locale=en&range=30d&items=0&theme=auto&transparent=true" width="100%" height="480" frameborder="0"></iframe>
 
 And my favorite — the Token Flow diagram. It shows you exactly which models are handling which projects, and how consumption is distributed:
 
