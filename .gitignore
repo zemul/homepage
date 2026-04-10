@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # local drafts
 docs/
+
+# local-only worker scaffold
+.local/page-views-worker/

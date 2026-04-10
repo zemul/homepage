@@ -9,9 +9,10 @@ const lang = getLangFromUrl(Astro.url);
 interface Props {
     title: string;
     noindex?: boolean;
+    preloadImages?: string[];
 }
 
-const { title, noindex = false } = Astro.props;
+const { title, noindex = false, preloadImages = [] } = Astro.props;
 ---
 
 <!doctype html>
@@ -34,6 +35,9 @@ const { title, noindex = false } = Astro.props;
         <meta name="theme-color" content="#111110" media="(prefers-color-scheme: dark)" />
         <link rel="apple-touch-icon" href="/favorite.png" />
         <link rel="manifest" href="/manifest.webmanifest" />
+        {preloadImages.map((href) => (
+            <link rel="preload" as="image" href={href} type="image/webp" />
+        ))}
     </head>
     <body
         class="noise-overlay min-h-screen bg-[var(--page-bg)] text-[var(--text-primary)] antialiased transition-[background-color,color] duration-300 overscroll-none touch-pan-y"

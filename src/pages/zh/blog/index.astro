@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
+import Footer from '../../../components/Footer.astro';
 import { useTranslations } from '../../../i18n/utils';
 
 const t = useTranslations('zh');
@@ -26,8 +27,8 @@ function formatDate(dateStr: string) {
     <header class="mb-14 sm:mb-20">
       <div class="flex items-center gap-4 mb-6">
         <div class="relative w-12 h-12 rounded-full overflow-hidden shrink-0 ring-2 ring-[var(--border-subtle)]">
-          <div class="absolute inset-0 bg-[url('/bg.png')] bg-cover bg-center"></div>
-          <div class="absolute inset-0 bg-[url('/person.png')] bg-cover bg-center" style="transform: scale(0.82) translate(0, 4px);"></div>
+          <div class="absolute inset-0 bg-[url('/bg.webp')] bg-cover bg-center"></div>
+          <div class="absolute inset-0 bg-[url('/person.webp')] bg-cover bg-center" style="transform: scale(0.82) translate(0, 4px);"></div>
         </div>
         <div>
           <h1 class="font-display text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)]" style="letter-spacing: -0.03em;">博客</h1>
@@ -88,6 +89,7 @@ function formatDate(dateStr: string) {
     </ul>
 
   </main>
+  <Footer />
 </Layout>
 
 <style>
