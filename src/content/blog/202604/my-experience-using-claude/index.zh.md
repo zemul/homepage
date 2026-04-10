@@ -8,7 +8,7 @@ tags: ["AI", "Claude", "订阅"]
 
 之前向大家分享过一篇开通 Claude、ChatGPT 会员的文章，主要内容写的是如何通过 App Store 的应用内购套餐，来获取稳定的官方订阅，优势是不需要任何的信用卡或者支付方式，只需要去购买对应区域的礼品卡即可。
 
-如果你还没看过，可以在这里看详细的开通教程：[没有海外信用卡也能稳定订阅 ChatGPT/Claude](https://www.yizhe.me/zh/blog/202603/app-store-ai-subscription/)
+如果你还没看过，可以在这里看详细的开通教程：[没有海外信用卡也能稳定订阅 ChatGPT/Claude](https://appstoreprice.org/en/blog/pay-for-ai-subscriptions-via-app-store)
 
 今天主要分享一下我自己使用 Claude Pro 以及 Max 的日常经验。
 

@@ -8,7 +8,7 @@ tags: ["AI", "Claude", "subscription"]
 
 I previously shared a post about subscribing to Claude and ChatGPT memberships — the core idea was using App Store in-app purchase plans to get stable, official subscriptions without needing any credit card or special payment method, just gift cards from the right region.
 
-If you haven't read it yet, here's the detailed guide: [Subscribe to ChatGPT/Claude Without a Foreign Credit Card](https://yizhe.me/en/blog/app-store-ai-subscription)
+If you haven't read it yet, here's the detailed guide: [Subscribe to ChatGPT/Claude Without a Foreign Credit Card](https://appstoreprice.org/en/blog/pay-for-ai-subscriptions-via-app-store)
 
 Today I mainly want to share my day-to-day experience using Claude Pro and Max.
 
