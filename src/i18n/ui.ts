@@ -120,7 +120,7 @@ const zh: Record<TranslationKey, string> = {
     "experience.title": "经历",
     "contact.title": "让我们一起创造吧",
     "footer.copyright": "© 2018-2025 青年小哲",
-    "footer.builtWith": "基于 Astro 运行在 Cloudflare 上",
+    "footer.builtWith": "基于 Astro 运行在 Cloudflare",
     "footer.views": "总访问量",
     "projects.appstore.title": "App Store 价格查询",
     "projects.appstore.desc": "全球 App Store 价格对比与追踪工具",
