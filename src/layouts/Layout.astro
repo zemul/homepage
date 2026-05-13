@@ -13,6 +13,14 @@ interface Props {
 }
 
 const { title, noindex = false, preloadImages = [] } = Astro.props;
+
+const pathname = Astro.url.pathname;
+const isBlogRoute =
+    pathname === "/blog" ||
+    pathname.startsWith("/blog/") ||
+    pathname === "/zh/blog" ||
+    pathname.startsWith("/zh/blog/");
+const routeClass = isBlogRoute ? "route-blog" : "";
 ---
 
 <!doctype html>
@@ -40,7 +48,7 @@ const { title, noindex = false, preloadImages = [] } = Astro.props;
         ))}
     </head>
     <body
-        class="noise-overlay min-h-screen bg-[var(--page-bg)] text-[var(--text-primary)] antialiased transition-[background-color,color] duration-300 overscroll-none touch-pan-y"
+        class:list={["noise-overlay min-h-screen bg-[var(--page-bg)] text-[var(--text-primary)] antialiased transition-[background-color,color] duration-300 overscroll-none touch-pan-y", routeClass]}
         style="padding-bottom: env(safe-area-inset-bottom); font-family: 'Inter', system-ui, -apple-system, sans-serif;"
     >
         <!-- Header Controls Container -->

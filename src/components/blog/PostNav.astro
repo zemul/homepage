@@ -18,28 +18,54 @@ const { lang, prevPost, nextPost, listUrl, currentUrl } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<nav class="post-nav mt-14 sm:mt-16 pt-8 border-t border-[var(--border-subtle)]" aria-label="Post navigation">
-  <div class="flex items-center justify-between">
-    <!-- Previous post -->
-    <div>
+<nav class="post-nav mt-16 sm:mt-20 pt-10 border-t border-[var(--border-subtle)]" aria-label="Post navigation">
+  <!-- Prev / Next pair as feature-card style siblings -->
+  {(prevPost || nextPost) && (
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-10">
       {prevPost ? (
-        <a href={prevPost.url} class="scroll-top inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wider uppercase text-[var(--muted-text)] hover:text-[var(--accent)] transition-colors duration-200" aria-label={`${t('blog.prevPost')}: ${prevPost.title}`}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 12H5"></path>
-            <path d="m12 19-7-7 7-7"></path>
-          </svg>
-          {t('blog.prevPost')}
+        <a
+          href={prevPost.url}
+          class="post-nav-card scroll-top group"
+          aria-label={`${t('blog.prevPost')}: ${prevPost.title}`}
+        >
+          <span class="font-mono text-[10px] tracking-[0.2em] uppercase text-[var(--muted-text)] inline-flex items-center gap-1.5">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5"></path>
+              <path d="m12 19-7-7 7-7"></path>
+            </svg>
+            {t('blog.prevPost')}
+          </span>
+          <span class="font-display block mt-2 text-[1.0625rem] sm:text-[1.125rem] text-[var(--text-primary)] group-hover:text-[var(--accent-hover)] transition-colors duration-200" style="font-weight: 500; letter-spacing: -0.01em; line-height: 1.35;">
+            {prevPost.title}
+          </span>
         </a>
-      ) : <span />}
-    </div>
+      ) : <span class="hidden sm:block" />}
 
-    <!-- Back to list -->
-    <a
-      href={listUrl}
-      class="back-to-list inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wider uppercase text-[var(--muted-text)] hover:text-[var(--accent)] transition-colors duration-200 px-3 py-2 rounded-full border border-[var(--border-subtle)] hover:border-[var(--accent)]"
-      data-current-url={currentUrl}
-    >
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+      {nextPost ? (
+        <a
+          href={nextPost.url}
+          class="post-nav-card post-nav-card--end scroll-top group"
+          aria-label={`${t('blog.nextPost')}: ${nextPost.title}`}
+        >
+          <span class="font-mono text-[10px] tracking-[0.2em] uppercase text-[var(--muted-text)] inline-flex items-center gap-1.5">
+            {t('blog.nextPost')}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </span>
+          <span class="font-display block mt-2 text-[1.0625rem] sm:text-[1.125rem] text-[var(--text-primary)] group-hover:text-[var(--accent-hover)] transition-colors duration-200" style="font-weight: 500; letter-spacing: -0.01em; line-height: 1.35;">
+            {nextPost.title}
+          </span>
+        </a>
+      ) : <span class="hidden sm:block" />}
+    </div>
+  )}
+
+  <!-- Back to list -->
+  <div class="flex justify-center">
+    <a href={listUrl} class="back-to-list btn-secondary" data-current-url={currentUrl}>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="shrink-0" aria-hidden="true">
         <rect x="3" y="3" width="7" height="7" rx="1"></rect>
         <rect x="14" y="3" width="7" height="7" rx="1"></rect>
         <rect x="3" y="14" width="7" height="7" rx="1"></rect>
@@ -47,21 +73,34 @@ const t = useTranslations(lang);
       </svg>
       {t('blog.backToList')}
     </a>
-
-    <!-- Next post -->
-    <div>
-      {nextPost ? (
-        <a href={nextPost.url} class="scroll-top inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wider uppercase text-[var(--muted-text)] hover:text-[var(--accent)] transition-colors duration-200" aria-label={`${t('blog.nextPost')}: ${nextPost.title}`}>
-          {t('blog.nextPost')}
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14"></path>
-            <path d="m12 5 7 7-7 7"></path>
-          </svg>
-        </a>
-      ) : <span />}
-    </div>
   </div>
 </nav>
+
+<style>
+  .post-nav-card {
+    display: block;
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+    background-color: var(--panel-subtle);
+    transition: border-color 200ms ease, background-color 200ms ease, transform 200ms ease;
+  }
+
+  .post-nav-card:hover {
+    border-color: var(--accent);
+    background-color: var(--page-bg);
+  }
+
+  .post-nav-card--end {
+    text-align: right;
+  }
+
+  @media (max-width: 640px) {
+    .post-nav-card--end {
+      text-align: left;
+    }
+  }
+</style>
 
 <script>
   // Scroll to top for prev/next links

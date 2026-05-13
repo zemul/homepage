@@ -3,7 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ─── Fonts ─── */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* ─── Design Tokens ─── */
 :root {
@@ -227,6 +227,199 @@ html.dark .prose {
 
 html.dark .prose blockquote {
     background-color: var(--accent-subtle);
+}
+
+/* ─── Claude Design Scope: Blog Routes ───
+ * Tokens & components mapped to the Claude Design spec
+ * (coral primary, tinted-cream canvas, hairline surface stack).
+ * Scoped to `body.route-blog` so the homepage is unaffected.
+ */
+body.route-blog {
+    /* Surface – cream stack */
+    --page-bg: #faf9f5;          /* canvas */
+    --panel-bg: #efe9de;         /* surface card */
+    --panel-subtle: #f5f0e8;     /* surface soft */
+    --border-subtle: #e6dfd8;    /* hairline */
+    --border-soft: #ebe6df;      /* hairline soft */
+
+    /* Text */
+    --text-primary: #141413;     /* ink */
+    --text-secondary: #3d3d3a;   /* body */
+    --muted-text: #6c6a64;       /* muted */
+    --muted-soft: #8e8b82;       /* muted soft */
+
+    /* Accent – coral */
+    --accent: #cc785c;
+    --accent-hover: #a9583e;
+    --accent-subtle: rgba(204, 120, 92, 0.08);
+    --accent-ring: rgba(204, 120, 92, 0.16);
+
+    /* Tinted shadows – mostly unused per spec */
+    --shadow-sm: 0 1px 2px rgba(20, 20, 19, 0.05);
+    --shadow-md: 0 1px 3px rgba(20, 20, 19, 0.08);
+    --shadow-lg: 0 8px 24px rgba(20, 20, 19, 0.06);
+}
+
+html.dark body.route-blog {
+    /* Surface – warm dark per spec (#181715 / #252320 / #1f1e1b) */
+    --page-bg: #181715;
+    --panel-bg: #252320;
+    --panel-subtle: #1f1e1b;
+    --border-subtle: #2e2a26;
+    --border-soft: #26221e;
+
+    --text-primary: #faf9f5;
+    --text-secondary: #d4cfc6;
+    --muted-text: #a09d96;
+    --muted-soft: #807d76;
+
+    --accent: #cc785c;
+    --accent-hover: #d68b73;
+    --accent-subtle: rgba(204, 120, 92, 0.12);
+    --accent-ring: rgba(204, 120, 92, 0.22);
+}
+
+/* Editorial serif (Copernicus stand-in): Fraunces 400–500 */
+body.route-blog .font-display {
+    font-family: 'Fraunces', 'Source Serif 4', 'Noto Serif CJK SC', Georgia, serif;
+    font-optical-sizing: auto;
+    font-variation-settings: "SOFT" 50, "WONK" 0;
+}
+
+/* Reusable Claude component patterns (scoped) */
+body.route-blog .badge-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    background-color: var(--panel-bg);
+    color: var(--muted-text);
+    font-family: 'JetBrains Mono', 'SF Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+    border: 1px solid transparent;
+    transition: color 200ms ease, border-color 200ms ease, background-color 200ms ease;
+}
+
+body.route-blog .badge-pill:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+body.route-blog .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 9999px;
+    background-color: var(--page-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-subtle);
+    font-family: 'JetBrains Mono', 'SF Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+    transition: color 200ms ease, border-color 200ms ease, background-color 200ms ease;
+}
+
+body.route-blog .btn-secondary:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background-color: var(--accent-subtle);
+}
+
+/* List rows – feature-card hover treatment without heavy borders */
+body.route-blog .post-row {
+    border-bottom: 1px solid var(--border-soft);
+    transition: background-color 240ms ease;
+}
+
+body.route-blog .post-row:hover {
+    background-color: var(--panel-subtle);
+}
+
+body.route-blog .post-row .post-title {
+    transition: color 200ms ease;
+}
+
+body.route-blog .post-row:hover .post-title {
+    color: var(--accent-hover);
+}
+
+/* Prose refinements aligned to Claude spec */
+body.route-blog .prose {
+    --tw-prose-body: var(--text-secondary);
+    --tw-prose-headings: var(--text-primary);
+    --tw-prose-links: var(--accent);
+}
+
+body.route-blog .prose h1,
+body.route-blog .prose h2,
+body.route-blog .prose h3,
+body.route-blog .prose h4 {
+    font-family: 'Fraunces', 'Source Serif 4', 'Noto Serif CJK SC', Georgia, serif;
+    font-weight: 500;
+}
+
+body.route-blog .prose h2 {
+    letter-spacing: -0.02em;
+}
+
+body.route-blog .prose blockquote {
+    border-left-color: var(--accent);
+    background-color: var(--accent-subtle);
+    border-radius: 0 12px 12px 0;
+    padding: 0.75rem 1.25rem;
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+body.route-blog .prose pre {
+    background-color: #1f1e1b;
+    color: #faf9f5;
+    border-radius: 12px;
+    border: 1px solid #2e2a26;
+}
+
+body.route-blog .prose code {
+    background-color: var(--panel-bg);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    color: var(--text-primary);
+}
+
+body.route-blog .prose pre code {
+    background-color: transparent;
+    padding: 0;
+    color: inherit;
+}
+
+body.route-blog .prose img {
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: none;
+}
+
+body.route-blog .prose a {
+    text-decoration-color: var(--border-subtle);
+    text-underline-offset: 4px;
+    transition: text-decoration-color 200ms ease, color 200ms ease;
+}
+
+body.route-blog .prose a:hover {
+    color: var(--accent-hover);
+    text-decoration-color: var(--accent);
+}
+
+body.route-blog .prose hr {
+    border-color: var(--border-subtle);
+    margin: 2.5rem 0;
 }
 
 /* ─── Noise Overlay ─── */
