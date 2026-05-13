@@ -294,7 +294,9 @@ body.route-blog .font-display {
 /* Long-form body type: humanist Latin serif + Noto Serif SC for CJK */
 body.route-blog .prose p,
 body.route-blog .prose li,
-body.route-blog .prose blockquote {
+body.route-blog .prose blockquote,
+body.route-blog .post-row p,
+body.route-blog .blog-lead {
     font-family: 'Source Serif 4', 'Noto Serif SC', 'Noto Serif CJK SC', Georgia, serif;
 }
 
