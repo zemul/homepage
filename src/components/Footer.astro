@@ -15,9 +15,9 @@ const showTotalViews = ["/", "/en", "/zh"].includes(normalizedPathname);
 <footer class="py-12 sm:py-16 px-5 text-center">
     <div class="max-w-2xl mx-auto">
         <div class="h-px bg-[var(--border-subtle)] mb-8"></div>
-        <p class="text-sm text-[var(--muted-text)] leading-relaxed">
+        <p class="flex flex-col items-center gap-1 sm:block text-sm text-[var(--muted-text)] leading-relaxed">
             <span>{t("footer.copyright").replace('2025', String(year))}</span>
-            <span aria-hidden="true" class="mx-1.5">·</span>
+            <span aria-hidden="true" class="hidden sm:inline mx-1.5">·</span>
             <span>{t("footer.builtWith")}</span>
             {showTotalViews && (
                 <span
@@ -25,7 +25,7 @@ const showTotalViews = ["/", "/en", "/zh"].includes(normalizedPathname);
                     class="inline-flex items-center gap-2 whitespace-nowrap"
                     hidden
                 >
-                    <span aria-hidden="true">·</span>
+                    <span aria-hidden="true" class="hidden sm:inline">·</span>
                     <span id="page-view-count" data-label={t("footer.views")}></span>
                 </span>
             )}
