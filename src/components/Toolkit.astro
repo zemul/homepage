@@ -69,10 +69,6 @@ const t = useTranslations(lang);
                     <span class="toolkit-name">Ghostty</span>
                 </div>
                 <div class="toolkit-pill">
-                    <Icon name="simple-icons:warp" class="toolkit-icon icon-warp" />
-                    <span class="toolkit-name">Warp</span>
-                </div>
-                <div class="toolkit-pill">
                     <Icon name="simple-icons:openai" class="toolkit-icon icon-codex" />
                     <span class="toolkit-name">Codex</span>
                 </div>
@@ -84,6 +80,11 @@ const t = useTranslations(lang);
                     <Icon name="simple-icons:visualstudiocode" class="toolkit-icon icon-vscode" />
                     <span class="toolkit-name">VS Code</span>
                     <span class="toolkit-tag">{t("toolkit.vscodeNote")}</span>
+                </div>
+                <div class="toolkit-pill is-deprecated">
+                    <Icon name="simple-icons:warp" class="toolkit-icon icon-warp" />
+                    <span class="toolkit-name">Warp</span>
+                    <span class="toolkit-dep">{t("toolkit.deprecated")}</span>
                 </div>
                 <div class="toolkit-pill is-deprecated">
                     <Icon name="simple-icons:cursor" class="toolkit-icon icon-cursor" />
