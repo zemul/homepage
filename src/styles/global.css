@@ -374,14 +374,14 @@ body.route-blog article li {
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted-text);
-    padding: 0.625rem 0.75rem;
+    padding: 0.625rem 0.5rem;
     border-radius: 8px;
     transition: color 220ms ease, background-color 220ms ease;
     white-space: nowrap;
     line-height: 1;
     position: relative;
     /* Lock slot width so text's left edge stays put when language changes */
-    min-width: 4.5rem;
+    min-width: 4rem;
     text-align: left;
 }
 
