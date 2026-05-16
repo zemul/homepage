@@ -52,9 +52,9 @@ const isBlogActive =
   // Hide-on-scroll-down, show-on-scroll-up.
   const nav = document.querySelector<HTMLElement>('[data-topnav]');
   if (nav) {
-    const HIDE_DELTA = 6;     // ignore tiny jitter
+    const HIDE_DELTA = 2;     // hide as soon as the user starts scrolling down
     const SHOW_DELTA = 6;
-    const TOP_ZONE = 16;      // always show near top of page
+    const TOP_ZONE = 4;       // only show when essentially at the top
     let lastY = window.scrollY;
     let ticking = false;
 
