@@ -1,0 +1,48 @@
+---
+import ThemeToggle from '../ThemeToggle.astro';
+import LanguagePicker from '../LanguagePicker.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const pathname = Astro.url.pathname;
+
+const homeUrl = lang === 'zh' ? '/zh/' : '/';
+const blogUrl = lang === 'zh' ? '/zh/blog' : '/blog';
+const aboutUrl = lang === 'zh' ? '/zh/#about' : '/#about';
+
+const isHomeActive =
+  pathname === '/' || pathname === '/zh' || pathname === '/zh/';
+const isBlogActive =
+  pathname === '/blog' ||
+  pathname.startsWith('/blog/') ||
+  pathname === '/zh/blog' ||
+  pathname.startsWith('/zh/blog/');
+---
+
+<header class="blog-topnav">
+  <div class="blog-topnav-inner">
+    <a href={homeUrl} class="blog-topnav-brand" aria-label={t('nav.home')}>
+      <img src="/yizhe.png" alt="" width="64" height="64" />
+    </a>
+
+    <nav class="blog-topnav-links" aria-label="Primary">
+      <a href={homeUrl} class:list={["blog-topnav-link", isHomeActive && "is-active"]}>
+        {t('nav.home')}
+      </a>
+      <a href={blogUrl} class:list={["blog-topnav-link", isBlogActive && "is-active"]}>
+        {t('nav.blog')}
+      </a>
+      <a href={aboutUrl} class="blog-topnav-link">
+        {t('nav.about')}
+      </a>
+    </nav>
+
+    <span class="blog-topnav-divider" aria-hidden="true"></span>
+
+    <div class="blog-topnav-controls">
+      <ThemeToggle />
+      <LanguagePicker />
+    </div>
+  </div>
+</header>
