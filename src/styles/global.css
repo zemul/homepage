@@ -531,6 +531,15 @@ body.route-blog .btn-secondary:hover {
     background-color: var(--accent-subtle);
 }
 
+/* On mobile, TopNav's "Blog" link replaces the per-article
+ * back-to-list affordances. Keep the in-article buttons on
+ * desktop where there's space and they round out the layout. */
+@media (max-width: 639px) {
+    body.route-blog .back-to-list {
+        display: none !important;
+    }
+}
+
 /* List rows – feature-card hover treatment without heavy borders */
 body.route-blog .post-row {
     border-bottom: 1px solid var(--border-soft);

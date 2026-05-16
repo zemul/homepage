@@ -26,7 +26,11 @@ const isBlogActive =
       <a href={homeUrl} class:list={["site-topnav-link", isHomeActive && "is-active"]}>
         {t('nav.home')}
       </a>
-      <a href={blogUrl} class:list={["site-topnav-link", isBlogActive && "is-active"]}>
+      <a
+        href={blogUrl}
+        class:list={["site-topnav-link", isBlogActive && "is-active"]}
+        data-blog-link
+      >
         {t('nav.blog')}
       </a>
       <a href={aboutUrl} class="site-topnav-link">
@@ -84,4 +88,17 @@ const isBlogActive =
     // Always reveal when the user focuses an in-nav element via keyboard
     nav.addEventListener('focusin', () => nav.classList.remove('is-hidden'));
   }
+
+  // Scroll-restoration handoff: clicking the TopNav "Blog" link from an
+  // article page saves the article path so the list can scroll back to it.
+  // Shares storage key with .back-to-list inside posts.
+  const ARTICLE_RE = /^\/(?:zh\/)?blog\/[^/]+\/[^/]+\/?$/;
+  document.querySelectorAll<HTMLAnchorElement>('[data-blog-link]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const path = window.location.pathname.replace(/\/$/, '') || '/';
+      if (ARTICLE_RE.test(path)) {
+        sessionStorage.setItem('blog-scroll-target', path);
+      }
+    });
+  });
 </script>
