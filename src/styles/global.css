@@ -380,6 +380,9 @@ body.route-blog article li {
     white-space: nowrap;
     line-height: 1;
     position: relative;
+    /* Lock slot width so text's left edge stays put when language changes */
+    min-width: 5rem;
+    text-align: left;
 }
 
 .site-topnav-link:hover {
@@ -399,6 +402,7 @@ body.route-blog article li {
         padding: 0.75rem 1.125rem;
         border-radius: 0;
         background-color: transparent !important;
+        min-width: 6.5rem;
     }
 
     .site-topnav-link::after {
