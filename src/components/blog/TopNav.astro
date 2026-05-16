@@ -20,29 +20,68 @@ const isBlogActive =
   pathname.startsWith('/zh/blog/');
 ---
 
-<header class="blog-topnav">
-  <div class="blog-topnav-inner">
-    <a href={homeUrl} class="blog-topnav-brand" aria-label={t('nav.home')}>
-      <img src="/yizhe.png" alt="" width="64" height="64" />
-    </a>
-
-    <nav class="blog-topnav-links" aria-label="Primary">
-      <a href={homeUrl} class:list={["blog-topnav-link", isHomeActive && "is-active"]}>
+<header class="site-topnav" data-topnav>
+  <div class="site-topnav-inner">
+    <nav class="site-topnav-links" aria-label="Primary">
+      <a href={homeUrl} class:list={["site-topnav-link", isHomeActive && "is-active"]}>
         {t('nav.home')}
       </a>
-      <a href={blogUrl} class:list={["blog-topnav-link", isBlogActive && "is-active"]}>
+      <a href={blogUrl} class:list={["site-topnav-link", isBlogActive && "is-active"]}>
         {t('nav.blog')}
       </a>
-      <a href={aboutUrl} class="blog-topnav-link">
+      <a href={aboutUrl} class="site-topnav-link">
         {t('nav.about')}
       </a>
     </nav>
 
-    <span class="blog-topnav-divider" aria-hidden="true"></span>
-
-    <div class="blog-topnav-controls">
-      <ThemeToggle />
-      <LanguagePicker />
+    <div class="site-topnav-right">
+      <span class="site-topnav-divider" aria-hidden="true"></span>
+      <div class="site-topnav-controls">
+        <ThemeToggle />
+        <LanguagePicker />
+      </div>
     </div>
   </div>
 </header>
+
+<script>
+  // Hide-on-scroll-down, show-on-scroll-up.
+  const nav = document.querySelector<HTMLElement>('[data-topnav]');
+  if (nav) {
+    const HIDE_DELTA = 6;     // ignore tiny jitter
+    const SHOW_DELTA = 6;
+    const TOP_ZONE = 16;      // always show near top of page
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    const update = () => {
+      const y = window.scrollY;
+      const delta = y - lastY;
+
+      if (y <= TOP_ZONE) {
+        nav.classList.remove('is-hidden');
+      } else if (delta > HIDE_DELTA) {
+        nav.classList.add('is-hidden');
+      } else if (delta < -SHOW_DELTA) {
+        nav.classList.remove('is-hidden');
+      }
+
+      lastY = y;
+      ticking = false;
+    };
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      },
+      { passive: true }
+    );
+
+    // Always reveal when the user focuses an in-nav element via keyboard
+    nav.addEventListener('focusin', () => nav.classList.remove('is-hidden'));
+  }
+</script>

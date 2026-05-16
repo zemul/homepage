@@ -1,7 +1,5 @@
 ---
 import "../styles/global.css";
-import LanguagePicker from "../components/LanguagePicker.astro";
-import ThemeToggle from "../components/ThemeToggle.astro";
 import TopNav from "../components/blog/TopNav.astro";
 import { getLangFromUrl } from "../i18n/utils";
 
@@ -61,18 +59,7 @@ const routeClass = isBlogRoute ? "route-blog" : "";
         class:list={["noise-overlay min-h-screen bg-[var(--page-bg)] text-[var(--text-primary)] antialiased transition-[background-color,color] duration-300 overscroll-none touch-pan-y", routeClass]}
         style="padding-bottom: env(safe-area-inset-bottom); font-family: 'Inter', system-ui, -apple-system, sans-serif;"
     >
-        {isBlogRoute && <TopNav />}
-
-        <!-- Header Controls Container (homepage only — blog routes use TopNav instead) -->
-        <div class="floating-controls hidden sm:block fixed right-0 z-50 group" style="top: env(safe-area-inset-top, 0px); padding: 1.25rem; padding-right: max(1.25rem, env(safe-area-inset-right));">
-            <div
-                class="flex items-center gap-1.5 bg-[var(--panel-bg)]/80 backdrop-blur-md p-1 rounded-full border border-[var(--border-subtle)] shadow-sm opacity-60 hover:opacity-100 transition-opacity duration-300"
-            >
-                <ThemeToggle />
-                <div class="w-px h-4 bg-[var(--border-subtle)]"></div>
-                <LanguagePicker />
-            </div>
-        </div>
+        <TopNav />
         <slot />
     </body>
 </html>

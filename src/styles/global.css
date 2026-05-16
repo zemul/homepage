@@ -32,6 +32,9 @@
     --shadow-sm: 0 1px 2px rgba(120, 100, 70, 0.06);
     --shadow-md: 0 4px 16px rgba(120, 100, 70, 0.08);
     --shadow-lg: 0 8px 32px rgba(120, 100, 70, 0.1);
+
+    /* Hairline soft — falls back to subtle when not redefined */
+    --border-soft: var(--border-subtle);
 }
 
 html.dark {
@@ -310,8 +313,12 @@ body.route-blog article li {
     font-family: 'Source Serif 4', 'Noto Serif SC', 'Noto Serif CJK SC', Georgia, serif;
 }
 
-/* ─── Top Nav (Claude spec: 64px height, brand mark + menu) ─── */
-body.route-blog .blog-topnav {
+/* ─── Site Top Nav (global) ───
+ * Sticky frosted-glass header used on every page.
+ * Auto hides on scroll-down, reveals on scroll-up.
+ * Uses tokens from :root by default, gets recoloured under
+ * body.route-blog (coral accent + cream surfaces). */
+.site-topnav {
     position: sticky;
     top: 0;
     z-index: 40;
@@ -319,12 +326,19 @@ body.route-blog .blog-topnav {
     -webkit-backdrop-filter: blur(14px) saturate(180%);
     backdrop-filter: blur(14px) saturate(180%);
     border-bottom: 1px solid var(--border-soft);
+    transform: translateY(0);
+    transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
+    padding-top: env(safe-area-inset-top, 0px);
 }
 
-body.route-blog .blog-topnav-inner {
+.site-topnav.is-hidden {
+    transform: translateY(-100%);
+}
+
+.site-topnav-inner {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.5rem;
     max-width: 64rem;
     margin: 0 auto;
     padding: 0 1rem;
@@ -332,55 +346,27 @@ body.route-blog .blog-topnav-inner {
 }
 
 @media (min-width: 640px) {
-    body.route-blog .blog-topnav-inner {
+    .site-topnav-inner {
         height: 64px;
         padding: 0 2rem;
-        gap: 0.5rem;
     }
 }
 
-body.route-blog .blog-topnav-brand {
-    margin-right: auto;
-    display: inline-flex;
-    align-items: center;
-    border-radius: 8px;
-    transition: opacity 200ms ease;
-    flex: 0 0 auto;
-}
-
-body.route-blog .blog-topnav-brand:hover {
-    opacity: 0.78;
-}
-
-body.route-blog .blog-topnav-brand img {
-    display: block;
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-}
-
-@media (min-width: 640px) {
-    body.route-blog .blog-topnav-brand img {
-        width: 32px;
-        height: 32px;
-    }
-}
-
-body.route-blog .blog-topnav-links {
+.site-topnav-links {
     display: flex;
     align-items: center;
     gap: 0;
     min-width: 0;
 }
 
-body.route-blog .blog-topnav-link {
+.site-topnav-link {
     font-family: 'JetBrains Mono', 'SF Mono', monospace;
     font-size: 10px;
     font-weight: 500;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted-text);
-    padding: 0.5rem 0.5rem;
+    padding: 0.625rem 0.625rem;
     border-radius: 6px;
     transition: color 200ms ease, background-color 200ms ease;
     white-space: nowrap;
@@ -388,23 +374,31 @@ body.route-blog .blog-topnav-link {
 }
 
 @media (min-width: 640px) {
-    body.route-blog .blog-topnav-link {
+    .site-topnav-link {
         font-size: 11px;
         letter-spacing: 0.16em;
         padding: 0.5rem 0.875rem;
     }
 }
 
-body.route-blog .blog-topnav-link:hover {
+.site-topnav-link:hover {
     color: var(--text-primary);
     background-color: var(--panel-subtle);
 }
 
-body.route-blog .blog-topnav-link.is-active {
+.site-topnav-link.is-active {
     color: var(--accent);
 }
 
-body.route-blog .blog-topnav-divider {
+.site-topnav-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex: 0 0 auto;
+}
+
+.site-topnav-divider {
     width: 1px;
     height: 16px;
     background-color: var(--border-subtle);
@@ -413,12 +407,12 @@ body.route-blog .blog-topnav-divider {
 }
 
 @media (min-width: 640px) {
-    body.route-blog .blog-topnav-divider {
+    .site-topnav-divider {
         margin: 0 0.5rem;
     }
 }
 
-body.route-blog .blog-topnav-controls {
+.site-topnav-controls {
     display: flex;
     align-items: center;
     gap: 0.125rem;
@@ -426,21 +420,15 @@ body.route-blog .blog-topnav-controls {
 }
 
 /* Make the existing icon buttons sit naturally inside the nav row */
-body.route-blog .blog-topnav-controls > a,
-body.route-blog .blog-topnav-controls > button {
+.site-topnav-controls > a,
+.site-topnav-controls > button {
     background-color: transparent;
     padding: 0.5rem;
 }
 
-body.route-blog .blog-topnav-controls > a:hover,
-body.route-blog .blog-topnav-controls > button:hover {
+.site-topnav-controls > a:hover,
+.site-topnav-controls > button:hover {
     background-color: var(--panel-subtle);
-}
-
-/* Hide the old top-right floating controls on blog routes —
- * TopNav replaces them everywhere (mobile + desktop). */
-body.route-blog .floating-controls {
-    display: none !important;
 }
 
 /* Reusable Claude component patterns (scoped) */
