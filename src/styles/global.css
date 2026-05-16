@@ -3,7 +3,10 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ─── Fonts ─── */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+/* Webfont stylesheet is injected via <link> in Layout.astro <head>.
+ * Tailwind v4 / Vite strips `@import url(https://...)` from CSS modules,
+ * so we keep the request in HTML to make sure Fraunces, Source Serif 4,
+ * Noto Serif SC, Inter and JetBrains Mono actually reach the browser. */
 
 /* ─── Design Tokens ─── */
 :root {
@@ -29,6 +32,9 @@
     --shadow-sm: 0 1px 2px rgba(120, 100, 70, 0.06);
     --shadow-md: 0 4px 16px rgba(120, 100, 70, 0.08);
     --shadow-lg: 0 8px 32px rgba(120, 100, 70, 0.1);
+
+    /* Hairline soft — falls back to subtle when not redefined */
+    --border-soft: var(--border-subtle);
 }
 
 html.dark {
@@ -227,6 +233,399 @@ html.dark .prose {
 
 html.dark .prose blockquote {
     background-color: var(--accent-subtle);
+}
+
+/* ─── Claude Design Scope: Blog Routes ───
+ * Tokens & components mapped to the Claude Design spec
+ * (coral primary, tinted-cream canvas, hairline surface stack).
+ * Scoped to `body.route-blog` so the homepage is unaffected.
+ */
+body.route-blog {
+    /* Surface – cream stack */
+    --page-bg: #faf9f5;          /* canvas */
+    --panel-bg: #efe9de;         /* surface card */
+    --panel-subtle: #f5f0e8;     /* surface soft */
+    --border-subtle: #e6dfd8;    /* hairline */
+    --border-soft: #ebe6df;      /* hairline soft */
+
+    /* Text */
+    --text-primary: #141413;     /* ink */
+    --text-secondary: #3d3d3a;   /* body */
+    --muted-text: #6c6a64;       /* muted */
+    --muted-soft: #8e8b82;       /* muted soft */
+
+    /* Accent – coral */
+    --accent: #cc785c;
+    --accent-hover: #a9583e;
+    --accent-subtle: rgba(204, 120, 92, 0.08);
+    --accent-ring: rgba(204, 120, 92, 0.16);
+
+    /* Tinted shadows – mostly unused per spec */
+    --shadow-sm: 0 1px 2px rgba(20, 20, 19, 0.05);
+    --shadow-md: 0 1px 3px rgba(20, 20, 19, 0.08);
+    --shadow-lg: 0 8px 24px rgba(20, 20, 19, 0.06);
+}
+
+html.dark body.route-blog {
+    /* Surface – warm dark per spec (#181715 / #252320 / #1f1e1b) */
+    --page-bg: #181715;
+    --panel-bg: #252320;
+    --panel-subtle: #1f1e1b;
+    --border-subtle: #2e2a26;
+    --border-soft: #26221e;
+
+    --text-primary: #faf9f5;
+    --text-secondary: #d4cfc6;
+    --muted-text: #a09d96;
+    --muted-soft: #807d76;
+
+    --accent: #cc785c;
+    --accent-hover: #d68b73;
+    --accent-subtle: rgba(204, 120, 92, 0.12);
+    --accent-ring: rgba(204, 120, 92, 0.22);
+}
+
+/* Editorial serif (Copernicus stand-in): Fraunces 400–500
+ * CJK characters fall through to Noto Serif SC via per-glyph fallback.
+ */
+body.route-blog .font-display {
+    font-family: 'Fraunces', 'Source Serif 4', 'Noto Serif SC', 'Noto Serif CJK SC', Georgia, serif;
+    font-optical-sizing: auto;
+    font-variation-settings: "SOFT" 50, "WONK" 0;
+}
+
+/* Long-form body type: humanist Latin serif + Noto Serif SC for CJK */
+body.route-blog .prose p,
+body.route-blog .prose li,
+body.route-blog .prose blockquote,
+body.route-blog .post-row p,
+body.route-blog .blog-lead {
+    font-family: 'Source Serif 4', 'Noto Serif SC', 'Noto Serif CJK SC', Georgia, serif;
+}
+
+/* Catch-all: any paragraph inside blog routes that isn't explicitly
+ * mono or part of a UI chip falls to the editorial serif stack.
+ * Mono/uppercase eyebrows still win because .font-mono / .badge-pill
+ * / .btn-secondary set font-family explicitly. */
+body.route-blog main p,
+body.route-blog article p,
+body.route-blog article li {
+    font-family: 'Source Serif 4', 'Noto Serif SC', 'Noto Serif CJK SC', Georgia, serif;
+}
+
+/* ─── Site Top Nav (global) ───
+ * Sticky frosted-glass header used on every page.
+ * Auto hides on scroll-down, reveals on scroll-up.
+ * Uses tokens from :root by default, gets recoloured under
+ * body.route-blog (coral accent + cream surfaces). */
+.site-topnav {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background-color: color-mix(in oklab, var(--page-bg) 80%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    backdrop-filter: blur(14px) saturate(180%);
+    border-bottom: 1px solid var(--border-soft);
+    transform: translateY(0);
+    transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
+    padding-top: env(safe-area-inset-top, 0px);
+}
+
+.site-topnav.is-hidden {
+    transform: translateY(-100%);
+}
+
+.site-topnav-inner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1rem;
+    height: 60px;
+}
+
+@media (min-width: 640px) {
+    .site-topnav-inner {
+        height: 68px;
+        padding: 0 2.5rem;
+        gap: 1rem;
+    }
+}
+
+.site-topnav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    min-width: 0;
+}
+
+@media (min-width: 640px) {
+    .site-topnav-links {
+        gap: 0.25rem;
+    }
+}
+
+/* ─ Mobile: clear, finger-friendly text chips ─ */
+.site-topnav-link {
+    font-family: 'JetBrains Mono', 'SF Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted-text);
+    padding: 0.625rem 0.75rem;
+    border-radius: 8px;
+    transition: color 220ms ease, background-color 220ms ease;
+    white-space: nowrap;
+    line-height: 1;
+    position: relative;
+}
+
+.site-topnav-link:hover {
+    color: var(--text-primary);
+    background-color: var(--panel-subtle);
+}
+
+.site-topnav-link.is-active {
+    color: var(--accent);
+}
+
+/* ─ Desktop: editorial pacing + animated underline indicator ─ */
+@media (min-width: 640px) {
+    .site-topnav-link {
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        padding: 0.75rem 1.125rem;
+        border-radius: 0;
+        background-color: transparent !important;
+    }
+
+    .site-topnav-link::after {
+        content: '';
+        position: absolute;
+        left: 1.125rem;
+        right: 1.125rem;
+        bottom: 0.5rem;
+        height: 1px;
+        background-color: currentColor;
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease;
+        opacity: 0.7;
+    }
+
+    .site-topnav-link:hover {
+        color: var(--text-primary);
+    }
+
+    .site-topnav-link:hover::after {
+        transform: scaleX(1);
+    }
+
+    .site-topnav-link.is-active {
+        color: var(--accent);
+    }
+
+    .site-topnav-link.is-active::after {
+        transform: scaleX(1);
+        opacity: 1;
+        background-color: var(--accent);
+        height: 1.5px;
+    }
+}
+
+.site-topnav-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex: 0 0 auto;
+}
+
+.site-topnav-divider {
+    width: 1px;
+    height: 16px;
+    background-color: var(--border-subtle);
+    margin: 0 0.375rem;
+    flex: 0 0 auto;
+}
+
+@media (min-width: 640px) {
+    .site-topnav-divider {
+        height: 18px;
+        margin: 0 0.75rem;
+    }
+}
+
+.site-topnav-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    flex: 0 0 auto;
+}
+
+@media (min-width: 640px) {
+    .site-topnav-controls {
+        gap: 0.25rem;
+    }
+}
+
+/* Make the existing icon buttons sit naturally inside the nav row */
+.site-topnav-controls > a,
+.site-topnav-controls > button {
+    background-color: transparent;
+    padding: 0.5rem;
+}
+
+.site-topnav-controls > a:hover,
+.site-topnav-controls > button:hover {
+    background-color: var(--panel-subtle);
+}
+
+/* Reusable Claude component patterns (scoped) */
+body.route-blog .badge-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    background-color: var(--panel-bg);
+    color: var(--muted-text);
+    font-family: 'JetBrains Mono', 'SF Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+    border: 1px solid transparent;
+    transition: color 200ms ease, border-color 200ms ease, background-color 200ms ease;
+}
+
+body.route-blog .badge-pill:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+body.route-blog .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 9999px;
+    background-color: var(--page-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-subtle);
+    font-family: 'JetBrains Mono', 'SF Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+    transition: color 200ms ease, border-color 200ms ease, background-color 200ms ease;
+}
+
+body.route-blog .btn-secondary:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background-color: var(--accent-subtle);
+}
+
+/* On mobile, TopNav's "Blog" link replaces the per-article
+ * back-to-list affordances. Keep the in-article buttons on
+ * desktop where there's space and they round out the layout. */
+@media (max-width: 639px) {
+    body.route-blog .back-to-list {
+        display: none !important;
+    }
+}
+
+/* List rows – feature-card hover treatment without heavy borders */
+body.route-blog .post-row {
+    border-bottom: 1px solid var(--border-soft);
+    transition: background-color 240ms ease;
+}
+
+body.route-blog .post-row:hover {
+    background-color: var(--panel-subtle);
+}
+
+body.route-blog .post-row .post-title {
+    transition: color 200ms ease;
+}
+
+body.route-blog .post-row:hover .post-title {
+    color: var(--accent-hover);
+}
+
+/* Prose refinements aligned to Claude spec */
+body.route-blog .prose {
+    --tw-prose-body: var(--text-secondary);
+    --tw-prose-headings: var(--text-primary);
+    --tw-prose-links: var(--accent);
+}
+
+body.route-blog .prose h1,
+body.route-blog .prose h2,
+body.route-blog .prose h3,
+body.route-blog .prose h4 {
+    font-family: 'Fraunces', 'Source Serif 4', 'Noto Serif SC', 'Noto Serif CJK SC', Georgia, serif;
+    font-weight: 500;
+}
+
+body.route-blog .prose h2 {
+    letter-spacing: -0.02em;
+}
+
+body.route-blog .prose blockquote {
+    border-left-color: var(--accent);
+    background-color: var(--accent-subtle);
+    border-radius: 0 12px 12px 0;
+    padding: 0.75rem 1.25rem;
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+body.route-blog .prose pre {
+    background-color: #1f1e1b;
+    color: #faf9f5;
+    border-radius: 12px;
+    border: 1px solid #2e2a26;
+}
+
+body.route-blog .prose code {
+    background-color: var(--panel-bg);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    color: var(--text-primary);
+}
+
+body.route-blog .prose pre code {
+    background-color: transparent;
+    padding: 0;
+    color: inherit;
+}
+
+body.route-blog .prose img {
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: none;
+}
+
+body.route-blog .prose a {
+    text-decoration-color: var(--border-subtle);
+    text-underline-offset: 4px;
+    transition: text-decoration-color 200ms ease, color 200ms ease;
+}
+
+body.route-blog .prose a:hover {
+    color: var(--accent-hover);
+    text-decoration-color: var(--accent);
+}
+
+body.route-blog .prose hr {
+    border-color: var(--border-subtle);
+    margin: 2.5rem 0;
 }
 
 /* ─── Noise Overlay ─── */

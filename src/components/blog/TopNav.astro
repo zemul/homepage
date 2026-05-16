@@ -1,0 +1,104 @@
+---
+import ThemeToggle from '../ThemeToggle.astro';
+import LanguagePicker from '../LanguagePicker.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const pathname = Astro.url.pathname;
+
+const homeUrl = lang === 'zh' ? '/zh/' : '/';
+const blogUrl = lang === 'zh' ? '/zh/blog' : '/blog';
+const aboutUrl = lang === 'zh' ? '/zh/#about' : '/#about';
+
+const isHomeActive =
+  pathname === '/' || pathname === '/zh' || pathname === '/zh/';
+const isBlogActive =
+  pathname === '/blog' ||
+  pathname.startsWith('/blog/') ||
+  pathname === '/zh/blog' ||
+  pathname.startsWith('/zh/blog/');
+---
+
+<header class="site-topnav" data-topnav>
+  <div class="site-topnav-inner">
+    <nav class="site-topnav-links" aria-label="Primary">
+      <a href={homeUrl} class:list={["site-topnav-link", isHomeActive && "is-active"]}>
+        {t('nav.home')}
+      </a>
+      <a
+        href={blogUrl}
+        class:list={["site-topnav-link", isBlogActive && "is-active"]}
+        data-blog-link
+      >
+        {t('nav.blog')}
+      </a>
+      <a href={aboutUrl} class="site-topnav-link">
+        {t('nav.about')}
+      </a>
+    </nav>
+
+    <div class="site-topnav-right">
+      <span class="site-topnav-divider" aria-hidden="true"></span>
+      <div class="site-topnav-controls">
+        <ThemeToggle />
+        <LanguagePicker />
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Hide-on-scroll-down, show-on-scroll-up.
+  const nav = document.querySelector<HTMLElement>('[data-topnav]');
+  if (nav) {
+    const HIDE_DELTA = 6;     // ignore tiny jitter
+    const SHOW_DELTA = 6;
+    const TOP_ZONE = 16;      // always show near top of page
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    const update = () => {
+      const y = window.scrollY;
+      const delta = y - lastY;
+
+      if (y <= TOP_ZONE) {
+        nav.classList.remove('is-hidden');
+      } else if (delta > HIDE_DELTA) {
+        nav.classList.add('is-hidden');
+      } else if (delta < -SHOW_DELTA) {
+        nav.classList.remove('is-hidden');
+      }
+
+      lastY = y;
+      ticking = false;
+    };
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      },
+      { passive: true }
+    );
+
+    // Always reveal when the user focuses an in-nav element via keyboard
+    nav.addEventListener('focusin', () => nav.classList.remove('is-hidden'));
+  }
+
+  // Scroll-restoration handoff: clicking the TopNav "Blog" link from an
+  // article page saves the article path so the list can scroll back to it.
+  // Shares storage key with .back-to-list inside posts.
+  const ARTICLE_RE = /^\/(?:zh\/)?blog\/[^/]+\/[^/]+\/?$/;
+  document.querySelectorAll<HTMLAnchorElement>('[data-blog-link]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const path = window.location.pathname.replace(/\/$/, '') || '/';
+      if (ARTICLE_RE.test(path)) {
+        sessionStorage.setItem('blog-scroll-target', path);
+      }
+    });
+  });
+</script>

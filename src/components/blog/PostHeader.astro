@@ -14,9 +14,11 @@ interface Props {
   body: string;
   lang: 'en' | 'zh';
   switchUrl: string;
+  listUrl: string;
+  currentUrl: string;
 }
 
-const { post, body, lang, switchUrl } = Astro.props;
+const { post, body, lang, switchUrl, listUrl, currentUrl } = Astro.props;
 const t = useTranslations(lang);
 
 function estimateReadTime(text: string, lang: 'en' | 'zh'): number {
@@ -43,38 +45,59 @@ const tags = post.data.tags ?? [];
 ---
 
 <header class="mb-12 sm:mb-16" style="animation: fadeIn 500ms ease-out both;">
-  <!-- Title first -->
-  <h1 class="font-display text-3xl sm:text-4xl md:text-[2.75rem] font-bold leading-[1.15] text-[var(--text-primary)] text-balance" style="letter-spacing: -0.03em;">
+  <!-- Back to list (top) -->
+  <a
+    href={listUrl}
+    class="back-to-list inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.18em] uppercase text-[var(--muted-text)] hover:text-[var(--accent)] transition-colors duration-200 mb-8 sm:mb-10"
+    data-current-url={currentUrl}
+  >
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M19 12H5"></path>
+      <path d="m12 19-7-7 7-7"></path>
+    </svg>
+    {t('blog.backToList')}
+  </a>
+
+  <!-- Eyebrow: date · read time -->
+  <div class="flex items-center gap-3 mb-5 sm:mb-6">
+    <time class="font-mono text-[11px] tracking-[0.18em] uppercase text-[var(--muted-text)]" style="font-feature-settings: 'tnum';">
+      {formatDate(post.data.date, lang)}
+    </time>
+    <span class="w-1 h-1 rounded-full bg-[var(--border-subtle)]" aria-hidden="true"></span>
+    <span class="font-mono text-[11px] tracking-[0.12em] uppercase text-[var(--muted-text)]">{readTimeText}</span>
+  </div>
+
+  <!-- Title -->
+  <h1
+    class="font-display text-[2.25rem] sm:text-[2.75rem] md:text-[3rem] leading-[1.1] text-[var(--text-primary)] text-balance"
+    style="font-weight: 500; letter-spacing: -0.025em;"
+  >
     {post.data.title}
   </h1>
 
+  <!-- Description -->
+  {post.data.description && (
+    <p class="blog-lead mt-5 sm:mt-6 max-w-2xl text-base sm:text-lg text-[var(--text-secondary)]" style="line-height: 1.6;">
+      {post.data.description}
+    </p>
+  )}
+
   <!-- Tags + lang switch -->
-  <div class="flex flex-wrap items-center gap-2 mt-5 sm:mt-6">
+  <div class="flex flex-wrap items-center gap-2 mt-7 sm:mt-8">
     {tags.map((tag: string) => (
-      <span class="font-mono text-[10px] tracking-wider uppercase text-[var(--muted-text)] px-2 py-1 rounded-md bg-[var(--panel-subtle)] border border-[var(--border-subtle)]">
-        {tag}
-      </span>
+      <span class="badge-pill">{tag}</span>
     ))}
-    {tags.length > 0 && <span class="flex-1"></span>}
-    <a
-      href={switchUrl}
-      class="font-mono text-[11px] tracking-wide text-[var(--muted-text)] hover:text-[var(--accent)] transition-colors duration-200 border border-[var(--border-subtle)] hover:border-[var(--accent)] rounded-full px-3 py-1 ml-auto"
-    >
+    <span class="flex-1"></span>
+    <a href={switchUrl} class="btn-secondary ml-auto">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+      </svg>
       {t('blog.switchLang')}
     </a>
   </div>
 
-  <!-- Meta line: date · read time -->
-  <div class="flex items-center gap-3 mt-4">
-    <time class="font-mono text-xs tracking-wide uppercase text-[var(--muted-text)]" style="font-feature-settings: 'tnum';">
-      {formatDate(post.data.date, lang)}
-    </time>
-    <span class="w-1 h-1 rounded-full bg-[var(--border-subtle)]" aria-hidden="true"></span>
-    <span class="font-mono text-xs tracking-wide text-[var(--muted-text)]">{readTimeText}</span>
-  </div>
-
   <!-- Divider -->
-  <div class="mt-8 sm:mt-10 h-px bg-[var(--border-subtle)]"></div>
+  <div class="mt-10 sm:mt-12 h-px bg-[var(--border-subtle)]"></div>
 </header>
 
 <style>
