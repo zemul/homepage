@@ -339,46 +339,47 @@ body.route-blog article li {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    max-width: 64rem;
+    max-width: 72rem;
     margin: 0 auto;
     padding: 0 1rem;
-    height: 56px;
+    height: 60px;
 }
 
 @media (min-width: 640px) {
     .site-topnav-inner {
-        height: 64px;
-        padding: 0 2rem;
+        height: 68px;
+        padding: 0 2.5rem;
+        gap: 1rem;
     }
 }
 
 .site-topnav-links {
     display: flex;
     align-items: center;
-    gap: 0;
+    gap: 0.125rem;
     min-width: 0;
 }
 
+@media (min-width: 640px) {
+    .site-topnav-links {
+        gap: 0.25rem;
+    }
+}
+
+/* ─ Mobile: clear, finger-friendly text chips ─ */
 .site-topnav-link {
     font-family: 'JetBrains Mono', 'SF Mono', monospace;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted-text);
-    padding: 0.625rem 0.625rem;
-    border-radius: 6px;
-    transition: color 200ms ease, background-color 200ms ease;
+    padding: 0.625rem 0.75rem;
+    border-radius: 8px;
+    transition: color 220ms ease, background-color 220ms ease;
     white-space: nowrap;
     line-height: 1;
-}
-
-@media (min-width: 640px) {
-    .site-topnav-link {
-        font-size: 11px;
-        letter-spacing: 0.16em;
-        padding: 0.5rem 0.875rem;
-    }
+    position: relative;
 }
 
 .site-topnav-link:hover {
@@ -388,6 +389,50 @@ body.route-blog article li {
 
 .site-topnav-link.is-active {
     color: var(--accent);
+}
+
+/* ─ Desktop: editorial pacing + animated underline indicator ─ */
+@media (min-width: 640px) {
+    .site-topnav-link {
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        padding: 0.75rem 1.125rem;
+        border-radius: 0;
+        background-color: transparent !important;
+    }
+
+    .site-topnav-link::after {
+        content: '';
+        position: absolute;
+        left: 1.125rem;
+        right: 1.125rem;
+        bottom: 0.5rem;
+        height: 1px;
+        background-color: currentColor;
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease;
+        opacity: 0.7;
+    }
+
+    .site-topnav-link:hover {
+        color: var(--text-primary);
+    }
+
+    .site-topnav-link:hover::after {
+        transform: scaleX(1);
+    }
+
+    .site-topnav-link.is-active {
+        color: var(--accent);
+    }
+
+    .site-topnav-link.is-active::after {
+        transform: scaleX(1);
+        opacity: 1;
+        background-color: var(--accent);
+        height: 1.5px;
+    }
 }
 
 .site-topnav-right {
@@ -402,13 +447,14 @@ body.route-blog article li {
     width: 1px;
     height: 16px;
     background-color: var(--border-subtle);
-    margin: 0 0.25rem;
+    margin: 0 0.375rem;
     flex: 0 0 auto;
 }
 
 @media (min-width: 640px) {
     .site-topnav-divider {
-        margin: 0 0.5rem;
+        height: 18px;
+        margin: 0 0.75rem;
     }
 }
 
@@ -417,6 +463,12 @@ body.route-blog article li {
     align-items: center;
     gap: 0.125rem;
     flex: 0 0 auto;
+}
+
+@media (min-width: 640px) {
+    .site-topnav-controls {
+        gap: 0.25rem;
+    }
 }
 
 /* Make the existing icon buttons sit naturally inside the nav row */
