@@ -24,17 +24,17 @@ const isBlogActive =
   <div class="site-topnav-inner">
     <nav class="site-topnav-links" aria-label="Primary">
       <a href={homeUrl} class:list={["site-topnav-link", isHomeActive && "is-active"]}>
-        {t('nav.home')}
+        <span class="site-topnav-label">{t('nav.home')}</span>
       </a>
       <a
         href={blogUrl}
         class:list={["site-topnav-link", isBlogActive && "is-active"]}
         data-blog-link
       >
-        {t('nav.blog')}
+        <span class="site-topnav-label">{t('nav.blog')}</span>
       </a>
       <a href={aboutUrl} class="site-topnav-link">
-        {t('nav.about')}
+        <span class="site-topnav-label">{t('nav.about')}</span>
       </a>
     </nav>
 
