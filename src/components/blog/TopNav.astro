@@ -101,26 +101,34 @@ const aboutChars = splitChars(t('nav.about'));
 </header>
 
 <script>
-  // Hide-on-scroll-down, show-on-scroll-up.
+  // Compact (pill) mode on scroll — desktop only.
+  // Mobile keeps the original "hide on scroll" behaviour for taller tap area.
   const nav = document.querySelector<HTMLElement>('[data-topnav]');
+  const inner = nav?.querySelector<HTMLElement>('.site-topnav-inner') ?? null;
+
   if (nav) {
+    const COMPACT_ENTER = 80;
+    const COMPACT_EXIT  = 4;
     const HIDE_DELTA = 2;
     const SHOW_DELTA = 6;
-    const TOP_ZONE = 4;
+    const TOP_ZONE   = 4;
+
+    const desktopMQ = window.matchMedia('(min-width: 640px)');
     let lastY = window.scrollY;
     let ticking = false;
 
     const update = () => {
       const y = window.scrollY;
-      const delta = y - lastY;
 
-      if (y <= TOP_ZONE) {
-        nav.classList.remove('is-hidden');
-      } else if (delta > HIDE_DELTA) {
-        nav.classList.add('is-hidden');
-      } else if (delta < -SHOW_DELTA) {
-        nav.classList.remove('is-hidden');
-      }
+      // NOTE: 胶囊态与 hide-on-scroll 都已暂停。
+      // - 胶囊态：与对齐/间距/波浪有视觉冲突，CSS 与同步逻辑保留以备恢复。
+      //   旧分支：if (y >= COMPACT_ENTER) nav.classList.add('is-compact'); else …
+      // - 自动隐藏：现在希望 header 始终可见，仅根据是否滚出顶部做"加阴影/底部渐隐"
+      //   的视觉切换 → 用 is-scrolled 标记。
+      nav.classList.remove('is-compact');
+      nav.classList.remove('is-hidden');
+
+      nav.classList.toggle('is-scrolled', y > TOP_ZONE);
 
       lastY = y;
       ticking = false;
@@ -136,6 +144,16 @@ const aboutChars = splitChars(t('nav.about'));
       },
       { passive: true }
     );
+
+    // Reset state when crossing the desktop/mobile boundary.
+    desktopMQ.addEventListener('change', () => {
+      if (!desktopMQ.matches) {
+        nav.classList.remove('is-compact');
+      } else {
+        nav.classList.remove('is-hidden');
+      }
+      update();
+    });
 
     nav.addEventListener('focusin', () => nav.classList.remove('is-hidden'));
   }
@@ -423,6 +441,35 @@ const aboutChars = splitChars(t('nav.about'));
     window.addEventListener('resize', realign, { passive: true });
     if ((document as any).fonts?.ready) {
       (document as any).fonts.ready.then(realign);
+    }
+
+    // ── Keep indicator aligned while the nav inner is animating between
+    // full bar and compact pill (width transition is ~360ms).
+    const innerEl = navList.closest<HTMLElement>('.site-topnav-inner');
+    if (innerEl) {
+      let realignRaf = 0;
+      const startRealignLoop = () => {
+        if (realignRaf) return;
+        const loop = () => {
+          realign();
+          realignRaf = requestAnimationFrame(loop);
+        };
+        realignRaf = requestAnimationFrame(loop);
+      };
+      const stopRealignLoop = () => {
+        if (realignRaf) {
+          cancelAnimationFrame(realignRaf);
+          realignRaf = 0;
+        }
+        realign();
+      };
+      innerEl.addEventListener('transitionrun', (e) => {
+        if (e.propertyName === 'width' || e.propertyName === 'padding-left') startRealignLoop();
+      });
+      innerEl.addEventListener('transitionend', (e) => {
+        if (e.propertyName === 'width' || e.propertyName === 'padding-left') stopRealignLoop();
+      });
+      innerEl.addEventListener('transitioncancel', stopRealignLoop);
     }
   }
 </script>
