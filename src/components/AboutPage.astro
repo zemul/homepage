@@ -1,4 +1,5 @@
 ---
+import { Icon } from "astro-icon/components";
 import { getLangFromUrl } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
@@ -116,7 +117,10 @@ const closing = isZh
 
     <header class="about-page-header second">
         <p class="about-page-kicker">{isZh ? "外部视角" : "Outside view"}</p>
-        <h2 class="about-page-title h2">{heading.claude}</h2>
+        <h2 class="about-page-title h2 with-icon">
+            <Icon name="simple-icons:claude" class="about-claude-icon" />
+            <span>{heading.claude}</span>
+        </h2>
         <p class="about-page-claude-note">{heading.claudeNote}</p>
     </header>
 
@@ -166,6 +170,17 @@ const closing = isZh
     }
     .about-page-title.h2 {
         font-size: 2.1rem;
+    }
+    .about-page-title.with-icon {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+    }
+    .about-claude-icon {
+        width: 1.8rem;
+        height: 1.8rem;
+        color: #d97757; /* Claude coral */
+        flex: 0 0 auto;
     }
 
     .about-page-prose p {
