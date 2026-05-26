@@ -173,8 +173,8 @@ const aboutChars = splitChars(t('nav.about'));
     activeFade && hoverFade
   ) {
     const GAP = 6;
-    const AMP = 1.6;
-    const PERIOD = 12;
+    const AMP = 1.25;
+    const PERIOD = 9;
     const H = 8;
     const MID = H / 2;
     const EXT = 6;     // px — extend wave slightly past the text on each side
@@ -189,6 +189,7 @@ const aboutChars = splitChars(t('nav.about'));
       pathEl: SVGPathElement;
       maskRect: SVGRectElement;
       fade: SVGLinearGradientElement;
+      seed: number;   // deterministic randomness — stable per "hop"
     };
 
     const mkSpring = (): Spring => ({ x: 0, v: 0, target: 0 });
@@ -198,6 +199,7 @@ const aboutChars = splitChars(t('nav.about'));
       pathEl: activePathEl,
       maskRect: activeMaskRect,
       fade: activeFade,
+      seed: Math.random() * 1000,
     };
     const hoverTrack: Track = {
       left: mkSpring(), right: mkSpring(),
@@ -205,6 +207,7 @@ const aboutChars = splitChars(t('nav.about'));
       pathEl: hoverPathEl,
       maskRect: hoverMaskRect,
       fade: hoverFade,
+      seed: Math.random() * 1000 + 500,
     };
 
     const STIFF_HEAD = 220;
@@ -212,17 +215,53 @@ const aboutChars = splitChars(t('nav.about'));
     const DAMP_HEAD  = 22;
     const DAMP_TAIL  = 19;
 
-    const buildPath = (a: number, b: number, stretch: number) => {
+    // Deterministic pseudo-random: stable for a given (seed, index) so the
+    // wave shape doesn't shimmer between animation frames.
+    const noise = (seed: number, i: number) => {
+      const x = Math.sin(seed * 12.9898 + i * 78.233) * 43758.5453;
+      return x - Math.floor(x); // 0..1
+    };
+
+    const buildPath = (a: number, b: number, stretch: number, seed: number) => {
       const w = Math.max(2, b - a);
       const halves = Math.max(2, Math.round(w / PERIOD));
       const step = w / halves;
-      const amp = AMP * (1 + Math.min(1.2, stretch * 0.012));
-      let d = `M ${a} ${MID}`;
+      const baseAmp = AMP * (1 + Math.min(1.2, stretch * 0.012));
+
+      // Anchor Y for every half-wave boundary, including the two endpoints,
+      // is offset by noise so the wave doesn't always "start at mid going down".
+      const anchorY: number[] = [];
+      for (let i = 0; i <= halves; i++) {
+        // Boundary drift: roomy at the ends so the start/finish look organic;
+        // the masked fade hides any slight Y mismatch from the baseline.
+        const drift = (noise(seed, i * 2 + 11) - 0.5) * 1.4;
+        anchorY.push(MID + drift);
+      }
+
+      // Random initial direction so half the time the first bump goes up.
+      const startDir = noise(seed, 17) < 0.5 ? -1 : 1;
+
+      let d = `M ${a} ${anchorY[0].toFixed(2)}`;
       for (let i = 0; i < halves; i++) {
-        const x1 = a + step * i + step / 2;
-        const y1 = MID + (i % 2 === 0 ? -amp : amp);
+        // Amplitude per half wave (50%–145%) — more variance, smaller base.
+        const ampJitter = 0.5 + noise(seed, i * 7 + 3) * 0.95;
+        const amp = baseAmp * ampJitter;
+        const dir = (i % 2 === 0 ? 1 : -1) * startDir;
+
+        // Control-point X shifted off-center by ±30% of step
+        const xMid = a + step * i + step / 2;
+        const xShift = (noise(seed, i * 5 + 1) - 0.5) * step * 0.6;
+        const x1 = xMid + xShift;
+
+        // Control-point Y = local midline (between the two anchors) + bump
+        const localMid = (anchorY[i] + anchorY[i + 1]) / 2;
+        const yJit = (noise(seed, i * 3 + 9) - 0.5) * 0.7;
+        const y1 = localMid + dir * amp + yJit;
+
         const x2 = a + step * (i + 1);
-        d += ` Q ${x1.toFixed(2)} ${y1.toFixed(2)} ${x2.toFixed(2)} ${MID}`;
+        const y2 = anchorY[i + 1];
+
+        d += ` Q ${x1.toFixed(2)} ${y1.toFixed(2)} ${x2.toFixed(2)} ${y2.toFixed(2)}`;
       }
       return d;
     };
@@ -288,7 +327,7 @@ const aboutChars = splitChars(t('nav.about'));
       const liveWidth = (track.right.x - track.left.x);
       const stretch = Math.max(0, liveWidth - restWidth);
 
-      track.pathEl.setAttribute('d', buildPath(track.left.x, track.right.x, stretch));
+      track.pathEl.setAttribute('d', buildPath(track.left.x, track.right.x, stretch, track.seed));
       syncMask(track);
 
       const settled =
@@ -302,7 +341,7 @@ const aboutChars = splitChars(t('nav.about'));
       } else {
         track.left.x = track.left.target;
         track.right.x = track.right.target;
-        track.pathEl.setAttribute('d', buildPath(track.left.x, track.right.x, 0));
+        track.pathEl.setAttribute('d', buildPath(track.left.x, track.right.x, 0, track.seed));
         syncMask(track);
         track.raf = 0;
       }
@@ -319,10 +358,12 @@ const aboutChars = splitChars(t('nav.about'));
       if (!track.ready || !animate) {
         track.left.x = left; track.right.x = right;
         track.left.v = 0;    track.right.v = 0;
-        track.pathEl.setAttribute('d', buildPath(left, right, 0));
+        track.pathEl.setAttribute('d', buildPath(left, right, 0, track.seed));
         syncMask(track);
         track.ready = true;
       } else if (!track.raf) {
+        // Each hop gets a fresh seed so the new wave looks naturally different.
+        track.seed = Math.random() * 1000;
         track.raf = requestAnimationFrame(() => tickTrack(track));
       }
       return true;
