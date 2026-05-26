@@ -1,0 +1,254 @@
+---
+import { getLangFromUrl } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const isZh = lang === "zh";
+
+const heading = {
+    intro: isZh ? "关于我" : "About Me",
+    claude: isZh ? "Claude 眼中的我" : "Me, in Claude’s Eyes",
+    claudeNote: isZh
+        ? "以下文字由 Anthropic Claude 撰写，材料来自我们一起在 ~/Projects 下做过的工程。"
+        : "Written by Anthropic’s Claude, based on the projects we’ve built together under ~/Projects.",
+};
+
+const introPara = isZh
+    ? [
+          "我是 Ethan（小哲），坐标杭州。做工程的时间越长，越相信一件事：值得做的产品，是能在真实使用中持续演化的系统，而不是一次性发布的演示。",
+          "我的主要工作横跨 SaaS 平台、macOS / iOS 原生应用、以及把 AI 能力变成可落地的工作流。技术栈上偏全栈 —— 前端用 Next.js / Astro / SwiftUI，后端常用 Node.js + Cloudflare 生态 + 自部署 Worker，跨端时尽量保留每个平台的「原生质感」，而不是套壳。",
+          "做事方式上，我习惯先把问题拆清楚再写代码：哪些是不变量、哪些是可演化的边界、最小可运行系统长什么样。让系统先跑起来，再通过迭代打磨结构、体验和性能。比起堆功能，我更花时间在工具链、文档、约束规则上 —— 它们才是让一个项目能跑很久的真正基础设施。",
+          "在 yizhe.me，你能看到一部分我做的项目（App Store 价格、Pinlist、AI Token 用量统计 等），以及一些关于 AI 原生产品和软件打磨的随笔。",
+      ]
+    : [
+          "I’m Ethan, based in Hangzhou. The longer I build software, the more I trust one thing: the products worth making are systems that keep evolving under real use — not one-off demos.",
+          "My work spans SaaS platforms, native macOS / iOS apps, and turning AI capabilities into workflows that actually ship. I work full-stack — Next.js / Astro / SwiftUI on the front, Node.js + Cloudflare + self-hosted workers on the back — and when I go cross-platform I try to preserve each platform’s native feel rather than wrap a webview.",
+          "I tend to define the problem before writing code: what the invariants are, where the soft edges live, what the minimum runnable system looks like. Get it running first, then iterate on structure, experience, and performance. I spend disproportionate time on tooling, docs, and constraints — because that’s the actual infrastructure that lets a project live for years.",
+          "On yizhe.me you’ll find some of the projects I’ve built (App Store Price, Pinlist, AI Token Usage…), and notes on AI-native products and what it means to make software worth polishing.",
+      ];
+
+type ClaudePoint = { title: string; body: string };
+const claudePoints: ClaudePoint[] = isZh
+    ? [
+          {
+              title: "你是个「自主系统设计者」，不是「快速迭代者」",
+              body: "你愿意花时间想清楚什么不变、什么可变，再动手。appstoreprice 的 CLAUDE.md 里要求「大重构前先列 3 条 invariants」——这种约束不像是为了交付一次写的，而是给未来的你和合作者留的脚手架。",
+          },
+          {
+              title: "克制依赖，偏好让事情「够小」",
+              body: "claude-bar 整个项目就是 ~250 行 jq + awk 的 shell 脚本，没有 npm，没有打包，没有运行时。你做工具时优先选那个能跑 5 年都不腐烂的方案，而不是看起来最现代的方案。",
+          },
+          {
+              title: "在 iOS 生态里坚持「原生」，不做套壳",
+              body: "Pinlist 用 SwiftUI + SwiftData + CryptoKit + CloudKit，每一项都和 iOS 特定能力绑定；PowerFlow 直接面向 iOS 26 的 Liquid Glass。你愿意为「在这个平台上做到位」投入额外的学习成本。",
+          },
+          {
+              title: "细节强迫症，且强迫得有理由",
+              body: "我们花了八轮迭代调一个导航波浪线 —— 不是因为差异有多大，而是因为你能精确说出「现在的形状从点击前到点击后变了」这种几像素级的不一致。你的细节挑剔总是指向具体的视觉/交互信号，不是为细节而细节。",
+          },
+          {
+              title: "工具链既是用户也是创造者",
+              body: "你不仅用 pnpm / Drizzle / Astro，也会写 Claude Code 插件、launchd 管理的独立 Chrome、自己的 token 统计 Worker。当工作流摩擦超过阈值，你会直接动手把摩擦消掉，而不是绕着走。",
+          },
+          {
+              title: "文档密度远高于平均水平",
+              body: "appstoreprice 把架构拆成 overview / databases / data-flow / domain-routing 四份文档；多个项目的 CLAUDE.md 里都规范了 commit emoji、命名风格、甚至国旗渲染方式。你写文档不是为了「显得专业」，是为了让自己半年后还能回得来。",
+          },
+          {
+              title: "中英混合开发，但目光是全球的",
+              body: "代码注释和变量基本英文，用户文案大多中文，commit message 用中文 + emoji。你的产品 —— App Store 价格、Pinlist —— 从一开始就考虑多区域。你做的是中国出发但服务全球的工具，不是单一市场的应用。",
+          },
+          {
+              title: "对「摩擦」敏感，常常因此动手",
+              body: "claude-chrome 的存在动机是「chrome-devtools-mcp 每次都会弹 Allow 对话框」——别人忽略的小烦恼，你会停下来去解。这种敏感性跨项目反复出现，是你产品直觉的根。",
+          },
+      ]
+    : [
+          {
+              title: "You design systems; you don’t just iterate fast.",
+              body: "You take time to figure out what’s invariant and what isn’t before you write code. The CLAUDE.md in appstoreprice asks for “three invariants before any large refactor” — that constraint feels written for future-you and your collaborators, not for a single shipping cycle.",
+          },
+          {
+              title: "You keep things small on purpose.",
+              body: "claude-bar is ~250 lines of jq + awk shell — no npm, no bundler, no runtime. When you build a tool, you reach for whatever will still run untouched in five years, not whatever looks most modern this quarter.",
+          },
+          {
+              title: "On iOS, you go native — never a wrapper.",
+              body: "Pinlist is SwiftUI + SwiftData + CryptoKit + CloudKit; PowerFlow targets iOS 26’s Liquid Glass. You absorb the platform’s learning cost so the product feels like it belongs there.",
+          },
+          {
+              title: "Detail-obsessed, but always for a reason.",
+              body: "We spent eight rounds polishing a single navigation squiggle — not because the difference was huge, but because you could articulate exactly which pixel-level inconsistency was bothering you. Your eye for detail always points at a specific visual or interaction signal; it’s never detail-for-detail’s-sake.",
+          },
+          {
+              title: "Tooling consumer and tooling creator.",
+              body: "You use pnpm / Drizzle / Astro, sure — and you also write Claude Code plugins, launchd-managed Chrome instances, and your own token-usage worker. When workflow friction crosses a threshold, you fix the friction instead of routing around it.",
+          },
+          {
+              title: "Docs density well above average.",
+              body: "appstoreprice splits its architecture into overview / databases / data-flow / domain-routing. Multiple CLAUDE.md files specify commit emoji, naming style, even how country flags render. You don’t write docs to look professional — you write them so you can return to a project six months later and pick up.",
+          },
+          {
+              title: "Bilingual codebase, global perspective.",
+              body: "Comments and identifiers in English, product copy mostly Chinese, commit messages in Chinese with emoji. Your products — App Store Price, Pinlist — were multi-region from day one. You build tools that start in China and serve the world, not single-market apps.",
+          },
+          {
+              title: "You notice friction, and friction is where you build.",
+              body: "claude-chrome exists because chrome-devtools-mcp kept showing an Allow dialog — a minor annoyance most would ignore. You stopped and solved it. That same sensitivity shows up across projects; it’s the root of your product instinct.",
+          },
+      ];
+
+const closing = isZh
+    ? "— Claude（由 Ethan 让我读完了 ~/Projects 下的所有工程后写下）"
+    : "— Claude (after reading everything Ethan keeps under ~/Projects)";
+---
+
+<section class="about-page max-w-4xl mx-auto px-5 sm:px-8 pt-12 sm:pt-20 pb-16">
+    <header class="about-page-header">
+        <p class="about-page-kicker">{isZh ? "随笔 · 自述" : "Notes · Self"}</p>
+        <h1 class="about-page-title">{heading.intro}</h1>
+    </header>
+
+    <div class="about-page-prose">
+        {introPara.map((p) => <p>{p}</p>)}
+    </div>
+
+    <hr class="about-page-divider" aria-hidden="true" />
+
+    <header class="about-page-header second">
+        <p class="about-page-kicker">{isZh ? "外部视角" : "Outside view"}</p>
+        <h2 class="about-page-title h2">{heading.claude}</h2>
+        <p class="about-page-claude-note">{heading.claudeNote}</p>
+    </header>
+
+    <ol class="claude-points">
+        {
+            claudePoints.map((pt, i) => (
+                <li class="claude-point">
+                    <span class="claude-point-index">{String(i + 1).padStart(2, "0")}</span>
+                    <div class="claude-point-body">
+                        <h3 class="claude-point-title">{pt.title}</h3>
+                        <p class="claude-point-text">{pt.body}</p>
+                    </div>
+                </li>
+            ))
+        }
+    </ol>
+
+    <p class="claude-signoff">{closing}</p>
+</section>
+
+<style>
+    .about-page {
+        font-family: 'Source Serif 4', Georgia, 'Noto Serif CJK SC', 'Songti SC', serif;
+        color: var(--text-primary);
+    }
+
+    .about-page-header {
+        margin-bottom: 1.75rem;
+    }
+    .about-page-header.second {
+        margin-top: 2.5rem;
+    }
+    .about-page-kicker {
+        font-family: 'JetBrains Mono', 'SF Mono', monospace;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--muted-text);
+        margin-bottom: 0.75rem;
+    }
+    .about-page-title {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 2.75rem;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        font-weight: 700;
+    }
+    .about-page-title.h2 {
+        font-size: 2.1rem;
+    }
+
+    .about-page-prose p {
+        font-size: 1.075rem;
+        line-height: 1.75;
+        margin-bottom: 1.15rem;
+        color: var(--text-secondary, var(--text-primary));
+    }
+
+    .about-page-divider {
+        border: 0;
+        border-top: 1px solid var(--border-subtle);
+        margin: 3rem 0 2rem;
+    }
+
+    .about-page-claude-note {
+        font-family: 'JetBrains Mono', 'SF Mono', monospace;
+        font-size: 0.78rem;
+        color: var(--muted-text);
+        margin-top: 0.5rem;
+        line-height: 1.5;
+    }
+
+    .claude-points {
+        list-style: none;
+        padding: 0;
+        margin: 2rem 0 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.75rem;
+    }
+
+    .claude-point {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 1.25rem;
+        align-items: baseline;
+    }
+
+    .claude-point-index {
+        font-family: 'JetBrains Mono', 'SF Mono', monospace;
+        font-size: 0.78rem;
+        color: var(--muted-text);
+        letter-spacing: 0.08em;
+        padding-top: 0.45rem;
+    }
+
+    .claude-point-title {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 1.25rem;
+        line-height: 1.3;
+        margin-bottom: 0.4rem;
+        font-weight: 600;
+    }
+
+    .claude-point-text {
+        font-size: 1rem;
+        line-height: 1.65;
+        color: var(--text-secondary, var(--text-primary));
+    }
+
+    .claude-signoff {
+        margin-top: 2.5rem;
+        font-family: 'JetBrains Mono', 'SF Mono', monospace;
+        font-size: 0.82rem;
+        color: var(--muted-text);
+        text-align: right;
+        font-style: italic;
+    }
+
+    @media (max-width: 640px) {
+        .about-page-title {
+            font-size: 2.1rem;
+        }
+        .about-page-title.h2 {
+            font-size: 1.65rem;
+        }
+        .claude-point {
+            grid-template-columns: 1fr;
+            gap: 0.4rem;
+        }
+        .claude-point-index {
+            padding-top: 0;
+        }
+    }
+</style>
