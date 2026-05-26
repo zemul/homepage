@@ -8,54 +8,56 @@ interface NavPost {
 
 interface Props {
   lang: 'en' | 'zh';
-  prevPost?: NavPost;
-  nextPost?: NavPost;
+  /** The post published just after the current one (chronologically newer). */
+  newerPost?: NavPost;
+  /** The post published just before the current one (chronologically older). */
+  olderPost?: NavPost;
   listUrl: string;
   currentUrl: string;
 }
 
-const { lang, prevPost, nextPost, listUrl, currentUrl } = Astro.props;
+const { lang, newerPost, olderPost, listUrl, currentUrl } = Astro.props;
 const t = useTranslations(lang);
 ---
 
 <nav class="post-nav mt-16 sm:mt-20 pt-10 border-t border-[var(--border-subtle)]" aria-label="Post navigation">
-  <!-- Prev / Next pair as feature-card style siblings -->
-  {(prevPost || nextPost) && (
+  <!-- Left = newer (the post published after this one), right = older. -->
+  {(newerPost || olderPost) && (
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-10">
-      {prevPost ? (
+      {newerPost ? (
         <a
-          href={prevPost.url}
+          href={newerPost.url}
           class="post-nav-card scroll-top group"
-          aria-label={`${t('blog.prevPost')}: ${prevPost.title}`}
+          aria-label={`${t('blog.newerPost')}: ${newerPost.title}`}
         >
           <span class="font-mono text-[10px] tracking-[0.2em] uppercase text-[var(--muted-text)] inline-flex items-center gap-1.5">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M19 12H5"></path>
               <path d="m12 19-7-7 7-7"></path>
             </svg>
-            {t('blog.prevPost')}
+            {t('blog.newerPost')}
           </span>
           <span class="font-display block mt-2 text-[1.0625rem] sm:text-[1.125rem] text-[var(--text-primary)] group-hover:text-[var(--accent-hover)] transition-colors duration-200" style="font-weight: 500; letter-spacing: -0.01em; line-height: 1.35;">
-            {prevPost.title}
+            {newerPost.title}
           </span>
         </a>
       ) : <span class="hidden sm:block" />}
 
-      {nextPost ? (
+      {olderPost ? (
         <a
-          href={nextPost.url}
+          href={olderPost.url}
           class="post-nav-card post-nav-card--end scroll-top group"
-          aria-label={`${t('blog.nextPost')}: ${nextPost.title}`}
+          aria-label={`${t('blog.olderPost')}: ${olderPost.title}`}
         >
           <span class="font-mono text-[10px] tracking-[0.2em] uppercase text-[var(--muted-text)] inline-flex items-center gap-1.5">
-            {t('blog.nextPost')}
+            {t('blog.olderPost')}
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5 12h14"></path>
               <path d="m12 5 7 7-7 7"></path>
             </svg>
           </span>
           <span class="font-display block mt-2 text-[1.0625rem] sm:text-[1.125rem] text-[var(--text-primary)] group-hover:text-[var(--accent-hover)] transition-colors duration-200" style="font-weight: 500; letter-spacing: -0.01em; line-height: 1.35;">
-            {nextPost.title}
+            {olderPost.title}
           </span>
         </a>
       ) : <span class="hidden sm:block" />}

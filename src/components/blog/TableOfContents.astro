@@ -2,14 +2,30 @@
 interface Props {
   headings: { depth: number; slug: string; text: string }[];
   lang: 'en' | 'zh';
+  listUrl?: string;
+  currentUrl?: string;
 }
 
-const { headings, lang } = Astro.props;
+const { headings, lang, listUrl, currentUrl } = Astro.props;
 const tocItems = headings.filter(h => h.depth === 2 || h.depth === 3);
 const tocLabel = lang === 'zh' ? '目录' : 'On this page';
+const backLabel = lang === 'zh' ? '返回博客' : 'Back to Blog';
 ---
 
 <aside class="toc-sidebar">
+  {listUrl && (
+    <a
+      href={listUrl}
+      class="toc-back back-to-list"
+      data-current-url={currentUrl}
+    >
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M19 12H5"></path>
+        <path d="m12 19-7-7 7-7"></path>
+      </svg>
+      {backLabel}
+    </a>
+  )}
   {tocItems.length > 0 && (
     <nav class="toc-nav" aria-label={tocLabel}>
       <p class="toc-title">{tocLabel}</p>
@@ -76,6 +92,27 @@ const tocLabel = lang === 'zh' ? '目录' : 'On this page';
   }
   .toc-sidebar::-webkit-scrollbar {
     display: none;
+  }
+
+  /* "Back to blog" sits above the TOC; visually separate from the toc-nav's
+     vertical guideline so the line stays a TOC-only affordance. */
+  .toc-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'JetBrains Mono', 'SF Mono', monospace;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted-text);
+    text-decoration: none;
+    margin-bottom: 1.25rem;
+    padding-left: 1rem;
+    transition: color 200ms ease;
+  }
+  .toc-back:hover {
+    color: var(--accent);
   }
 
   .toc-title {

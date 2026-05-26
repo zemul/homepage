@@ -34,16 +34,16 @@ const { period, slug } = Astro.params;
 const zhUrl = `/zh/blog/${period}/${slug}`;
 const currentUrl = `/blog/${period}/${slug}`;
 
-// Find prev/next posts
+// allPosts is sorted newest-first; lower index = more recent.
 const currentIndex = allPosts.findIndex(p => p.id === post.id);
-const prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : undefined;
-const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : undefined;
+const newerPost = currentIndex > 0 ? allPosts[currentIndex - 1] : undefined;
+const olderPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : undefined;
 ---
 
 <Layout title={`${post.data.title} — Ethan Zhao`}>
   <div class="blog-page">
     <aside class="blog-toc-float">
-      <TableOfContents headings={headings} lang="en" />
+      <TableOfContents headings={headings} lang="en" listUrl="/blog" currentUrl={currentUrl} />
     </aside>
 
     <main class="max-w-4xl mx-auto px-5 sm:px-8 pt-10 sm:pt-16 pb-16">
@@ -56,8 +56,8 @@ const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : undefined;
         lang="en"
         listUrl="/blog"
         currentUrl={currentUrl}
-        prevPost={prevPost ? { title: prevPost.data.title, url: getPostUrl(prevPost.id) } : undefined}
-        nextPost={nextPost ? { title: nextPost.data.title, url: getPostUrl(nextPost.id) } : undefined}
+        newerPost={newerPost ? { title: newerPost.data.title, url: getPostUrl(newerPost.id) } : undefined}
+        olderPost={olderPost ? { title: olderPost.data.title, url: getPostUrl(olderPost.id) } : undefined}
       />
       <Comments lang="en" term={`blog/${period}/${slug}`} />
       <ImageLightbox />
