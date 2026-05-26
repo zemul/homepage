@@ -9,7 +9,7 @@ const pathname = Astro.url.pathname;
 
 const homeUrl = lang === 'zh' ? '/zh/' : '/';
 const blogUrl = lang === 'zh' ? '/zh/blog' : '/blog';
-const aboutUrl = lang === 'zh' ? '/zh/#about' : '/#about';
+const aboutUrl = lang === 'zh' ? '/zh/about' : '/about';
 
 const isHomeActive =
   pathname === '/' || pathname === '/zh' || pathname === '/zh/';
@@ -18,28 +18,80 @@ const isBlogActive =
   pathname.startsWith('/blog/') ||
   pathname === '/zh/blog' ||
   pathname.startsWith('/zh/blog/');
+const isAboutActive =
+  pathname === '/about' ||
+  pathname === '/about/' ||
+  pathname === '/zh/about' ||
+  pathname === '/zh/about/' ||
+  pathname === '/en/about' ||
+  pathname === '/en/about/';
+
+// Split label into per-char spans so we can justify both ends across
+// a fixed slot — same geometry regardless of language or active state.
+const splitChars = (s: string) => Array.from(s);
+const homeChars = splitChars(t('nav.home'));
+const blogChars = splitChars(t('nav.blog'));
+const aboutChars = splitChars(t('nav.about'));
 ---
 
 <header class="site-topnav" data-topnav>
   <div class="site-topnav-inner">
-    <nav class="site-topnav-links" aria-label="Primary">
+    <nav class="site-topnav-links" aria-label="Primary" data-nav-list>
       <a href={homeUrl} class:list={["site-topnav-link", isHomeActive && "is-active"]}>
-        <span class="site-topnav-label">{t('nav.home')}</span>
+        <span class="site-topnav-label">
+          {homeChars.map((c) => <span class="site-topnav-ch">{c}</span>)}
+        </span>
       </a>
       <a
         href={blogUrl}
         class:list={["site-topnav-link", isBlogActive && "is-active"]}
         data-blog-link
       >
-        <span class="site-topnav-label">{t('nav.blog')}</span>
+        <span class="site-topnav-label">
+          {blogChars.map((c) => <span class="site-topnav-ch">{c}</span>)}
+        </span>
       </a>
-      <a href={aboutUrl} class="site-topnav-link">
-        <span class="site-topnav-label">{t('nav.about')}</span>
+      <a href={aboutUrl} class:list={["site-topnav-link", isAboutActive && "is-active"]}>
+        <span class="site-topnav-label">
+          {aboutChars.map((c) => <span class="site-topnav-ch">{c}</span>)}
+        </span>
       </a>
+      <svg
+        class="site-topnav-indicator"
+        data-nav-indicator
+        aria-hidden="true"
+        preserveAspectRatio="none"
+      >
+        <defs>
+          <linearGradient id="nav-ind-fade-active" data-fade-active gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="0">
+            <stop offset="0" stop-color="white" stop-opacity="0"/>
+            <stop offset="0.18" stop-color="white" stop-opacity="1"/>
+            <stop offset="0.82" stop-color="white" stop-opacity="1"/>
+            <stop offset="1" stop-color="white" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="nav-ind-fade-hover" data-fade-hover gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="0">
+            <stop offset="0" stop-color="white" stop-opacity="0"/>
+            <stop offset="0.18" stop-color="white" stop-opacity="1"/>
+            <stop offset="0.82" stop-color="white" stop-opacity="1"/>
+            <stop offset="1" stop-color="white" stop-opacity="0"/>
+          </linearGradient>
+          <mask id="nav-ind-mask-active" maskUnits="userSpaceOnUse">
+            <rect data-mask-active fill="url(#nav-ind-fade-active)" x="0" y="0" width="0" height="100%"/>
+          </mask>
+          <mask id="nav-ind-mask-hover" maskUnits="userSpaceOnUse">
+            <rect data-mask-hover fill="url(#nav-ind-fade-hover)" x="0" y="0" width="0" height="100%"/>
+          </mask>
+        </defs>
+        <g class="site-topnav-indicator-active" mask="url(#nav-ind-mask-active)">
+          <path data-nav-path-active fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path>
+        </g>
+        <g class="site-topnav-indicator-hover" mask="url(#nav-ind-mask-hover)">
+          <path data-nav-path-hover fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path>
+        </g>
+      </svg>
     </nav>
 
     <div class="site-topnav-right">
-      <span class="site-topnav-divider" aria-hidden="true"></span>
       <div class="site-topnav-controls">
         <ThemeToggle />
         <LanguagePicker />
@@ -52,9 +104,9 @@ const isBlogActive =
   // Hide-on-scroll-down, show-on-scroll-up.
   const nav = document.querySelector<HTMLElement>('[data-topnav]');
   if (nav) {
-    const HIDE_DELTA = 2;     // hide as soon as the user starts scrolling down
+    const HIDE_DELTA = 2;
     const SHOW_DELTA = 6;
-    const TOP_ZONE = 4;       // only show when essentially at the top
+    const TOP_ZONE = 4;
     let lastY = window.scrollY;
     let ticking = false;
 
@@ -85,13 +137,10 @@ const isBlogActive =
       { passive: true }
     );
 
-    // Always reveal when the user focuses an in-nav element via keyboard
     nav.addEventListener('focusin', () => nav.classList.remove('is-hidden'));
   }
 
-  // Scroll-restoration handoff: clicking the TopNav "Blog" link from an
-  // article page saves the article path so the list can scroll back to it.
-  // Shares storage key with .back-to-list inside posts.
+  // Scroll-restoration handoff for the Blog link.
   const ARTICLE_RE = /^\/(?:zh\/)?blog\/[^/]+\/[^/]+\/?$/;
   document.querySelectorAll<HTMLAnchorElement>('[data-blog-link]').forEach((link) => {
     link.addEventListener('click', () => {
@@ -101,4 +150,238 @@ const isBlogActive =
       }
     });
   });
+
+  // Two independent squiggle tracks:
+  //   - "active" track: anchored to the truly selected link, never moves on hover.
+  //   - "hover"  track: a faint preview that slides out from the active one and
+  //                     tracks pointer/focus across other links; fades out on leave.
+  // Each end (left / right) of each track has its own spring so the wave
+  // stretches naturally as it crosses link boundaries.
+  const navList = document.querySelector<HTMLElement>('[data-nav-list]');
+  const indicator = document.querySelector<SVGSVGElement>('[data-nav-indicator]');
+  const activePathEl = document.querySelector<SVGPathElement>('[data-nav-path-active]');
+  const hoverPathEl  = document.querySelector<SVGPathElement>('[data-nav-path-hover]');
+  const activeMaskRect = document.querySelector<SVGRectElement>('[data-mask-active]');
+  const hoverMaskRect  = document.querySelector<SVGRectElement>('[data-mask-hover]');
+  const activeFade = document.querySelector<SVGLinearGradientElement>('[data-fade-active]');
+  const hoverFade  = document.querySelector<SVGLinearGradientElement>('[data-fade-hover]');
+
+  if (
+    navList && indicator &&
+    activePathEl && hoverPathEl &&
+    activeMaskRect && hoverMaskRect &&
+    activeFade && hoverFade
+  ) {
+    const GAP = 6;
+    const AMP = 1.6;
+    const PERIOD = 12;
+    const H = 8;
+    const MID = H / 2;
+    const EXT = 6;     // px — extend wave slightly past the text on each side
+    const FEATHER = 10; // px — how far each end fades out
+
+    type Spring = { x: number; v: number; target: number };
+    type Track = {
+      left: Spring;
+      right: Spring;
+      raf: number;
+      ready: boolean;
+      pathEl: SVGPathElement;
+      maskRect: SVGRectElement;
+      fade: SVGLinearGradientElement;
+    };
+
+    const mkSpring = (): Spring => ({ x: 0, v: 0, target: 0 });
+    const activeTrack: Track = {
+      left: mkSpring(), right: mkSpring(),
+      raf: 0, ready: false,
+      pathEl: activePathEl,
+      maskRect: activeMaskRect,
+      fade: activeFade,
+    };
+    const hoverTrack: Track = {
+      left: mkSpring(), right: mkSpring(),
+      raf: 0, ready: false,
+      pathEl: hoverPathEl,
+      maskRect: hoverMaskRect,
+      fade: hoverFade,
+    };
+
+    const STIFF_HEAD = 220;
+    const STIFF_TAIL = 150;
+    const DAMP_HEAD  = 22;
+    const DAMP_TAIL  = 19;
+
+    const buildPath = (a: number, b: number, stretch: number) => {
+      const w = Math.max(2, b - a);
+      const halves = Math.max(2, Math.round(w / PERIOD));
+      const step = w / halves;
+      const amp = AMP * (1 + Math.min(1.2, stretch * 0.012));
+      let d = `M ${a} ${MID}`;
+      for (let i = 0; i < halves; i++) {
+        const x1 = a + step * i + step / 2;
+        const y1 = MID + (i % 2 === 0 ? -amp : amp);
+        const x2 = a + step * (i + 1);
+        d += ` Q ${x1.toFixed(2)} ${y1.toFixed(2)} ${x2.toFixed(2)} ${MID}`;
+      }
+      return d;
+    };
+
+    const measure = (target: HTMLElement) => {
+      const label = target.querySelector<HTMLElement>('.site-topnav-label') ?? target;
+      const navRect = navList.getBoundingClientRect();
+      const r = label.getBoundingClientRect();
+      return {
+        left: r.left - navRect.left - EXT,
+        right: r.right - navRect.left + EXT,
+        top: r.bottom - navRect.top + GAP,
+        navWidth: navRect.width,
+      };
+    };
+
+    const currentActive = () =>
+      navList.querySelector<HTMLElement>('.site-topnav-link.is-active');
+
+    const setSvgFrame = (navWidth: number, top: number) => {
+      indicator.setAttribute('viewBox', `0 0 ${navWidth} ${H}`);
+      indicator.style.setProperty('--nav-ind-top', `${top}px`);
+      indicator.style.setProperty('--nav-ind-width', `${navWidth}px`);
+    };
+
+    // Sync the mask rect + the linear-gradient fade endpoints so each track's
+    // wave fades out softly at both ends instead of being chopped.
+    const syncMask = (track: Track) => {
+      const a = track.left.x;
+      const b = track.right.x;
+      const w = Math.max(0, b - a);
+      // Mask rect spans the full path including a small overshoot, but fade
+      // gradient is locked to the actual path region.
+      track.maskRect.setAttribute('x', `${a - FEATHER}`);
+      track.maskRect.setAttribute('width', `${w + FEATHER * 2}`);
+      track.fade.setAttribute('x1', `${a - FEATHER}`);
+      track.fade.setAttribute('x2', `${b + FEATHER}`);
+    };
+
+    const stepSpring = (s: Spring, stiff: number, damp: number) => {
+      const dt = 1 / 60;
+      const f = -stiff * (s.x - s.target) - damp * s.v;
+      s.v += f * dt;
+      s.x += s.v * dt;
+    };
+
+    const tickTrack = (track: Track) => {
+      const leftLeading  = track.left.target  < track.left.x;
+      const rightLeading = track.right.target > track.right.x;
+
+      stepSpring(
+        track.left,
+        leftLeading ? STIFF_HEAD : STIFF_TAIL,
+        leftLeading ? DAMP_HEAD : DAMP_TAIL,
+      );
+      stepSpring(
+        track.right,
+        rightLeading ? STIFF_HEAD : STIFF_TAIL,
+        rightLeading ? DAMP_HEAD : DAMP_TAIL,
+      );
+
+      const restWidth = (track.right.target - track.left.target);
+      const liveWidth = (track.right.x - track.left.x);
+      const stretch = Math.max(0, liveWidth - restWidth);
+
+      track.pathEl.setAttribute('d', buildPath(track.left.x, track.right.x, stretch));
+      syncMask(track);
+
+      const settled =
+        Math.abs(track.left.x - track.left.target) < 0.1 &&
+        Math.abs(track.right.x - track.right.target) < 0.1 &&
+        Math.abs(track.left.v) < 0.1 &&
+        Math.abs(track.right.v) < 0.1;
+
+      if (!settled) {
+        track.raf = requestAnimationFrame(() => tickTrack(track));
+      } else {
+        track.left.x = track.left.target;
+        track.right.x = track.right.target;
+        track.pathEl.setAttribute('d', buildPath(track.left.x, track.right.x, 0));
+        syncMask(track);
+        track.raf = 0;
+      }
+    };
+
+    const placeTrack = (track: Track, target: HTMLElement | null, animate: boolean) => {
+      if (!target) return false;
+      const { left, right, top, navWidth } = measure(target);
+      setSvgFrame(navWidth, top);
+
+      track.left.target = left;
+      track.right.target = right;
+
+      if (!track.ready || !animate) {
+        track.left.x = left; track.right.x = right;
+        track.left.v = 0;    track.right.v = 0;
+        track.pathEl.setAttribute('d', buildPath(left, right, 0));
+        syncMask(track);
+        track.ready = true;
+      } else if (!track.raf) {
+        track.raf = requestAnimationFrame(() => tickTrack(track));
+      }
+      return true;
+    };
+
+    // ── Initial placement: active track lands on the active link silently;
+    //    hover track starts at the same spot but is invisible until hover.
+    const initialActive = currentActive();
+    if (initialActive) {
+      placeTrack(activeTrack, initialActive, false);
+      placeTrack(hoverTrack, initialActive, false);
+      indicator.classList.add('is-visible');
+    }
+
+    // ── Hover behaviour: only the hover track moves.
+    const showHoverAt = (link: HTMLElement) => {
+      placeTrack(hoverTrack, link, true);
+      indicator.classList.add('is-hovering');
+    };
+    const hideHover = () => {
+      // Fade out, snap the hover track back to the active link's geometry
+      // so the next hover starts from the right place.
+      const activeLink = currentActive();
+      indicator.classList.remove('is-hovering');
+      if (activeLink) {
+        // Snap silently after the fade-out — no animation visible.
+        placeTrack(hoverTrack, activeLink, false);
+      }
+    };
+
+    const links = navList.querySelectorAll<HTMLAnchorElement>('.site-topnav-link');
+    links.forEach((link) => {
+      link.addEventListener('pointerenter', () => {
+        if (!link.classList.contains('is-active')) showHoverAt(link);
+        else hideHover();
+      });
+      link.addEventListener('focus', () => {
+        if (!link.classList.contains('is-active')) showHoverAt(link);
+        else hideHover();
+      });
+    });
+    navList.addEventListener('pointerleave', hideHover);
+    navList.addEventListener('focusout', (e) => {
+      const next = e.relatedTarget as Node | null;
+      if (!next || !navList.contains(next)) hideHover();
+    });
+
+    // ── Re-align both tracks on resize / font load.
+    const realign = () => {
+      const a = currentActive();
+      if (!a) return;
+      placeTrack(activeTrack, a, false);
+      if (!indicator.classList.contains('is-hovering')) {
+        placeTrack(hoverTrack, a, false);
+      }
+    };
+    window.addEventListener('resize', realign, { passive: true });
+    if ((document as any).fonts?.ready) {
+      (document as any).fonts.ready.then(realign);
+    }
+  }
 </script>

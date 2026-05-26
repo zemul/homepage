@@ -56,7 +56,7 @@ const routeClass = isBlogRoute ? "route-blog" : "";
         ))}
     </head>
     <body
-        class:list={["noise-overlay min-h-screen bg-[var(--page-bg)] text-[var(--text-primary)] antialiased transition-[background-color,color] duration-300 overscroll-none touch-pan-y", routeClass]}
+        class:list={["noise-overlay min-h-screen bg-[var(--page-bg)] text-[var(--text-primary)] antialiased transition-[background-color,color] duration-300 overscroll-none touch-pan-y site-shell", routeClass]}
         style="padding-bottom: env(safe-area-inset-bottom); font-family: 'Inter', system-ui, -apple-system, sans-serif;"
     >
         <TopNav />
@@ -69,6 +69,20 @@ const routeClass = isBlogRoute ? "route-blog" : "";
     body {
         margin: 0;
         width: 100%;
+    }
+    html {
         height: 100%;
+    }
+    /* Sticky footer: body fills the viewport, main expands, footer hugs bottom. */
+    body.site-shell {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    body.site-shell > main {
+        flex: 1 0 auto;
+    }
+    body.site-shell > footer {
+        flex: 0 0 auto;
     }
 </style>
