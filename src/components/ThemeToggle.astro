@@ -42,30 +42,62 @@
         themeToggleDarkIcon?.classList.remove("hidden");
     }
 
-    themeToggleBtn?.addEventListener("click", function () {
-        // toggle icons inside button
+    const isDark = () => document.documentElement.classList.contains("dark");
+
+    const applyTheme = (toDark: boolean) => {
         themeToggleDarkIcon?.classList.toggle("hidden");
         themeToggleLightIcon?.classList.toggle("hidden");
-
-        // if set via local storage previously
-        if (localStorage.getItem("color-theme")) {
-            if (localStorage.getItem("color-theme") === "light") {
-                document.documentElement.classList.add("dark");
-                localStorage.setItem("color-theme", "dark");
-            } else {
-                document.documentElement.classList.remove("dark");
-                localStorage.setItem("color-theme", "light");
-            }
-
-            // if NOT set via local storage previously
+        if (toDark) {
+            document.documentElement.classList.add("dark");
+            localStorage.setItem("color-theme", "dark");
         } else {
-            if (document.documentElement.classList.contains("dark")) {
-                document.documentElement.classList.remove("dark");
-                localStorage.setItem("color-theme", "light");
-            } else {
-                document.documentElement.classList.add("dark");
-                localStorage.setItem("color-theme", "dark");
-            }
+            document.documentElement.classList.remove("dark");
+            localStorage.setItem("color-theme", "light");
         }
+    };
+
+    themeToggleBtn?.addEventListener("click", (event) => {
+        const targetDark = !isDark();
+
+        // Honour reduced-motion: skip the reveal animation.
+        const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        // Feature-detect View Transitions (Chromium 111+, Safari 18+).
+        const supports =
+            typeof (document as any).startViewTransition === "function" && !prefersReduced;
+
+        if (!supports) {
+            applyTheme(targetDark);
+            return;
+        }
+
+        // Origin of the circular reveal — centre of the button that was clicked.
+        const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        const endRadius = Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y),
+        );
+
+        document.documentElement.style.setProperty("--theme-ripple-x", `${x}px`);
+        document.documentElement.style.setProperty("--theme-ripple-y", `${y}px`);
+        document.documentElement.style.setProperty("--theme-ripple-r", `${endRadius}px`);
+        // Direction lets the CSS animate the new theme expanding outward
+        // both when going dark and going light.
+        document.documentElement.setAttribute(
+            "data-theme-ripple",
+            targetDark ? "to-dark" : "to-light",
+        );
+
+        const transition = (document as any).startViewTransition(() => {
+            applyTheme(targetDark);
+        });
+
+        transition.finished.finally(() => {
+            document.documentElement.removeAttribute("data-theme-ripple");
+            document.documentElement.style.removeProperty("--theme-ripple-x");
+            document.documentElement.style.removeProperty("--theme-ripple-y");
+            document.documentElement.style.removeProperty("--theme-ripple-r");
+        });
     });
 </script>
