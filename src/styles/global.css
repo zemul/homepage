@@ -328,8 +328,7 @@ body.route-blog article li {
     position: sticky;
     top: 0;
     z-index: 40;
-    /* 建立独立堆叠上下文，防止 ::before 的 z-index:-1 钻到页面内容之下
-       —— iOS Safari 上 sticky 触发瞬间正文会从顶部"穿"过来。 */
+    /* 让毛玻璃层留在 sticky header 自己的合成上下文里，避开 iOS Safari 漏层。 */
     isolation: isolate;
     transform: translateY(0);
     transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -368,8 +367,38 @@ body.route-blog article li {
         rgba(0, 0, 0, 0) 100%
     );
     transition: opacity 280ms cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: -1;
+    z-index: 0;
     pointer-events: none;
+}
+
+.site-topnav::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: max(18px, calc(env(safe-area-inset-top, 0px) + 14px));
+    background-color: var(--page-bg);
+    z-index: 0;
+    pointer-events: none;
+}
+
+@media (max-width: 639px) {
+    .site-topnav::before {
+        background-color: var(--page-bg);
+    }
+
+    .site-topnav::after {
+        position: fixed;
+        height: max(112px, calc(env(safe-area-inset-top, 0px) + 76px));
+        background: linear-gradient(
+            to bottom,
+            var(--page-bg) 0%,
+            var(--page-bg) calc(100% - 28px),
+            color-mix(in oklab, var(--page-bg) 92%, transparent) calc(100% - 12px),
+            transparent 100%
+        );
+    }
 }
 
 .site-topnav.is-hidden {
@@ -387,6 +416,7 @@ body.route-blog article li {
     padding: 0 1.25rem;
     height: 60px;
     position: relative;
+    z-index: 1;
     /* In compact mode this becomes a free-floating pill. JS may set `width`
        inline to drive a smooth width transition. */
     border-radius: 0;
