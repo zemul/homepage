@@ -328,6 +328,9 @@ body.route-blog article li {
     position: sticky;
     top: 0;
     z-index: 40;
+    /* 建立独立堆叠上下文，防止 ::before 的 z-index:-1 钻到页面内容之下
+       —— iOS Safari 上 sticky 触发瞬间正文会从顶部"穿"过来。 */
+    isolation: isolate;
     transform: translateY(0);
     transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
     padding-top: env(safe-area-inset-top, 0px);
