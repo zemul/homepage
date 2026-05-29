@@ -335,6 +335,16 @@ body.route-blog article li {
     padding-top: env(safe-area-inset-top, 0px);
 }
 
+/* 移动端：header 作为普通文档流组件，随页面一起滚动。
+   不吸顶、不固定 —— 向上滑动时 header 直接跟内容滚出视口顶部。
+   这样不存在"固定层悬于内容之上"的层级关系，也就根除了 iOS Safari
+   橡皮筋(overscroll)/地址栏收缩时上边框上方的内容穿透问题。 */
+@media (max-width: 639px) {
+    .site-topnav {
+        position: static;
+    }
+}
+
 /* Header body background.
    ::before is absolutely positioned and does NOT affect the inner row's
    geometry — extending it past the inner's bottom is purely visual, so the
@@ -388,16 +398,10 @@ body.route-blog article li {
         background-color: var(--page-bg);
     }
 
+    /* header 已 fixed，顶部不再有穿透；::after 只需作为 safe-area 实底色
+       兜底(与桌面端一致)，随 header 固定即可，无需大面积 fixed 渐变。 */
     .site-topnav::after {
-        position: fixed;
-        height: max(112px, calc(env(safe-area-inset-top, 0px) + 76px));
-        background: linear-gradient(
-            to bottom,
-            var(--page-bg) 0%,
-            var(--page-bg) calc(100% - 28px),
-            color-mix(in oklab, var(--page-bg) 92%, transparent) calc(100% - 12px),
-            transparent 100%
-        );
+        height: max(18px, calc(env(safe-area-inset-top, 0px) + 14px));
     }
 }
 
