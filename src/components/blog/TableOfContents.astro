@@ -9,7 +9,7 @@ interface Props {
 const { headings, lang, listUrl, currentUrl } = Astro.props;
 const tocItems = headings.filter(h => h.depth === 2 || h.depth === 3);
 const tocLabel = lang === 'zh' ? '目录' : 'On this page';
-const backLabel = lang === 'zh' ? '返回博客' : 'Back to Blog';
+const backLabel = lang === 'zh' ? '返回' : 'Back';
 ---
 
 <aside class="toc-sidebar">
