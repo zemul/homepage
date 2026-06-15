@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import TopNav from "../components/blog/TopNav.astro";
 import { getLangFromUrl } from "../i18n/utils";
+import { ClientRouter } from "astro:transitions";
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -38,8 +39,8 @@ const routeClass = isBlogRoute ? "route-blog" : "";
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Ethan Zhao" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="theme-color" content="#faf8f5" media="(prefers-color-scheme: light)" />
-        <meta name="theme-color" content="#111110" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#f7f9fb" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#101418" media="(prefers-color-scheme: dark)" />
         <link rel="apple-touch-icon" href="/favorite.png" />
         <link rel="manifest" href="/manifest.webmanifest" />
 
@@ -54,11 +55,33 @@ const routeClass = isBlogRoute ? "route-blog" : "";
         {preloadImages.map((href) => (
             <link rel="preload" as="image" href={href} type="image/webp" />
         ))}
+        <ClientRouter />
     </head>
     <body
         class:list={["noise-overlay min-h-screen bg-[var(--page-bg)] text-[var(--text-primary)] antialiased transition-[background-color,color] duration-300 overscroll-none touch-pan-y site-shell", routeClass]}
         style="padding-bottom: env(safe-area-inset-bottom); font-family: 'Inter', system-ui, -apple-system, sans-serif;"
     >
+        <svg class="liquid-glass-filter-defs" width="0" height="0" aria-hidden="true" focusable="false">
+            <filter id="topnav-liquid-refraction" color-interpolation-filters="sRGB" x="-12%" y="-24%" width="124%" height="148%">
+                <feTurbulence
+                    type="fractalNoise"
+                    baseFrequency="0.012 0.024"
+                    numOctaves="1"
+                    seed="8"
+                    result="liquidNoise"
+                />
+                <feGaussianBlur in="liquidNoise" stdDeviation="0.65" result="softLiquidNoise" />
+                <feDisplacementMap
+                    in="SourceGraphic"
+                    in2="softLiquidNoise"
+                    scale="7"
+                    xChannelSelector="R"
+                    yChannelSelector="G"
+                    result="liquidDisplaced"
+                />
+                <feColorMatrix in="liquidDisplaced" type="saturate" values="1" />
+            </filter>
+        </svg>
         <TopNav />
         <slot />
     </body>

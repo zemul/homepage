@@ -33,7 +33,7 @@ const showTotalViews = ["/", "/en", "/zh"].includes(normalizedPathname);
     </div>
 </footer>
 
-<script define:vars={{ pageViewsApi, showTotalViews }}>
+<script type="module" data-astro-rerun define:vars={{ pageViewsApi, showTotalViews }}>
     const counterEl = document.getElementById("page-view-count");
     const counterMetaEl = document.getElementById("page-view-meta");
     const apiBase = typeof pageViewsApi === "string" ? pageViewsApi.replace(/\/+$/, "") : "";

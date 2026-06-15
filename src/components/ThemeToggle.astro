@@ -30,7 +30,7 @@
     }
 </script>
 
-<script>
+<script type="module" data-astro-rerun>
     const themeToggleBtn = document.getElementById("theme-toggle");
     const themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
     const themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
@@ -44,7 +44,7 @@
 
     const isDark = () => document.documentElement.classList.contains("dark");
 
-    const applyTheme = (toDark: boolean) => {
+    const applyTheme = (toDark) => {
         themeToggleDarkIcon?.classList.toggle("hidden");
         themeToggleLightIcon?.classList.toggle("hidden");
         if (toDark) {
@@ -63,7 +63,7 @@
         const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         // Feature-detect View Transitions (Chromium 111+, Safari 18+).
         const supports =
-            typeof (document as any).startViewTransition === "function" && !prefersReduced;
+            typeof document.startViewTransition === "function" && !prefersReduced;
 
         if (!supports) {
             applyTheme(targetDark);
@@ -71,7 +71,7 @@
         }
 
         // Origin of the circular reveal — centre of the button that was clicked.
-        const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+        const rect = event.currentTarget.getBoundingClientRect();
         const x = rect.left + rect.width / 2;
         const y = rect.top + rect.height / 2;
         const endRadius = Math.hypot(
@@ -89,7 +89,7 @@
             targetDark ? "to-dark" : "to-light",
         );
 
-        const transition = (document as any).startViewTransition(() => {
+        const transition = document.startViewTransition(() => {
             applyTheme(targetDark);
         });
 

@@ -36,6 +36,30 @@ const aboutChars = splitChars(t('nav.about'));
 
 <header class="site-topnav" data-topnav>
   <div class="site-topnav-inner">
+    <a href={homeUrl} class="site-topnav-avatar" aria-label={t('nav.home')}>
+      <img
+        src="/bg.webp"
+        alt=""
+        width="80"
+        height="80"
+        loading="eager"
+        decoding="async"
+        draggable="false"
+        class="site-topnav-avatar-bg"
+        transition:persist="site-topnav-avatar-bg"
+      />
+      <img
+        src="/person.webp"
+        alt=""
+        width="80"
+        height="80"
+        loading="eager"
+        decoding="async"
+        draggable="false"
+        class="site-topnav-avatar-person"
+        transition:persist="site-topnav-avatar-person"
+      />
+    </a>
     <nav class="site-topnav-links" aria-label="Primary" data-nav-list>
       <a href={homeUrl} class:list={["site-topnav-link", isHomeActive && "is-active"]}>
         <span class="site-topnav-label">
@@ -100,14 +124,25 @@ const aboutChars = splitChars(t('nav.about'));
   </div>
 </header>
 
-<script>
+<script type="module" data-astro-rerun>
+  window.__topNavAbortController?.abort();
+  const topNavAbortController = new AbortController();
+  window.__topNavAbortController = topNavAbortController;
+  const topNavSignal = topNavAbortController.signal;
+
+  document.addEventListener(
+    'astro:before-swap',
+    () => topNavAbortController.abort(),
+    { once: true, signal: topNavSignal },
+  );
+
   // Compact (pill) mode on scroll — desktop only.
   // Mobile keeps the original "hide on scroll" behaviour for taller tap area.
-  const nav = document.querySelector<HTMLElement>('[data-topnav]');
-  const inner = nav?.querySelector<HTMLElement>('.site-topnav-inner') ?? null;
+  const nav = document.querySelector('[data-topnav]');
+  const inner = nav?.querySelector('.site-topnav-inner') ?? null;
 
   if (nav) {
-    const COMPACT_ENTER = 80;
+    const COMPACT_ENTER = 72;
     const COMPACT_EXIT  = 4;
     const HIDE_DELTA = 2;
     const SHOW_DELTA = 6;
@@ -120,11 +155,6 @@ const aboutChars = splitChars(t('nav.about'));
     const update = () => {
       const y = window.scrollY;
 
-      // NOTE: 胶囊态与 hide-on-scroll 都已暂停。
-      // - 胶囊态：与对齐/间距/波浪有视觉冲突，CSS 与同步逻辑保留以备恢复。
-      //   旧分支：if (y >= COMPACT_ENTER) nav.classList.add('is-compact'); else …
-      // - 自动隐藏：现在希望 header 始终可见，仅根据是否滚出顶部做"加阴影/底部渐隐"
-      //   的视觉切换 → 用 is-scrolled 标记。
       nav.classList.remove('is-compact');
       nav.classList.remove('is-hidden');
 
@@ -142,7 +172,7 @@ const aboutChars = splitChars(t('nav.about'));
           ticking = true;
         }
       },
-      { passive: true }
+      { passive: true, signal: topNavSignal }
     );
 
     // Reset state when crossing the desktop/mobile boundary.
@@ -153,20 +183,41 @@ const aboutChars = splitChars(t('nav.about'));
         nav.classList.remove('is-hidden');
       }
       update();
-    });
+    }, { signal: topNavSignal });
 
-    nav.addEventListener('focusin', () => nav.classList.remove('is-hidden'));
+    nav.addEventListener('focusin', () => nav.classList.remove('is-hidden'), { signal: topNavSignal });
+    update();
+
+    if (inner) {
+      const resetGlassLight = () => {
+        inner.style.setProperty('--glass-x', '18%');
+        inner.style.setProperty('--glass-y', '0%');
+        inner.style.setProperty('--glass-sheen', '0.72');
+      };
+
+      inner.addEventListener('pointermove', (event) => {
+        const rect = inner.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) * 100;
+        const y = ((event.clientY - rect.top) / rect.height) * 100;
+        inner.style.setProperty('--glass-x', `${Math.max(0, Math.min(100, x)).toFixed(1)}%`);
+        inner.style.setProperty('--glass-y', `${Math.max(0, Math.min(100, y)).toFixed(1)}%`);
+        inner.style.setProperty('--glass-sheen', '0.9');
+      }, { passive: true, signal: topNavSignal });
+
+      inner.addEventListener('pointerleave', resetGlassLight, { signal: topNavSignal });
+      topNavSignal.addEventListener('abort', resetGlassLight, { once: true });
+    }
   }
 
   // Scroll-restoration handoff for the Blog link.
   const ARTICLE_RE = /^\/(?:zh\/)?blog\/[^/]+\/[^/]+\/?$/;
-  document.querySelectorAll<HTMLAnchorElement>('[data-blog-link]').forEach((link) => {
+  document.querySelectorAll('[data-blog-link]').forEach((link) => {
     link.addEventListener('click', () => {
       const path = window.location.pathname.replace(/\/$/, '') || '/';
       if (ARTICLE_RE.test(path)) {
         sessionStorage.setItem('blog-scroll-target', path);
       }
-    });
+    }, { signal: topNavSignal });
   });
 
   // Two independent squiggle tracks:
@@ -175,14 +226,14 @@ const aboutChars = splitChars(t('nav.about'));
   //                     tracks pointer/focus across other links; fades out on leave.
   // Each end (left / right) of each track has its own spring so the wave
   // stretches naturally as it crosses link boundaries.
-  const navList = document.querySelector<HTMLElement>('[data-nav-list]');
-  const indicator = document.querySelector<SVGSVGElement>('[data-nav-indicator]');
-  const activePathEl = document.querySelector<SVGPathElement>('[data-nav-path-active]');
-  const hoverPathEl  = document.querySelector<SVGPathElement>('[data-nav-path-hover]');
-  const activeMaskRect = document.querySelector<SVGRectElement>('[data-mask-active]');
-  const hoverMaskRect  = document.querySelector<SVGRectElement>('[data-mask-hover]');
-  const activeFade = document.querySelector<SVGLinearGradientElement>('[data-fade-active]');
-  const hoverFade  = document.querySelector<SVGLinearGradientElement>('[data-fade-hover]');
+  const navList = document.querySelector('[data-nav-list]');
+  const indicator = document.querySelector('[data-nav-indicator]');
+  const activePathEl = document.querySelector('[data-nav-path-active]');
+  const hoverPathEl  = document.querySelector('[data-nav-path-hover]');
+  const activeMaskRect = document.querySelector('[data-mask-active]');
+  const hoverMaskRect  = document.querySelector('[data-mask-hover]');
+  const activeFade = document.querySelector('[data-fade-active]');
+  const hoverFade  = document.querySelector('[data-fade-hover]');
 
   if (
     navList && indicator &&
@@ -198,20 +249,8 @@ const aboutChars = splitChars(t('nav.about'));
     const EXT = 6;     // px — extend wave slightly past the text on each side
     const FEATHER = 10; // px — how far each end fades out
 
-    type Spring = { x: number; v: number; target: number };
-    type Track = {
-      left: Spring;
-      right: Spring;
-      raf: number;
-      ready: boolean;
-      pathEl: SVGPathElement;
-      maskRect: SVGRectElement;
-      fade: SVGLinearGradientElement;
-      seed: number;   // deterministic randomness — stable per "hop"
-    };
-
-    const mkSpring = (): Spring => ({ x: 0, v: 0, target: 0 });
-    const activeTrack: Track = {
+    const mkSpring = () => ({ x: 0, v: 0, target: 0 });
+    const activeTrack = {
       left: mkSpring(), right: mkSpring(),
       raf: 0, ready: false,
       pathEl: activePathEl,
@@ -219,7 +258,7 @@ const aboutChars = splitChars(t('nav.about'));
       fade: activeFade,
       seed: Math.random() * 1000,
     };
-    const hoverTrack: Track = {
+    const hoverTrack = {
       left: mkSpring(), right: mkSpring(),
       raf: 0, ready: false,
       pathEl: hoverPathEl,
@@ -235,12 +274,12 @@ const aboutChars = splitChars(t('nav.about'));
 
     // Deterministic pseudo-random: stable for a given (seed, index) so the
     // wave shape doesn't shimmer between animation frames.
-    const noise = (seed: number, i: number) => {
+    const noise = (seed, i) => {
       const x = Math.sin(seed * 12.9898 + i * 78.233) * 43758.5453;
       return x - Math.floor(x); // 0..1
     };
 
-    const buildPath = (a: number, b: number, stretch: number, seed: number) => {
+    const buildPath = (a, b, stretch, seed) => {
       const w = Math.max(2, b - a);
       const halves = Math.max(2, Math.round(w / PERIOD));
       const step = w / halves;
@@ -248,7 +287,7 @@ const aboutChars = splitChars(t('nav.about'));
 
       // Anchor Y for every half-wave boundary, including the two endpoints,
       // is offset by noise so the wave doesn't always "start at mid going down".
-      const anchorY: number[] = [];
+      const anchorY = [];
       for (let i = 0; i <= halves; i++) {
         // Boundary drift: roomy at the ends so the start/finish look organic;
         // the masked fade hides any slight Y mismatch from the baseline.
@@ -284,8 +323,8 @@ const aboutChars = splitChars(t('nav.about'));
       return d;
     };
 
-    const measure = (target: HTMLElement) => {
-      const label = target.querySelector<HTMLElement>('.site-topnav-label') ?? target;
+    const measure = (target) => {
+      const label = target.querySelector('.site-topnav-label') ?? target;
       const navRect = navList.getBoundingClientRect();
       const r = label.getBoundingClientRect();
       return {
@@ -297,9 +336,9 @@ const aboutChars = splitChars(t('nav.about'));
     };
 
     const currentActive = () =>
-      navList.querySelector<HTMLElement>('.site-topnav-link.is-active');
+      navList.querySelector('.site-topnav-link.is-active');
 
-    const setSvgFrame = (navWidth: number, top: number) => {
+    const setSvgFrame = (navWidth, top) => {
       indicator.setAttribute('viewBox', `0 0 ${navWidth} ${H}`);
       indicator.style.setProperty('--nav-ind-top', `${top}px`);
       indicator.style.setProperty('--nav-ind-width', `${navWidth}px`);
@@ -307,7 +346,7 @@ const aboutChars = splitChars(t('nav.about'));
 
     // Sync the mask rect + the linear-gradient fade endpoints so each track's
     // wave fades out softly at both ends instead of being chopped.
-    const syncMask = (track: Track) => {
+    const syncMask = (track) => {
       const a = track.left.x;
       const b = track.right.x;
       const w = Math.max(0, b - a);
@@ -319,14 +358,14 @@ const aboutChars = splitChars(t('nav.about'));
       track.fade.setAttribute('x2', `${b + FEATHER}`);
     };
 
-    const stepSpring = (s: Spring, stiff: number, damp: number) => {
+    const stepSpring = (s, stiff, damp) => {
       const dt = 1 / 60;
       const f = -stiff * (s.x - s.target) - damp * s.v;
       s.v += f * dt;
       s.x += s.v * dt;
     };
 
-    const tickTrack = (track: Track) => {
+    const tickTrack = (track) => {
       const leftLeading  = track.left.target  < track.left.x;
       const rightLeading = track.right.target > track.right.x;
 
@@ -365,7 +404,7 @@ const aboutChars = splitChars(t('nav.about'));
       }
     };
 
-    const placeTrack = (track: Track, target: HTMLElement | null, animate: boolean) => {
+    const placeTrack = (track, target, animate) => {
       if (!target) return false;
       const { left, right, top, navWidth } = measure(target);
       setSvgFrame(navWidth, top);
@@ -397,7 +436,7 @@ const aboutChars = splitChars(t('nav.about'));
     }
 
     // ── Hover behaviour: only the hover track moves.
-    const showHoverAt = (link: HTMLElement) => {
+    const showHoverAt = (link) => {
       placeTrack(hoverTrack, link, true);
       indicator.classList.add('is-hovering');
     };
@@ -412,22 +451,22 @@ const aboutChars = splitChars(t('nav.about'));
       }
     };
 
-    const links = navList.querySelectorAll<HTMLAnchorElement>('.site-topnav-link');
+    const links = navList.querySelectorAll('.site-topnav-link');
     links.forEach((link) => {
       link.addEventListener('pointerenter', () => {
         if (!link.classList.contains('is-active')) showHoverAt(link);
         else hideHover();
-      });
+      }, { signal: topNavSignal });
       link.addEventListener('focus', () => {
         if (!link.classList.contains('is-active')) showHoverAt(link);
         else hideHover();
-      });
+      }, { signal: topNavSignal });
     });
-    navList.addEventListener('pointerleave', hideHover);
+    navList.addEventListener('pointerleave', hideHover, { signal: topNavSignal });
     navList.addEventListener('focusout', (e) => {
-      const next = e.relatedTarget as Node | null;
-      if (!next || !navList.contains(next)) hideHover();
-    });
+      const next = e.relatedTarget;
+      if (!next || !(next instanceof Node) || !navList.contains(next)) hideHover();
+    }, { signal: topNavSignal });
 
     // ── Re-align both tracks on resize / font load.
     const realign = () => {
@@ -438,14 +477,16 @@ const aboutChars = splitChars(t('nav.about'));
         placeTrack(hoverTrack, a, false);
       }
     };
-    window.addEventListener('resize', realign, { passive: true });
-    if ((document as any).fonts?.ready) {
-      (document as any).fonts.ready.then(realign);
+    window.addEventListener('resize', realign, { passive: true, signal: topNavSignal });
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(() => {
+        if (!topNavSignal.aborted) realign();
+      });
     }
 
     // ── Keep indicator aligned while the nav inner is animating between
     // full bar and compact pill (width transition is ~360ms).
-    const innerEl = navList.closest<HTMLElement>('.site-topnav-inner');
+    const innerEl = navList.closest('.site-topnav-inner');
     if (innerEl) {
       let realignRaf = 0;
       const startRealignLoop = () => {
@@ -465,11 +506,21 @@ const aboutChars = splitChars(t('nav.about'));
       };
       innerEl.addEventListener('transitionrun', (e) => {
         if (e.propertyName === 'width' || e.propertyName === 'padding-left') startRealignLoop();
-      });
+      }, { signal: topNavSignal });
       innerEl.addEventListener('transitionend', (e) => {
         if (e.propertyName === 'width' || e.propertyName === 'padding-left') stopRealignLoop();
-      });
-      innerEl.addEventListener('transitioncancel', stopRealignLoop);
+      }, { signal: topNavSignal });
+      innerEl.addEventListener('transitioncancel', stopRealignLoop, { signal: topNavSignal });
+      topNavSignal.addEventListener('abort', stopRealignLoop, { once: true });
     }
+
+    topNavSignal.addEventListener(
+      'abort',
+      () => {
+        if (activeTrack.raf) cancelAnimationFrame(activeTrack.raf);
+        if (hoverTrack.raf) cancelAnimationFrame(hoverTrack.raf);
+      },
+      { once: true },
+    );
   }
 </script>

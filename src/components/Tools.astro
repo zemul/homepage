@@ -19,7 +19,7 @@ const subscriptions = ["ChatGPT", "Claude", "Gemini", "Copilot"];
 
 <section id="tools" class="py-16 px-4 max-w-6xl mx-auto">
     <h2 class="text-3xl font-bold mb-6 text-center">{t("tools.title")}</h2>
-    <p class="text-lg text-gray-600 dark:text-gray-400 mb-12 text-center max-w-2xl mx-auto">
+    <p class="text-lg text-[var(--text-secondary)] mb-12 text-center max-w-2xl mx-auto">
         {t("tools.desc")}
     </p>
 
@@ -34,9 +34,9 @@ const subscriptions = ["ChatGPT", "Claude", "Gemini", "Copilot"];
         <div class="flex flex-wrap justify-center gap-6">
             {
                 subscriptions.map((sub) => (
-                    <div class="px-8 py-4 bg-white dark:bg-[var(--panel-bg)] rounded-xl border border-gray-200 dark:border-[var(--border-subtle)] shadow-sm hover:shadow-md transition flex items-center gap-3">
+                    <div class="px-8 py-4 bg-[var(--panel-bg)] rounded-xl border border-[var(--border-subtle)] shadow-sm hover:shadow-md transition flex items-center gap-3">
                         <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-                        <span class="font-bold text-gray-800 dark:text-gray-100 text-lg">{sub}</span>
+                        <span class="font-bold text-[var(--text-primary)] text-lg">{sub}</span>
                     </div>
                 ))
             }

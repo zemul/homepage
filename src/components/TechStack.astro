@@ -9,11 +9,11 @@ const stack = ["React", "Astro", "Next.js", "TypeScript", "Node.js", "NestJS", "
 
 <section id="stack" class="py-16 px-4 max-w-4xl mx-auto text-center">
     <h2 class="text-3xl font-bold mb-6">{t("stack.title")}</h2>
-    <p class="text-lg text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto">
+    <p class="text-lg text-[var(--text-secondary)] mb-10 max-w-2xl mx-auto">
         {t("stack.desc")}
     </p>
 
     <div class="flex flex-wrap justify-center gap-3">
-        {stack.map((tech) => <span class="px-4 py-2 bg-gray-100 dark:bg-[var(--panel-bg)] text-gray-700 dark:text-gray-300 rounded-full font-medium text-sm hover:bg-gray-200 dark:hover:bg-[var(--panel-subtle)] transition">{tech}</span>)}
+        {stack.map((tech) => <span class="px-4 py-2 bg-[var(--panel-subtle)] text-[var(--text-secondary)] rounded-full font-medium text-sm hover:bg-[var(--panel-bg)] transition">{tech}</span>)}
     </div>
 </section>

@@ -49,15 +49,15 @@ const backLabel = lang === 'zh' ? '返回' : 'Back';
   )}
 </aside>
 
-<script>
+<script type="module" data-astro-rerun>
   function initToc() {
-    const links = document.querySelectorAll<HTMLAnchorElement>('.toc-link');
+    const links = document.querySelectorAll('.toc-link');
     if (!links.length) return;
 
-    const slugs = Array.from(links).map(l => l.dataset.slug!);
+    const slugs = Array.from(links).map((l) => l.dataset.slug).filter(Boolean);
     const headingEls = slugs
       .map(s => document.getElementById(s))
-      .filter(Boolean) as HTMLElement[];
+      .filter(Boolean);
 
     if (!headingEls.length) return;
 

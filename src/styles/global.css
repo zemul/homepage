@@ -13,28 +13,37 @@
     color-scheme: light;
 
     /* Surface */
-    --page-bg: #faf8f5;
-    --panel-bg: #ffffff;
-    --panel-subtle: #f5f2ed;
-    --border-subtle: #e8e4de;
+    --page-bg: #f7f9fb;
+    --panel-bg: #fbfcfd;
+    --panel-subtle: #eef4f7;
+    --border-subtle: #dfe8ee;
 
     /* Text */
-    --text-primary: #1a1a1a;
-    --text-secondary: #555550;
-    --muted-text: #888880;
+    --text-primary: #17191b;
+    --text-secondary: #4b555a;
+    --muted-text: #7b858b;
 
     /* Accent */
-    --accent: #b45309;
-    --accent-hover: #92400e;
-    --accent-subtle: rgba(180, 83, 9, 0.08);
+    --accent: #557f91;
+    --accent-hover: #3f6676;
+    --accent-subtle: rgba(85, 127, 145, 0.1);
 
     /* Brand blue — 与首页标题渐变起点一致 */
-    --brand: #2563eb;
+    --brand: #4b79c5;
 
-    /* Shadows – warm tinted */
-    --shadow-sm: 0 1px 2px rgba(120, 100, 70, 0.06);
-    --shadow-md: 0 4px 16px rgba(120, 100, 70, 0.08);
-    --shadow-lg: 0 8px 32px rgba(120, 100, 70, 0.1);
+    /* Paper wash */
+    --paper-highlight: #fbfcfe;
+    --paper-depth: #f4f8fa;
+    --wash-blue: rgba(141, 190, 225, 0.3);
+    --wash-cyan: rgba(198, 226, 238, 0.34);
+    --wash-mint: rgba(196, 224, 204, 0.24);
+    --wash-blank: rgba(255, 255, 255, 0.62);
+    --paper-grain-opacity: 0.035;
+
+    /* Shadows – cool paper tinted */
+    --shadow-sm: 0 1px 2px rgba(63, 88, 100, 0.05);
+    --shadow-md: 0 4px 16px rgba(63, 88, 100, 0.08);
+    --shadow-lg: 0 8px 32px rgba(63, 88, 100, 0.1);
 
     /* Hairline soft — falls back to subtle when not redefined */
     --border-soft: var(--border-subtle);
@@ -44,25 +53,34 @@ html.dark {
     color-scheme: dark;
 
     /* Surface */
-    --page-bg: #111110;
-    --panel-bg: #1a1918;
-    --panel-subtle: #222220;
-    --border-subtle: #2e2e2a;
+    --page-bg: #101418;
+    --panel-bg: #171d22;
+    --panel-subtle: #1d252b;
+    --border-subtle: #2a353c;
 
     /* Text */
-    --text-primary: #e8e4de;
-    --text-secondary: #a8a49c;
-    --muted-text: #908a82;
+    --text-primary: #edf2f4;
+    --text-secondary: #c4cbd0;
+    --muted-text: #8e999f;
 
     /* Accent */
-    --accent: #d97706;
-    --accent-hover: #f59e0b;
-    --accent-subtle: rgba(217, 119, 6, 0.1);
+    --accent: #8eb7c6;
+    --accent-hover: #add1dd;
+    --accent-subtle: rgba(142, 183, 198, 0.12);
 
     /* Brand blue — 暗色下提亮以保证对比度 */
-    --brand: #60a5fa;
+    --brand: #8bb6ee;
 
-    /* Shadows – warm tinted dark */
+    /* Paper wash */
+    --paper-highlight: #151b20;
+    --paper-depth: #0d1115;
+    --wash-blue: rgba(48, 83, 105, 0.34);
+    --wash-cyan: rgba(52, 92, 99, 0.28);
+    --wash-mint: rgba(58, 92, 80, 0.2);
+    --wash-blank: rgba(15, 20, 24, 0.54);
+    --paper-grain-opacity: 0.05;
+
+    /* Shadows – cool dark */
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
@@ -75,6 +93,13 @@ html {
     scrollbar-width: none;
 }
 
+@media (min-width: 640px) {
+    html,
+    body {
+        overscroll-behavior-y: none;
+    }
+}
+
 ::-webkit-scrollbar {
     display: none;
 }
@@ -85,6 +110,86 @@ body {
     transition: background-color 200ms ease, color 200ms ease;
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
+}
+
+body.site-shell {
+    position: relative;
+    isolation: isolate;
+    overflow-x: clip;
+}
+
+body.site-shell::after {
+    content: '';
+    position: fixed;
+    inset: -28vmax;
+    pointer-events: none;
+    z-index: -1;
+    background:
+        radial-gradient(44vmax 32vmax at 18% 22%, var(--wash-cyan) 0%, transparent 68%),
+        radial-gradient(50vmax 38vmax at 82% 18%, var(--wash-blue) 0%, transparent 70%),
+        radial-gradient(46vmax 34vmax at 78% 84%, var(--wash-mint) 0%, transparent 72%),
+        radial-gradient(38vmax 30vmax at 38% 62%, var(--wash-blank) 0%, transparent 68%),
+        conic-gradient(from 218deg at 46% 52%, transparent 0deg, var(--wash-cyan) 58deg, var(--wash-blue) 128deg, transparent 194deg, var(--wash-blank) 246deg, var(--wash-mint) 310deg, transparent 360deg);
+    filter: blur(42px) saturate(108%);
+    opacity: 0.72;
+    transform: translate3d(0, 0, 0) scale(1);
+    transform-origin: 52% 48%;
+    animation: paper-mesh-flow 54s ease-in-out infinite alternate;
+}
+
+@media (max-width: 639px) {
+    body.site-shell::after {
+        inset: -36vh -52vw;
+        background:
+            radial-gradient(78vw 42vh at 6% 10%, var(--wash-cyan) 0%, transparent 68%),
+            radial-gradient(84vw 48vh at 98% 28%, var(--wash-blue) 0%, transparent 70%),
+            radial-gradient(82vw 50vh at 50% 78%, var(--wash-mint) 0%, transparent 72%),
+            radial-gradient(72vw 44vh at 42% 52%, var(--wash-blank) 0%, transparent 68%),
+            conic-gradient(from 224deg at 44% 54%, transparent 0deg, var(--wash-cyan) 62deg, var(--wash-blue) 132deg, transparent 202deg, var(--wash-blank) 252deg, var(--wash-mint) 318deg, transparent 360deg);
+        filter: blur(34px) saturate(108%);
+        opacity: 0.76;
+        animation-name: paper-mesh-flow-mobile;
+    }
+}
+
+@keyframes paper-mesh-flow {
+    0% {
+        transform: translate3d(-3.5vmax, -1.5vmax, 0) scale(1.02) rotate(0deg);
+        transform-origin: 42% 48%;
+    }
+    38% {
+        transform: translate3d(2.5vmax, 1vmax, 0) scale(1.09) rotate(5deg);
+        transform-origin: 58% 42%;
+    }
+    70% {
+        transform: translate3d(-1vmax, 3vmax, 0) scale(1.05) rotate(-4deg);
+        transform-origin: 48% 62%;
+    }
+    100% {
+        transform: translate3d(4vmax, -2vmax, 0) scale(1.12) rotate(7deg);
+        transform-origin: 62% 54%;
+    }
+}
+
+@keyframes paper-mesh-flow-mobile {
+    0% {
+        transform: translate3d(-14vw, -4vh, 0) scale(1.04) rotate(0deg);
+        transform-origin: 42% 46%;
+    }
+    42% {
+        transform: translate3d(10vw, 6vh, 0) scale(1.13) rotate(7deg);
+        transform-origin: 60% 42%;
+    }
+    100% {
+        transform: translate3d(-4vw, 14vh, 0) scale(1.08) rotate(-6deg);
+        transform-origin: 48% 62%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.site-shell::after {
+        animation: none;
+    }
 }
 
 /* ─── Typography ─── */
@@ -241,54 +346,68 @@ html.dark .prose blockquote {
     background-color: var(--accent-subtle);
 }
 
-/* ─── Claude Design Scope: Blog Routes ───
- * Tokens & components mapped to the Claude Design spec
- * (coral primary, tinted-cream canvas, hairline surface stack).
+/* ─── Editorial Paper Scope: Blog Routes ───
+ * Tokens & components mapped to a cool paper wash inspired by the
+ * Feishu background set: soft blue/green tint, low contrast hairlines.
  * Scoped to `body.route-blog` so the homepage is unaffected.
  */
 body.route-blog {
-    /* Surface – cream stack */
-    --page-bg: #faf9f5;          /* canvas */
-    --panel-bg: #efe9de;         /* surface card */
-    --panel-subtle: #f5f0e8;     /* surface soft */
-    --border-subtle: #e6dfd8;    /* hairline */
-    --border-soft: #ebe6df;      /* hairline soft */
+    /* Surface – cool paper stack */
+    --page-bg: #f6f9fb;          /* canvas */
+    --panel-bg: #eef4f7;         /* surface card */
+    --panel-subtle: #f1f6f8;     /* surface soft */
+    --border-subtle: #dce7ee;    /* hairline */
+    --border-soft: #e5edf2;      /* hairline soft */
 
     /* Text */
-    --text-primary: #141413;     /* ink */
-    --text-secondary: #3d3d3a;   /* body */
-    --muted-text: #6c6a64;       /* muted */
-    --muted-soft: #8e8b82;       /* muted soft */
+    --text-primary: #15191b;     /* ink */
+    --text-secondary: #3f4b50;   /* body */
+    --muted-text: #718087;       /* muted */
+    --muted-soft: #93a0a6;       /* muted soft */
 
-    /* Accent – coral */
-    --accent: #cc785c;
-    --accent-hover: #a9583e;
-    --accent-subtle: rgba(204, 120, 92, 0.08);
-    --accent-ring: rgba(204, 120, 92, 0.16);
+    /* Accent – desaturated lake blue */
+    --accent: #607f93;
+    --accent-hover: #435f70;
+    --accent-subtle: rgba(96, 127, 147, 0.1);
+    --accent-ring: rgba(96, 127, 147, 0.18);
+
+    --paper-highlight: #fbfcfd;
+    --paper-depth: #f2f7f9;
+    --wash-blue: rgba(142, 180, 217, 0.24);
+    --wash-cyan: rgba(184, 218, 230, 0.22);
+    --wash-mint: rgba(200, 223, 209, 0.2);
+    --paper-grain-opacity: 0.04;
 
     /* Tinted shadows – mostly unused per spec */
-    --shadow-sm: 0 1px 2px rgba(20, 20, 19, 0.05);
-    --shadow-md: 0 1px 3px rgba(20, 20, 19, 0.08);
-    --shadow-lg: 0 8px 24px rgba(20, 20, 19, 0.06);
+    --shadow-sm: 0 1px 2px rgba(42, 67, 78, 0.05);
+    --shadow-md: 0 1px 3px rgba(42, 67, 78, 0.08);
+    --shadow-lg: 0 8px 24px rgba(42, 67, 78, 0.06);
 }
 
 html.dark body.route-blog {
-    /* Surface – warm dark per spec (#181715 / #252320 / #1f1e1b) */
-    --page-bg: #181715;
-    --panel-bg: #252320;
-    --panel-subtle: #1f1e1b;
-    --border-subtle: #2e2a26;
-    --border-soft: #26221e;
+    /* Surface – cool dark paper */
+    --page-bg: #11181c;
+    --panel-bg: #1a2227;
+    --panel-subtle: #162025;
+    --border-subtle: #2b373f;
+    --border-soft: #223039;
 
-    --text-primary: #faf9f5;
-    --text-secondary: #d4cfc6;
-    --muted-text: #a09d96;
-    --muted-soft: #807d76;
+    --text-primary: #f1f6f8;
+    --text-secondary: #c8d1d5;
+    --muted-text: #99a7ad;
+    --muted-soft: #75848b;
 
-    --accent: #cc785c;
-    --accent-hover: #d68b73;
-    --accent-subtle: rgba(204, 120, 92, 0.12);
-    --accent-ring: rgba(204, 120, 92, 0.22);
+    --accent: #8eb7c6;
+    --accent-hover: #add1dd;
+    --accent-subtle: rgba(142, 183, 198, 0.13);
+    --accent-ring: rgba(142, 183, 198, 0.24);
+
+    --paper-highlight: #172026;
+    --paper-depth: #0f1519;
+    --wash-blue: rgba(52, 83, 111, 0.3);
+    --wash-cyan: rgba(56, 91, 98, 0.24);
+    --wash-mint: rgba(58, 90, 80, 0.18);
+    --paper-grain-opacity: 0.055;
 }
 
 /* Editorial serif (Copernicus stand-in): Fraunces 400–500
@@ -319,6 +438,14 @@ body.route-blog article li {
     font-family: 'Source Serif 4', 'Noto Serif SC', 'Noto Serif CJK SC', Georgia, serif;
 }
 
+.liquid-glass-filter-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
 /* ─── Site Top Nav (global) ───
  * Sticky frosted-glass header used on every page.
  * Auto hides on scroll-down, reveals on scroll-up.
@@ -328,11 +455,33 @@ body.route-blog article li {
     position: sticky;
     top: 0;
     z-index: 40;
-    /* 让毛玻璃层留在 sticky header 自己的合成上下文里，避开 iOS Safari 漏层。 */
     isolation: isolate;
+    background: transparent;
+    border: 0;
     transform: translateY(0);
-    transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
-    padding-top: env(safe-area-inset-top, 0px);
+    transition:
+        transform 280ms cubic-bezier(0.4, 0, 0.2, 1),
+        padding 320ms cubic-bezier(0.4, 0, 0.2, 1),
+        background-color 240ms ease,
+        border-color 240ms ease;
+    padding: calc(env(safe-area-inset-top, 0px) + 0.75rem) 1rem 0.4rem;
+    pointer-events: none;
+}
+
+.site-topnav,
+.site-topnav *,
+.site-topnav *::before,
+.site-topnav *::after {
+    box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+    .site-topnav {
+        background-color: transparent;
+        border: 0;
+        padding: calc(env(safe-area-inset-top, 0px) + 0.75rem) 1rem 0.4rem;
+        pointer-events: none;
+    }
 }
 
 /* 移动端：header 作为普通文档流组件，随页面一起滚动。
@@ -342,67 +491,16 @@ body.route-blog article li {
 @media (max-width: 639px) {
     .site-topnav {
         position: static;
+        padding: calc(env(safe-area-inset-top, 0px) + 0.75rem) 0.75rem 0.35rem;
     }
 }
 
-/* Header body background.
-   ::before is absolutely positioned and does NOT affect the inner row's
-   geometry — extending it past the inner's bottom is purely visual, so the
-   actual "header height" (inner padding/links) stays at its original value.
-   We extend ~60px past the inner and mask the bottom band so the frosted
-   surface AND its backdrop-filter dissolve smoothly into the page below —
-   no hard edge anywhere. */
 .site-topnav::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: -60px;
-    background-color: color-mix(in oklab, var(--page-bg) 80%, transparent);
-    -webkit-backdrop-filter: blur(14px) saturate(180%);
-    backdrop-filter: blur(14px) saturate(180%);
-    -webkit-mask-image: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 1) 0%,
-        rgba(0, 0, 0, 1) calc(100% - 60px),
-        rgba(0, 0, 0, 0.45) calc(100% - 30px),
-        rgba(0, 0, 0, 0) 100%
-    );
-    mask-image: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 1) 0%,
-        rgba(0, 0, 0, 1) calc(100% - 60px),
-        rgba(0, 0, 0, 0.45) calc(100% - 30px),
-        rgba(0, 0, 0, 0) 100%
-    );
-    transition: opacity 280ms cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 0;
-    pointer-events: none;
+    display: none;
 }
 
 .site-topnav::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: max(18px, calc(env(safe-area-inset-top, 0px) + 14px));
-    background-color: var(--page-bg);
-    z-index: 0;
-    pointer-events: none;
-}
-
-@media (max-width: 639px) {
-    .site-topnav::before {
-        background-color: var(--page-bg);
-    }
-
-    /* header 已 fixed，顶部不再有穿透；::after 只需作为 safe-area 实底色
-       兜底(与桌面端一致)，随 header 固定即可，无需大面积 fixed 渐变。 */
-    .site-topnav::after {
-        height: max(18px, calc(env(safe-area-inset-top, 0px) + 14px));
-    }
+    display: none;
 }
 
 .site-topnav.is-hidden {
@@ -410,34 +508,188 @@ body.route-blog article li {
 }
 
 .site-topnav-inner {
+    --topnav-item-gap: 1rem;
+    --glass-x: 18%;
+    --glass-y: 0%;
+    --glass-sheen: 0.72;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    /* 与首页大区块 max-w-4xl (56rem) 对齐 */
-    max-width: 56rem;
+    gap: var(--topnav-item-gap);
+    max-width: 100%;
     margin: 0 auto;
     /* 与 main 容器的 px-5 sm:px-8 对齐 */
-    padding: 0 1.25rem;
-    height: 60px;
+    padding: 0 0.75rem 0 0.58rem;
+    min-height: 56px;
+    height: auto;
     position: relative;
     z-index: 1;
-    /* In compact mode this becomes a free-floating pill. JS may set `width`
-       inline to drive a smooth width transition. */
-    border-radius: 0;
+    width: 100%;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.54);
+    border: 1px solid rgba(255, 255, 255, 0.62);
+    box-shadow:
+        0 18px 54px rgba(31, 41, 48, 0.12),
+        0 4px 14px rgba(31, 41, 48, 0.06),
+        inset 0 1px 1px rgba(255, 255, 255, 0.96),
+        inset 0 -1px 1px rgba(31, 41, 48, 0.12);
+    transform: translateZ(0);
+    pointer-events: auto;
     transition:
         width 360ms cubic-bezier(0.4, 0, 0.2, 1),
+        min-height 360ms cubic-bezier(0.4, 0, 0.2, 1),
         padding 360ms cubic-bezier(0.4, 0, 0.2, 1),
         border-radius 360ms cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 280ms ease,
         box-shadow 280ms ease,
         background-color 280ms ease,
-        backdrop-filter 280ms ease;
+        backdrop-filter 280ms ease,
+        transform 240ms ease;
+}
+
+.site-topnav-inner::before,
+.site-topnav-inner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.site-topnav-inner::before {
+    z-index: 0;
+    background:
+        radial-gradient(circle at var(--glass-x) var(--glass-y), rgba(255, 255, 255, calc(var(--glass-sheen) * 0.5)), transparent 32%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.18));
+    -webkit-backdrop-filter: blur(22px) saturate(150%) contrast(1.03);
+    backdrop-filter: blur(22px) saturate(150%) contrast(1.03);
+}
+
+.site-topnav-inner::after {
+    z-index: 2;
+    inset: 1px;
+    background:
+        linear-gradient(115deg, rgba(255, 255, 255, 0.76) 0%, rgba(255, 255, 255, 0.22) 10%, transparent 25%),
+        linear-gradient(285deg, rgba(255, 255, 255, 0.34) 0%, transparent 20%),
+        radial-gradient(100% 165% at var(--glass-x) var(--glass-y), rgba(255, 255, 255, calc(var(--glass-sheen) * 0.32)), transparent 38%),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.28), transparent 48%, rgba(31, 41, 48, 0.07));
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.42),
+        inset 8px 0 16px rgba(255, 255, 255, 0.18),
+        inset -10px 0 18px rgba(31, 41, 48, 0.06),
+        inset 0 -14px 22px rgba(31, 41, 48, 0.07);
+    opacity: 0.86;
+    mix-blend-mode: screen;
+}
+
+.site-topnav-inner > * {
+    position: relative;
+    z-index: 3;
+}
+
+@supports ((backdrop-filter: url("#topnav-liquid-refraction")) or (-webkit-backdrop-filter: url("#topnav-liquid-refraction"))) {
+    .site-topnav-inner::before {
+        -webkit-backdrop-filter: url("#topnav-liquid-refraction") blur(18px) saturate(150%) contrast(1.03);
+        backdrop-filter: url("#topnav-liquid-refraction") blur(18px) saturate(150%) contrast(1.03);
+    }
+}
+
+html.dark .site-topnav-inner {
+    background: rgba(18, 24, 29, 0.5);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow:
+        0 18px 54px rgba(0, 0, 0, 0.28),
+        0 4px 16px rgba(0, 0, 0, 0.18),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.4);
+}
+
+html.dark .site-topnav-inner::before {
+    background:
+        radial-gradient(circle at var(--glass-x) var(--glass-y), rgba(255, 255, 255, calc(var(--glass-sheen) * 0.15)), transparent 34%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+}
+
+html.dark .site-topnav-inner::after {
+    opacity: 0.52;
 }
 
 @media (min-width: 640px) {
     .site-topnav-inner {
-        height: 68px;
-        padding: 0 2rem;
-        gap: 1rem;
+        --topnav-item-gap: 1.4rem;
+        width: min(38rem, calc(100vw - 2rem));
+        max-width: 38rem;
+        min-height: 58px;
+        padding: 0 0.75rem 0 0.68rem;
+    }
+}
+
+.site-topnav-avatar {
+    position: relative;
+    display: inline-flex;
+    width: 2.35rem;
+    height: 2.35rem;
+    flex: 0 0 auto;
+    overflow: hidden;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    box-shadow:
+        0 7px 18px rgba(31, 41, 48, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        inset 0 -1px 2px rgba(31, 41, 48, 0.16);
+    background: color-mix(in oklab, var(--panel-bg) 44%, transparent);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+    backdrop-filter: blur(10px) saturate(150%);
+    transition:
+        transform 220ms ease,
+        box-shadow 220ms ease,
+        border-color 220ms ease;
+}
+
+.site-topnav-avatar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.28),
+        inset 5px 5px 9px rgba(255, 255, 255, 0.16),
+        inset -5px -7px 10px rgba(31, 41, 48, 0.14);
+}
+
+.site-topnav-avatar:hover {
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.95);
+    box-shadow:
+        0 8px 20px rgba(63, 88, 100, 0.18),
+        inset 0 0 16px rgba(0, 0, 0, 0.12);
+}
+
+.site-topnav-avatar:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.site-topnav-avatar-bg,
+.site-topnav-avatar-person {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    user-select: none;
+}
+
+.site-topnav-avatar-person {
+    transform: scale(0.82) translateY(1px);
+    transform-origin: bottom center;
+}
+
+@media (min-width: 640px) {
+    .site-topnav-avatar {
+        width: 2.25rem;
+        height: 2.25rem;
     }
 }
 
@@ -448,22 +700,20 @@ body.route-blog article li {
     }
 
     .site-topnav.is-compact .site-topnav-inner {
-        /* Default to content-width pill; JS may set inline `width` to drive
-           a smooth transition between the full bar and this collapsed pill. */
-        width: max-content;
-        max-width: 56rem;
-        margin-top: 0.55rem;
-        margin-bottom: 0.55rem;
-        padding: 0 0.5rem 0 0.75rem;
-        height: 48px;
+        width: min(38rem, calc(100vw - 2rem));
+        max-width: 38rem;
+        min-height: 58px;
+        padding: 0 0.75rem 0 0.68rem;
+        height: auto;
         border-radius: 999px;
-        background-color: color-mix(in oklab, var(--page-bg) 86%, transparent);
-        -webkit-backdrop-filter: blur(16px) saturate(180%);
-        backdrop-filter: blur(16px) saturate(180%);
-        border: 1px solid var(--border-soft);
-        box-shadow: var(--shadow-md, 0 8px 24px rgba(0, 0, 0, 0.08));
-        /* Single tight gap between the links cluster and the controls cluster. */
-        gap: 0.25rem;
+        background-color: color-mix(in oklab, var(--panel-bg) 92%, transparent);
+        -webkit-backdrop-filter: blur(18px) saturate(160%);
+        backdrop-filter: blur(18px) saturate(160%);
+        border-color: color-mix(in oklab, var(--border-subtle) 70%, transparent);
+        box-shadow:
+            0 16px 48px rgba(63, 88, 100, 0.13),
+            inset 0 1px 0 rgba(255, 255, 255, 0.72);
+        pointer-events: auto;
     }
 
     /* Compact-mode link spacing: tighten the per-link slot so the pill is
@@ -474,6 +724,10 @@ body.route-blog article li {
         padding-bottom: 0.6rem;
         /* Inside the pill we don't need page-alignment — center the label. */
         text-align: center;
+    }
+    .site-topnav.is-compact .site-topnav-avatar {
+        width: 2.25rem;
+        height: 2.25rem;
     }
     .site-topnav.is-compact .site-topnav-link .site-topnav-label {
         justify-content: center;
@@ -497,14 +751,14 @@ body.route-blog article li {
 .site-topnav-links {
     display: flex;
     align-items: center;
-    gap: 0.125rem;
+    gap: var(--topnav-item-gap);
     min-width: 0;
     position: relative;
 }
 
 @media (min-width: 640px) {
     .site-topnav-links {
-        gap: 0;
+        gap: var(--topnav-item-gap);
     }
 }
 
@@ -513,8 +767,8 @@ body.route-blog article li {
     font-family: 'JetBrains Mono', 'SF Mono', monospace;
     font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--muted-text);
     padding: 0.625rem 0.5rem;
     border-radius: 8px;
@@ -522,8 +776,6 @@ body.route-blog article li {
     white-space: nowrap;
     line-height: 1;
     position: relative;
-    /* Fixed slot so geometry is identical regardless of language / state. */
-    width: 3.5rem;
     text-align: center;
 }
 
@@ -601,19 +853,15 @@ body.route-blog article li {
 @media (min-width: 640px) {
     .site-topnav-link {
         font-size: 13px;
-        letter-spacing: 0.2em;
+        letter-spacing: 0;
         padding: 0.75rem 0;
         border-radius: 0;
         background-color: transparent !important;
-        /* Fixed 88px slot — text hugs the left so every link's left edge sits
-           on a regular 88px grid, and the first link aligns with the page's
-           content-area left padding. */
-        width: 5.5rem;
-        text-align: left;
+        text-align: center;
     }
 
     .site-topnav-link .site-topnav-label {
-        justify-content: flex-start;
+        justify-content: center;
     }
 
     .site-topnav-link:hover {
@@ -659,11 +907,20 @@ body.route-blog article li {
 .site-topnav-controls > button {
     background-color: transparent;
     padding: 0.5rem;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px transparent;
 }
 
 .site-topnav-controls > a:hover,
 .site-topnav-controls > button:hover {
-    background-color: var(--panel-subtle);
+    background:
+        radial-gradient(circle at 30% 18%, rgba(255, 255, 255, 0.5), transparent 48%),
+        color-mix(in oklab, var(--panel-bg) 42%, transparent);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.34),
+        inset 0 -1px 2px rgba(63, 88, 100, 0.08);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+    backdrop-filter: blur(10px) saturate(150%);
 }
 
 /* Reusable Claude component patterns (scoped) */
@@ -770,10 +1027,10 @@ body.route-blog .prose blockquote {
 }
 
 body.route-blog .prose pre {
-    background-color: #1f1e1b;
-    color: #faf9f5;
+    background-color: #162025;
+    color: #f1f6f8;
     border-radius: 12px;
-    border: 1px solid #2e2a26;
+    border: 1px solid #2b373f;
 }
 
 body.route-blog .prose code {
@@ -818,7 +1075,7 @@ body.route-blog .prose hr {
     inset: 0;
     pointer-events: none;
     z-index: 9999;
-    opacity: 0.025;
+    opacity: var(--paper-grain-opacity, 0.035);
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-repeat: repeat;
     background-size: 256px 256px;

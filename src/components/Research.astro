@@ -7,18 +7,18 @@ const t = useTranslations(lang);
 const areas = ["Human–AI Collaboration in Education", "AI Literacy for Teachers and Students", "Informal Learning with Generative AI", "Affordance-Based Learning Technology Analysis"];
 ---
 
-<section id="research" class="py-16 px-4 max-w-4xl mx-auto bg-gray-50 dark:bg-[var(--panel-bg)] rounded-3xl my-10">
+<section id="research" class="py-16 px-4 max-w-4xl mx-auto bg-[var(--panel-subtle)] rounded-3xl my-10">
     <h2 class="text-3xl font-bold mb-6 text-center">{t("research.title")}</h2>
-    <p class="text-lg text-gray-700 dark:text-gray-300 mb-8 max-w-2xl mx-auto text-center">
+    <p class="text-lg text-[var(--text-secondary)] mb-8 max-w-2xl mx-auto text-center">
         {t("research.desc")}
     </p>
 
     <div class="grid gap-4 md:grid-cols-2 max-w-2xl mx-auto">
         {
             areas.map((area) => (
-                <div class="flex items-center p-4 bg-white dark:bg-[var(--panel-subtle)] rounded-lg shadow-sm">
-                    <span class="text-blue-500 mr-3">●</span>
-                    <span class="font-medium text-gray-800 dark:text-gray-100">{area}</span>
+                <div class="flex items-center p-4 bg-[var(--panel-bg)] rounded-lg shadow-sm">
+                    <span class="text-[var(--accent)] mr-3">●</span>
+                    <span class="font-medium text-[var(--text-primary)]">{area}</span>
                 </div>
             ))
         }

@@ -53,13 +53,31 @@
   }
 </style>
 
-<script>
-  const overlay = document.getElementById('lightbox')!;
-  const img = document.getElementById('lightbox-img') as HTMLImageElement;
-  const counter = document.getElementById('lightbox-counter')!;
+<script type="module" data-astro-rerun>
+  window.__imageLightboxAbortController?.abort();
+  const imageLightboxAbortController = new AbortController();
+  window.__imageLightboxAbortController = imageLightboxAbortController;
+  const imageLightboxSignal = imageLightboxAbortController.signal;
+
+  document.addEventListener(
+    'astro:before-swap',
+    () => {
+      document.body.style.overflow = '';
+      imageLightboxAbortController.abort();
+    },
+    { once: true, signal: imageLightboxSignal }
+  );
+
+  const overlay = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  const counter = document.getElementById('lightbox-counter');
+
+  if (!overlay || !img || !counter) {
+    imageLightboxAbortController.abort();
+  }
 
   // Collect all prose images
-  const allImages: HTMLImageElement[] = Array.from(document.querySelectorAll('.prose img'));
+  const allImages = Array.from(document.querySelectorAll('.prose img'));
   let currentIndex = 0;
 
   let scale = 1;
@@ -84,7 +102,7 @@
     img.style.transition = 'transform 200ms ease';
   }
 
-  function showImage(index: number) {
+  function showImage(index) {
     if (index < 0 || index >= allImages.length) return;
     currentIndex = index;
     resetState();
@@ -94,7 +112,7 @@
     counter.textContent = `${index + 1} / ${allImages.length}`;
   }
 
-  function openLightbox(index: number) {
+  function openLightbox(index) {
     showImage(index);
     overlay.classList.add('active');
     overlay.setAttribute('aria-hidden', 'false');
@@ -114,7 +132,7 @@
       e.preventDefault();
       e.stopPropagation();
       openLightbox(i);
-    });
+    }, { signal: imageLightboxSignal });
   });
 
   // Close on backdrop click
@@ -124,7 +142,7 @@
     } else if (e.target === img && scale <= 1 && !isDragging) {
       closeLightbox();
     }
-  });
+  }, { signal: imageLightboxSignal });
 
   // Keyboard: Escape close, Left/Right navigate
   document.addEventListener('keydown', (e) => {
@@ -132,7 +150,7 @@
     if (e.key === 'Escape') closeLightbox();
     if (e.key === 'ArrowLeft' && scale <= 1) showImage(currentIndex - 1);
     if (e.key === 'ArrowRight' && scale <= 1) showImage(currentIndex + 1);
-  });
+  }, { signal: imageLightboxSignal });
 
   // Scroll to zoom — reduced sensitivity
   overlay.addEventListener('wheel', (e) => {
@@ -151,7 +169,7 @@
     scale = newScale;
 
     applyTransform();
-  }, { passive: false });
+  }, { passive: false, signal: imageLightboxSignal });
 
   // Drag to pan
   img.addEventListener('mousedown', (e) => {
@@ -164,21 +182,21 @@
     lastTranslateY = translateY;
     img.style.transition = 'none';
     img.style.cursor = 'grabbing';
-  });
+  }, { signal: imageLightboxSignal });
 
   document.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
     translateX = lastTranslateX + (e.clientX - dragStartX);
     translateY = lastTranslateY + (e.clientY - dragStartY);
     applyTransform();
-  });
+  }, { signal: imageLightboxSignal });
 
   document.addEventListener('mouseup', () => {
     if (isDragging) {
       isDragging = false;
       img.style.cursor = scale > 1 ? 'grab' : 'zoom-out';
     }
-  });
+  }, { signal: imageLightboxSignal });
 
   // Touch: pinch zoom + drag
   let lastTouchDist = 0;
@@ -199,7 +217,7 @@
       lastTranslateY = translateY;
       img.style.transition = 'none';
     }
-  }, { passive: true });
+  }, { passive: true, signal: imageLightboxSignal });
 
   img.addEventListener('touchmove', (e) => {
     if (e.touches.length === 2) {
@@ -218,10 +236,10 @@
       translateY = lastTranslateY + (e.touches[0].clientY - touchStartY);
       applyTransform();
     }
-  }, { passive: false });
+  }, { passive: false, signal: imageLightboxSignal });
 
   img.addEventListener('touchend', () => {
     isDragging = false;
     lastTouchDist = 0;
-  });
+  }, { signal: imageLightboxSignal });
 </script>

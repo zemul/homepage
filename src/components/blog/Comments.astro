@@ -31,15 +31,27 @@ const giscusLang = lang === 'zh' ? 'zh-CN' : 'en';
     data-theme="light"
     data-lang={giscusLang}
     data-loading="lazy"
+    data-astro-rerun
     crossorigin="anonymous"
     async
   ></script>
 </section>
 
-<script>
+<script type="module" data-astro-rerun>
+  window.__giscusThemeAbortController?.abort();
+  const giscusThemeAbortController = new AbortController();
+  window.__giscusThemeAbortController = giscusThemeAbortController;
+  const giscusThemeSignal = giscusThemeAbortController.signal;
+
+  document.addEventListener(
+    'astro:before-swap',
+    () => giscusThemeAbortController.abort(),
+    { once: true, signal: giscusThemeSignal },
+  );
+
   function syncGiscusTheme() {
     const isDark = document.documentElement.classList.contains('dark');
-    const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+    const iframe = document.querySelector('iframe.giscus-frame');
     if (iframe) {
       iframe.contentWindow?.postMessage(
         { giscus: { setConfig: { theme: isDark ? 'dark' : 'light' } } },
@@ -50,8 +62,9 @@ const giscusLang = lang === 'zh' ? 'zh-CN' : 'en';
 
   const observer = new MutationObserver(syncGiscusTheme);
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  giscusThemeSignal.addEventListener('abort', () => observer.disconnect(), { once: true });
 
   window.addEventListener('message', (event) => {
     if (event.origin === 'https://giscus.app') syncGiscusTheme();
-  }, { once: true });
+  }, { once: true, signal: giscusThemeSignal });
 </script>

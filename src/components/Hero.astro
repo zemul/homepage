@@ -5,7 +5,7 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<section class="py-20 px-5 md:px-8 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-12">
+<section class="w-full py-20 px-5 md:px-8 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-12">
     <!-- Interactive Avatar Module -->
     <div id="avatar-container" class="relative w-52 h-52 rounded-full overflow-hidden shrink-0 shadow-2xl cursor-pointer group border-4 border-white/50 dark:border-[rgba(36,43,53,0.6)]">
         <img
@@ -39,27 +39,27 @@ const t = useTranslations(lang);
     </div>
 
     <!-- Text Content -->
-    <div class="text-left flex-1 w-full flex flex-col items-center md:items-start text-center md:text-left">
-        <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight whitespace-nowrap">
+    <div class="text-left flex-1 min-w-0 w-full max-w-full flex flex-col items-center md:items-start text-center md:text-left">
+        <h1 class="w-full text-4xl md:text-5xl font-bold mb-6 leading-tight text-balance">
             <span id="typewriter-text" class="title-gradient" data-text={t("hero.title")}></span>
             <span id="hero-wave" class="hero-wave" aria-hidden="true"> 👋🏻</span>
             <span class="typewriter-cursor">|</span>
         </h1>
-        <div class="flex flex-wrap justify-center md:justify-start gap-2 mb-6">
+        <div class="w-full max-w-full flex flex-wrap justify-center md:justify-start gap-2 mb-6">
             {
                 t("hero.subtitle")
                     .split(" · ")
                     .map((tag) => (
-                        <div class="inline-flex items-center px-3 py-1 rounded-full bg-blue-50/50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-sm font-medium border border-blue-100 dark:border-blue-800/30 shadow-sm whitespace-nowrap">
+                        <div class="inline-flex max-w-full items-center justify-center px-3 py-1 rounded-full bg-[var(--panel-subtle)] text-[var(--accent-hover)] dark:text-[var(--accent)] text-sm font-medium text-center border border-[var(--border-subtle)] shadow-sm whitespace-normal sm:whitespace-nowrap">
                             {tag}
                         </div>
                     ))
             }
         </div>
-        <p class="text-lg text-[var(--muted-text)] mb-6 max-w-2xl">
+        <p class="w-full text-lg text-[var(--muted-text)] mb-6 max-w-2xl">
             {t("hero.desc")}
         </p>
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gray-100 dark:bg-[var(--panel-bg)] text-gray-600 dark:text-gray-200 text-sm font-medium shadow-sm">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--panel-subtle)] text-[var(--text-secondary)] text-sm font-medium shadow-sm">
             {t("hero.location")}
         </div>
     </div>
@@ -77,7 +77,7 @@ const t = useTranslations(lang);
     }
     .title-gradient,
     .typewriter-cursor {
-        background: linear-gradient(to right, rgb(37 99 235), rgb(139 92 246));
+        background: linear-gradient(to right, var(--brand), var(--accent-hover));
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
@@ -116,7 +116,7 @@ const t = useTranslations(lang);
     }
 </style>
 
-<script>
+<script type="module" data-astro-rerun>
     const container = document.getElementById("avatar-container");
     const person = document.getElementById("avatar-person");
     const waveEl = document.getElementById("hero-wave");

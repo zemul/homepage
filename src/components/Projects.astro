@@ -266,17 +266,17 @@ const projects = [
     }
 </style>
 
-<script>
+<script type="module" data-astro-rerun>
     (() => {
-        const deck = document.querySelector("[data-project-deck]") as HTMLElement | null;
+        const deck = document.querySelector("[data-project-deck]");
         if (!deck) return;
 
-        const cards = Array.from(deck.querySelectorAll("[data-project-card]")) as HTMLElement[];
+        const cards = Array.from(deck.querySelectorAll("[data-project-card]"));
         if (cards.length === 0) return;
 
         let activeIndex = 0;
         const count = cards.length;
-        const wrap = (n: number) => ((n % count) + count) % count;
+        const wrap = (n) => ((n % count) + count) % count;
         const isDesktop = window.matchMedia("(min-width: 768px)").matches;
         const spreadX = isDesktop ? 90 : 64;
 
@@ -292,10 +292,10 @@ const projects = [
             { x: -16, y: 30, rz: -2.4 },
         ];
 
-        const layout = (next: number) => {
+        const layout = (next) => {
             activeIndex = wrap(next);
             const half = Math.floor(count / 2);
-            let activeCard: HTMLElement | null = null;
+            let activeCard = null;
 
             cards.forEach((card, i) => {
                 let rel = i - activeIndex;
@@ -308,9 +308,9 @@ const projects = [
                 const seedIndex = (i * 7 + activeIndex * 11) % seeds.length;
                 const s = seeds[seedIndex];
 
-                let tx: number, ty: number, tz: number;
-                let rx: number, ry: number, rz: number;
-                let scale: number, alpha: number, blur: number, sat: number, z: number;
+                let tx, ty, tz;
+                let rx, ry, rz;
+                let scale, alpha, blur, sat, z;
 
                 if (rel === 0) {
                     // Active card stays perfectly centered horizontally
@@ -386,7 +386,7 @@ const projects = [
                 card.classList.toggle("is-active", rel === 0);
                 if (rel === 0) activeCard = card;
 
-                const cta = card.querySelector("[data-project-cta]") as HTMLElement | null;
+                const cta = card.querySelector("[data-project-cta]");
                 if (cta) cta.tabIndex = rel === 0 ? 0 : -1;
             });
 
@@ -411,7 +411,7 @@ const projects = [
 
         // CTA: let the anchor navigate, but don't trigger card switching.
         cards.forEach((card) => {
-            const cta = card.querySelector("[data-project-cta]") as HTMLElement | null;
+            const cta = card.querySelector("[data-project-cta]");
             if (!cta) return;
             cta.addEventListener("click", (e) => {
                 e.stopPropagation();
@@ -425,7 +425,7 @@ const projects = [
         deck.addEventListener(
             "touchstart",
             (e) => {
-                const t = (e as TouchEvent).touches[0];
+                const t = e.touches[0];
                 tx0 = t.clientX;
                 ty0 = t.clientY;
             },
@@ -435,7 +435,7 @@ const projects = [
         deck.addEventListener(
             "touchmove",
             (e) => {
-                const t = (e as TouchEvent).touches[0];
+                const t = e.touches[0];
                 const dx = t.clientX - tx0;
                 const dy = t.clientY - ty0;
 
@@ -450,7 +450,7 @@ const projects = [
         deck.addEventListener(
             "touchend",
             (e) => {
-                const t = (e as TouchEvent).changedTouches[0];
+                const t = e.changedTouches[0];
                 const dx = t.clientX - tx0,
                     dy = t.clientY - ty0;
                 if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
@@ -467,7 +467,7 @@ const projects = [
 
         deck.addEventListener(
             "wheel",
-            (e: WheelEvent) => {
+            (e) => {
                 e.preventDefault(); // Prevent page from scrolling
 
                 const now = Date.now();

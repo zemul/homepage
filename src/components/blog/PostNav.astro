@@ -104,16 +104,16 @@ const t = useTranslations(lang);
   }
 </style>
 
-<script>
+<script type="module" data-astro-rerun>
   // Scroll to top for prev/next links
-  document.querySelectorAll<HTMLAnchorElement>('.scroll-top').forEach(link => {
+  document.querySelectorAll('.scroll-top').forEach(link => {
     link.addEventListener('click', () => {
       sessionStorage.removeItem('blog-scroll-target');
     });
   });
 
   // Back to list: save current post URL for scroll restoration
-  document.querySelectorAll<HTMLAnchorElement>('.back-to-list').forEach(link => {
+  document.querySelectorAll('.back-to-list').forEach(link => {
     link.addEventListener('click', () => {
       const currentUrl = link.dataset.currentUrl;
       if (currentUrl) {
