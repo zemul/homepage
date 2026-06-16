@@ -13,18 +13,47 @@ const heading = {
         : "Written by Anthropic’s Claude, based on the projects we’ve built together under ~/Projects.",
 };
 
-const introPara = isZh
+type IntroParagraph =
+    | string
+    | {
+          before: string;
+          linkText: string;
+          href: string;
+          after: string;
+      };
+
+const introPara: IntroParagraph[] = isZh
     ? [
-          "我是 Ethan（小哲），坐标杭州。做工程的时间越长，越相信一件事：值得做的产品，是能在真实使用中持续演化的系统，而不是一次性发布的演示。",
-          "我的主要工作横跨 SaaS 平台、macOS / iOS 原生应用、以及把 AI 能力变成可落地的工作流。技术栈上偏全栈 —— 前端用 Next.js / Astro / SwiftUI，后端常用 Node.js + Cloudflare 生态 + 自部署 Worker，跨端时尽量保留每个平台的「原生质感」，而不是套壳。",
-          "做事方式上，我习惯先把问题拆清楚再写代码：哪些是不变量、哪些是可演化的边界、最小可运行系统长什么样。让系统先跑起来，再通过迭代打磨结构、体验和性能。比起堆功能，我更花时间在工具链、文档、约束规则上 —— 它们才是让一个项目能跑很久的真正基础设施。",
-          "在 yizhe.me，你能看到一部分我做的项目（App Store 价格、Pinlist、AI Token 用量统计 等），以及一些关于 AI 原生产品和软件打磨的随笔。",
+          "想起来自己的博客都没有认真写过 Intro，第一次正经自我介绍反而写在了公司内网。既然你点开了这里，相信你也是一个对这个世界还满怀好奇心的人。",
+          "你可以叫我小哲。工作上，我更多集中在飞书生态，以及 AI 在企业场景里的应用：如何把业务流程、数据结构、协作工具和模型能力结合起来，让 AI 不只是一个聊天入口，而是能真正进入企业日常工作的系统。",
+          "工作之外，我也会做一些个人项目，比如 App Store 价格、Pinlist、AI Token 用量统计，以及一些 macOS / iOS 原生应用和自托管工具。这些项目更像是我的试验场：用来验证产品想法、打磨交互细节，也训练自己从前端、后端、自动化到部署都能完整走一遍。",
+          "我习惯先把问题拆清楚再写代码：哪些是不变量，哪些是可演化的边界，最小可运行系统长什么样。让系统先跑起来，再通过迭代打磨结构、体验和性能。比起单纯堆功能，我更愿意花时间在工具链、文档和约束规则上，因为它们才是让一个项目能跑很久的基础设施。",
+          "生活轨迹上，我家在中原（河南洛阳），本科在东北（辽宁沈阳）待了四年，研究生跑到了「上有天堂，下有苏杭」的杭州。工作先到了北京，后来又回到杭州成家，也算是在这几座城市里都留下了人生的一段注脚。",
+          {
+              before: "我酷爱电子产品，几乎所有能通电的设备我都很感兴趣，也喜欢折腾它们。小时候是拆开电脑和手机研究内部结构，然后时常把它们搞坏；后来这种兴趣逐渐变成对产品、系统和故障排查的偏执。最近两年尤其迷恋电子产品维修及排障，甚至认真想过要去  Apple Store 做一名天才吧维修人员，至今仍然想去学习维修 Apple 设备（也可能未来某天就去了）。我最喜欢在 YouTube 观看 ",
+              linkText: "艾奥科技",
+              href: "https://www.youtube.com/results?search_query=%E8%89%BE%E5%A5%A5%E7%A7%91%E6%8A%80",
+              after: " 的维修视频。",
+          },
+          "从大学到现在，这么多年还在坚持的事情是学习英语。准备考研的时候，心里埋下了出国留学的念头，这也是我后来去考雅思的原因。结果雅思考完之后，因为疫情原因，出国计划就此搁置。但英语这件事留下来了，也慢慢变成我获取信息、阅读文档、看技术和维修视频的一部分。",
+          "此外，我还喜欢摄影，尽管经常被老婆吐槽说拍的照片都把她拍丑了。最近在阅读宁思潇潇老师的《摄影笔记》，读的时候发现，书中讲的摄影基础知识我都知晓，并且对某些方面还略有了解，但是拍出来的照片还是那么的丑。",
+          "在 yizhe.me，你能看到这些个人项目的一部分，也能看到一些关于 AI 原生产品、软件打磨，以及个人生活兴趣的记录。",
       ]
     : [
-          "I’m Ethan, based in Hangzhou. The longer I build software, the more I trust one thing: the products worth making are systems that keep evolving under real use — not one-off demos.",
-          "My work spans SaaS platforms, native macOS / iOS apps, and turning AI capabilities into workflows that actually ship. I work full-stack — Next.js / Astro / SwiftUI on the front, Node.js + Cloudflare + self-hosted workers on the back — and when I go cross-platform I try to preserve each platform’s native feel rather than wrap a webview.",
-          "I tend to define the problem before writing code: what the invariants are, where the soft edges live, what the minimum runnable system looks like. Get it running first, then iterate on structure, experience, and performance. I spend disproportionate time on tooling, docs, and constraints — because that’s the actual infrastructure that lets a project live for years.",
-          "On yizhe.me you’ll find some of the projects I’ve built (App Store Price, Pinlist, AI Token Usage…), and notes on AI-native products and what it means to make software worth polishing.",
+          "I realized I had never written a proper intro for my own blog. The first serious self-introduction I wrote somehow ended up on the company intranet. Since you opened this page, I assume you are probably someone who still carries a healthy curiosity about the world.",
+          "You can call me Ethan. At work, I focus more on the Feishu ecosystem and how AI can be applied inside enterprise workflows: how business processes, data structures, collaboration tools, and model capabilities can come together so AI becomes part of daily work rather than just another chat interface.",
+          "Outside work, I build personal projects such as App Store Price, Pinlist, AI Token Usage, and a handful of native macOS / iOS apps and self-hosted tools. These projects are my testing ground: a place to validate product ideas, polish interaction details, and keep myself close to the full path from frontend and backend to automation and deployment.",
+          "I tend to define the problem before writing code: what the invariants are, where the soft edges live, and what the minimum runnable system looks like. Get it running first, then iterate on structure, experience, and performance. I spend disproportionate time on tooling, docs, and constraints because they are the infrastructure that lets a project live for years.",
+          "My home is in Luoyang, Henan, in China’s central plains. I spent four undergraduate years in Shenyang, Liaoning, then moved to Hangzhou for graduate school. Work first took me to Beijing, and later I returned to Hangzhou to build a family. Each of these cities now holds a different chapter of my life.",
+          {
+              before: "I love electronic products. Almost anything that runs on electricity interests me, and I like taking things apart. As a kid I opened computers and phones to study their internal structure, often breaking them in the process. Over time that curiosity became an obsession with products, systems, and troubleshooting. Over the past two years I have become especially fascinated with repair and diagnostics, to the point that I once seriously considered becoming a Genius Bar technician at an  Apple Store. I still want to learn how to repair Apple devices someday. My favorite repair videos on YouTube are from ",
+              linkText: "艾奥科技",
+              href: "https://www.youtube.com/results?search_query=%E8%89%BE%E5%A5%A5%E7%A7%91%E6%8A%80",
+              after: ".",
+          },
+          "One thing I have kept doing from university until now is learning English. While preparing for the postgraduate entrance exam, I started thinking about studying abroad, which was also why I took IELTS. After the exam, the pandemic put that plan on hold. But English stayed with me and gradually became part of how I read docs, follow technical material, and watch repair videos.",
+          "I also like photography, though my wife often complains that my photos make her look worse than she does. Recently I have been reading Photography Notes by Ning Si Xiaoxiao. While reading, I found that I already knew the basic concepts and even understood some topics in a bit more depth, yet my photos still somehow look terrible.",
+          "On yizhe.me you’ll find some of these personal projects, along with notes on AI-native products, software polish, and the personal interests that keep pulling me into new rabbit holes.",
       ];
 
 type ClaudePoint = { title: string; body: string };
@@ -110,7 +139,19 @@ const closing = isZh
     </header>
 
     <div class="about-page-prose">
-        {introPara.map((p) => <p>{p}</p>)}
+        {
+            introPara.map((p) =>
+                typeof p === "string" ? (
+                    <p>{p}</p>
+                ) : (
+                    <p>
+                        {p.before}
+                        <a href={p.href} target="_blank" rel="noopener noreferrer">{p.linkText}</a>
+                        {p.after}
+                    </p>
+                ),
+            )
+        }
     </div>
 
     <hr class="about-page-divider" aria-hidden="true" />
@@ -188,6 +229,17 @@ const closing = isZh
         line-height: 1.75;
         margin-bottom: 1.15rem;
         color: var(--text-secondary, var(--text-primary));
+    }
+    .about-page-prose a {
+        color: var(--accent);
+        text-decoration: underline;
+        text-decoration-color: color-mix(in oklab, var(--accent) 45%, transparent);
+        text-underline-offset: 4px;
+        transition: color 180ms ease, text-decoration-color 180ms ease;
+    }
+    .about-page-prose a:hover {
+        color: var(--accent-hover);
+        text-decoration-color: var(--accent-hover);
     }
 
     .about-page-divider {

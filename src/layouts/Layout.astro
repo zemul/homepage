@@ -61,27 +61,6 @@ const routeClass = isBlogRoute ? "route-blog" : "";
         class:list={["noise-overlay min-h-screen bg-[var(--page-bg)] text-[var(--text-primary)] antialiased transition-[background-color,color] duration-300 overscroll-none touch-pan-y site-shell", routeClass]}
         style="padding-bottom: env(safe-area-inset-bottom); font-family: 'Inter', system-ui, -apple-system, sans-serif;"
     >
-        <svg class="liquid-glass-filter-defs" width="0" height="0" aria-hidden="true" focusable="false">
-            <filter id="topnav-liquid-refraction" color-interpolation-filters="sRGB" x="-12%" y="-24%" width="124%" height="148%">
-                <feTurbulence
-                    type="fractalNoise"
-                    baseFrequency="0.012 0.024"
-                    numOctaves="1"
-                    seed="8"
-                    result="liquidNoise"
-                />
-                <feGaussianBlur in="liquidNoise" stdDeviation="0.65" result="softLiquidNoise" />
-                <feDisplacementMap
-                    in="SourceGraphic"
-                    in2="softLiquidNoise"
-                    scale="7"
-                    xChannelSelector="R"
-                    yChannelSelector="G"
-                    result="liquidDisplaced"
-                />
-                <feColorMatrix in="liquidDisplaced" type="saturate" values="1" />
-            </filter>
-        </svg>
         <TopNav />
         <slot />
     </body>
