@@ -995,6 +995,11 @@ body.route-blog .prose code {
     color: var(--text-primary);
 }
 
+body.route-blog .prose :not(pre) > code::before,
+body.route-blog .prose :not(pre) > code::after {
+    content: none;
+}
+
 body.route-blog .prose pre code {
     background-color: transparent;
     padding: 0;

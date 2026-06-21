@@ -221,8 +221,27 @@ This is not a complete tutorial. It is closer to a record of how I set up my own
 
     .ops-flow__arrow,
     .ops-flow__rail {
-      min-height: auto;
-      transform: rotate(90deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 1.5rem;
+      margin: -0.1rem 0;
+      transform: none;
+      font-size: 0;
+    }
+
+    .ops-flow__arrow::after {
+      content: "↓";
+      color: var(--accent);
+      font-size: 1.05rem;
+      line-height: 1;
+    }
+
+    .ops-flow__rail::after {
+      content: "↕";
+      color: var(--accent);
+      font-size: 1.1rem;
+      line-height: 1;
     }
 
     .ops-flow__step::after {
