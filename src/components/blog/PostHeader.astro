@@ -22,11 +22,16 @@ const { post, body, lang, switchUrl, listUrl, currentUrl } = Astro.props;
 const t = useTranslations(lang);
 
 function estimateReadTime(text: string, lang: 'en' | 'zh'): number {
+  const readableText = text
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<[^>]+>/g, ' ');
+
   if (lang === 'zh') {
-    const chars = text.replace(/\s/g, '').length;
+    const chars = readableText.replace(/\s/g, '').length;
     return Math.max(1, Math.round(chars / 400));
   }
-  const words = text.trim().split(/\s+/).length;
+  const words = readableText.trim().split(/\s+/).length;
   return Math.max(1, Math.round(words / 200));
 }
 

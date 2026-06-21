@@ -40,7 +40,12 @@ const newerPost = currentIndex > 0 ? allPosts[currentIndex - 1] : undefined;
 const olderPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : undefined;
 ---
 
-<Layout title={`${post.data.title} — Ethan Zhao`}>
+<Layout
+  title={`${post.data.title} — Ethan Zhao`}
+  description={post.data.description}
+  image={post.data.cover}
+  type="article"
+>
   <div class="blog-page">
     <aside class="blog-toc-float">
       <TableOfContents headings={headings} lang="en" listUrl="/blog" currentUrl={currentUrl} />
