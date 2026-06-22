@@ -457,7 +457,8 @@ body.route-blog article li {
     --glass-x: 18%;
     --glass-y: 0%;
     --glass-sheen: 0.72;
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
     gap: var(--topnav-item-gap);
     max-width: 100%;
@@ -691,6 +692,8 @@ html.dark .site-topnav-inner::after {
     display: flex;
     align-items: center;
     gap: var(--topnav-item-gap);
+    grid-column: 2;
+    justify-self: center;
     min-width: 0;
     position: relative;
 }
@@ -802,6 +805,15 @@ html.dark .site-topnav-inner::after {
         padding-left: 0.35rem;
         padding-right: 0.35rem;
     }
+
+    .site-topnav-controls {
+        gap: 0.125rem;
+    }
+
+    .site-topnav-controls > a,
+    .site-topnav-controls > button {
+        padding: 0.35rem;
+    }
 }
 
 /* ─ Desktop: editorial pacing + animated underline indicator ─ */
@@ -837,7 +849,9 @@ html.dark .site-topnav-inner::after {
 }
 
 .site-topnav-right {
-    margin-left: auto;
+    grid-column: 3;
+    justify-self: end;
+    margin-left: 0;
     display: flex;
     align-items: center;
     gap: 0;
