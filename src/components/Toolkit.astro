@@ -101,24 +101,33 @@ const t = useTranslations(lang);
             <div class="ai-usage-embed">
                 <iframe
                     class="stats-desktop"
-                    src="https://aiusage.yizhe.me/embed?widget=stats-row1&items=0,1,2,3&transparent=true"
+                    data-src="https://aiusage.yizhe.me/embed?widget=stats-row1&items=0,1,2,3&transparent=true"
+                    title={t("toolkit.tokenUsage")}
                     width="100%"
                     frameborder="0"
                     scrolling="no"
+                    loading="lazy"
+                    referrerpolicy="strict-origin-when-cross-origin"
                 ></iframe>
                 <iframe
                     class="stats-mobile"
-                    src="https://aiusage.yizhe.me/embed?widget=stats-row1&items=0,1&transparent=true"
+                    data-src="https://aiusage.yizhe.me/embed?widget=stats-row1&items=0,1&transparent=true"
+                    title={t("toolkit.tokenUsage")}
                     width="100%"
                     frameborder="0"
                     scrolling="no"
+                    loading="lazy"
+                    referrerpolicy="strict-origin-when-cross-origin"
                 ></iframe>
                 <iframe
                     class="cost-trend"
-                    src="https://aiusage.yizhe.me/embed?widget=cost-trend&transparent=true"
+                    data-src="https://aiusage.yizhe.me/embed?widget=cost-trend&transparent=true"
+                    title={t("toolkit.tokenUsage")}
                     width="100%"
                     frameborder="0"
                     scrolling="no"
+                    loading="lazy"
+                    referrerpolicy="strict-origin-when-cross-origin"
                 ></iframe>
             </div>
         </div>
@@ -126,16 +135,58 @@ const t = useTranslations(lang);
 </section>
 
 <script>
+    const embed = document.querySelector<HTMLElement>(".ai-usage-embed");
+    const frames = Array.from(document.querySelectorAll<HTMLIFrameElement>(".ai-usage-embed iframe[data-src]"));
+    let canLoadFrames = false;
+
+    const loadFrames = () => {
+        for (const frame of frames) {
+            if (!frame.src && frame.dataset.src && frame.getClientRects().length > 0) {
+                frame.src = frame.dataset.src;
+            }
+        }
+    };
+
+    if (embed && frames.length > 0) {
+        if ("IntersectionObserver" in window) {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    if (!entries.some((entry) => entry.isIntersecting)) return;
+                    canLoadFrames = true;
+                    loadFrames();
+                    observer.disconnect();
+                },
+                { rootMargin: "240px 0px" },
+            );
+
+            observer.observe(embed);
+        } else {
+            window.addEventListener(
+                "load",
+                () => window.setTimeout(() => {
+                    canLoadFrames = true;
+                    loadFrames();
+                }, 1800),
+                { once: true },
+            );
+        }
+
+        window.addEventListener("resize", () => {
+            if (canLoadFrames) loadFrames();
+        });
+    }
+
     // Auto-resize iframes via postMessage from embed
     window.addEventListener("message", (e) => {
         if (e.origin !== "https://aiusage.yizhe.me") return;
         const { widget, height } = e.data || {};
-        if (!widget || !height) return;
+        const nextHeight = Number(height);
+        if (!widget || !Number.isFinite(nextHeight) || nextHeight <= 0) return;
 
         const iframes = document.querySelectorAll<HTMLIFrameElement>(".ai-usage-embed iframe");
         for (const iframe of iframes) {
             if (iframe.contentWindow === e.source) {
-                iframe.style.height = `${height}px`;
+                iframe.style.height = `${nextHeight}px`;
                 break;
             }
         }
@@ -375,18 +426,3 @@ const t = useTranslations(lang);
         color: #94a3b8;
     }
 </style>
-
-<script>
-    window.addEventListener('message', function(e) {
-        if (e.data && e.data.source === 'aiusage-embed' && e.data.height) {
-            document.querySelectorAll('.ai-usage-embed iframe').forEach(function(f) {
-                try {
-                    var url = new URL(f.src, location.origin);
-                    if (url.searchParams.get('widget') === e.data.widget) {
-                        f.style.height = e.data.height + 'px';
-                    }
-                } catch(err) {}
-            });
-        }
-    });
-</script>

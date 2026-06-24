@@ -123,19 +123,24 @@ const showTotalViews = ["/", "/en", "/zh"].includes(normalizedPathname);
             setCount(data.count);
         } catch (error) {
             if (showTotalViews && counterMetaEl) counterMetaEl.hidden = true;
-            console.error("Failed to sync page views:", error);
+            console.debug("Page view sync failed:", error);
         }
     };
 
+    const schedulePageViews = () => {
+        const run = () => void syncPageViews();
+
+        if ("requestIdleCallback" in window) {
+            window.requestIdleCallback(run, { timeout: 4000 });
+            return;
+        }
+
+        window.setTimeout(run, 1200);
+    };
+
     if (document.readyState === "complete") {
-        void syncPageViews();
+        schedulePageViews();
     } else {
-        window.addEventListener(
-            "load",
-            () => {
-                void syncPageViews();
-            },
-            { once: true }
-        );
+        window.addEventListener("load", schedulePageViews, { once: true });
     }
 </script>
