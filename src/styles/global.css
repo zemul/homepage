@@ -6,7 +6,7 @@
 /* Webfont stylesheet is injected via <link> in Layout.astro <head>.
  * Tailwind v4 / Vite strips `@import url(https://...)` from CSS modules,
  * so we keep the request in HTML to make sure Fraunces, Source Serif 4,
- * Noto Serif SC, Inter and JetBrains Mono actually reach the browser. */
+ * Noto Sans SC, Inter and JetBrains Mono actually reach the browser. */
 
 /* ─── Design Tokens ─── */
 :root {
@@ -106,7 +106,8 @@ html {
 
 body {
     background-color: var(--page-bg);
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', 'Hiragino Sans GB', 'Source Han Sans SC', 'Noto Sans SC', 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+    font-weight: 500;
     transition: background-color 200ms ease, color 200ms ease;
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
@@ -180,7 +181,8 @@ html.dark .blog-card:hover {
 /* ─── Blog Prose ─── */
 .prose p,
 .prose li {
-    font-family: 'Source Serif 4', Georgia, 'Noto Serif CJK SC', 'Songti SC', serif;
+    font-family: 'Source Serif 4', Georgia, 'Hiragino Sans GB', 'Source Han Sans SC', 'Noto Sans SC', 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', serif;
+    font-weight: 500;
 }
 
 .prose {
@@ -328,7 +330,7 @@ body.route-blog {
     --wash-blue: rgba(142, 180, 217, 0.24);
     --wash-cyan: rgba(184, 218, 230, 0.22);
     --wash-mint: rgba(200, 223, 209, 0.2);
-    --paper-grain-opacity: 0.075;
+    --paper-grain-opacity: 0.18;
 
     /* Tinted shadows – mostly unused per spec */
     --shadow-sm: 0 1px 2px rgba(42, 67, 78, 0.05);
@@ -359,25 +361,27 @@ html.dark body.route-blog {
     --wash-blue: rgba(52, 83, 111, 0.3);
     --wash-cyan: rgba(56, 91, 98, 0.24);
     --wash-mint: rgba(58, 90, 80, 0.18);
-    --paper-grain-opacity: 0.052;
+    --paper-grain-opacity: 0.13;
 }
 
 /* Editorial serif (Copernicus stand-in): Fraunces 400–500
- * CJK characters fall through to Noto Serif SC via per-glyph fallback.
+ * CJK characters fall through to the global sans stack via per-glyph fallback.
  */
 body.route-blog .font-display {
-    font-family: 'Fraunces', 'Source Serif 4', 'Noto Serif SC', 'Noto Serif CJK SC', Georgia, serif;
+    font-family: 'Fraunces', 'Source Serif 4', 'Hiragino Sans GB', 'Source Han Sans SC', 'Noto Sans SC', 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', Georgia, serif;
+    font-weight: 600;
     font-optical-sizing: auto;
     font-variation-settings: "SOFT" 50, "WONK" 0;
 }
 
-/* Long-form body type: humanist Latin serif + Noto Serif SC for CJK */
+/* Long-form body type: humanist Latin serif + global sans stack for CJK */
 body.route-blog .prose p,
 body.route-blog .prose li,
 body.route-blog .prose blockquote,
 body.route-blog .post-row p,
 body.route-blog .blog-lead {
-    font-family: 'Source Serif 4', 'Noto Serif SC', 'Noto Serif CJK SC', Georgia, serif;
+    font-family: 'Source Serif 4', 'Hiragino Sans GB', 'Source Han Sans SC', 'Noto Sans SC', 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', Georgia, serif;
+    font-weight: 500;
 }
 
 /* Catch-all: any paragraph inside blog routes that isn't explicitly
@@ -387,7 +391,8 @@ body.route-blog .blog-lead {
 body.route-blog main p,
 body.route-blog article p,
 body.route-blog article li {
-    font-family: 'Source Serif 4', 'Noto Serif SC', 'Noto Serif CJK SC', Georgia, serif;
+    font-family: 'Source Serif 4', 'Hiragino Sans GB', 'Source Han Sans SC', 'Noto Sans SC', 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', Georgia, serif;
+    font-weight: 500;
 }
 
 /* ─── Site Top Nav (global) ───
@@ -715,7 +720,7 @@ html.dark .site-topnav-inner::after {
 .site-topnav-link {
     font-family: 'JetBrains Mono', 'SF Mono', monospace;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0;
     text-transform: none;
     color: var(--muted-text);
@@ -910,7 +915,7 @@ body.route-blog .badge-pill {
     color: var(--muted-text);
     font-family: 'JetBrains Mono', 'SF Mono', monospace;
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     line-height: 1;
@@ -935,7 +940,7 @@ body.route-blog .btn-secondary {
     border: 1px solid var(--border-subtle);
     font-family: 'JetBrains Mono', 'SF Mono', monospace;
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     line-height: 1;
@@ -986,8 +991,8 @@ body.route-blog .prose h1,
 body.route-blog .prose h2,
 body.route-blog .prose h3,
 body.route-blog .prose h4 {
-    font-family: 'Fraunces', 'Source Serif 4', 'Noto Serif SC', 'Noto Serif CJK SC', Georgia, serif;
-    font-weight: 500;
+    font-family: 'Fraunces', 'Source Serif 4', 'Hiragino Sans GB', 'Source Han Sans SC', 'Noto Sans SC', 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', Georgia, serif;
+    font-weight: 600;
 }
 
 body.route-blog .prose h2 {
@@ -1074,6 +1079,15 @@ html.dark .noise-overlay::before {
         url("data:image/svg+xml,%3Csvg viewBox='0 0 260 260' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.58' numOctaves='2' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.32' filter='url(%23f)'/%3E%3C/svg%3E"),
         url("data:image/svg+xml,%3Csvg viewBox='0 0 420 420' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.028' numOctaves='5' seed='24' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.26' filter='url(%23f)'/%3E%3C/svg%3E"),
         url("data:image/svg+xml,%3Csvg viewBox='0 0 360 360' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='turbulence' baseFrequency='.085' numOctaves='3' seed='37' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.13' filter='url(%23f)'/%3E%3C/svg%3E");
+}
+
+body.route-blog.noise-overlay::before {
+    background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise-bg-fx'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' seed='12' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.66' filter='url(%23noise-bg-fx)'/%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 320 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper-fiber-fx'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.075 .22' numOctaves='4' seed='31' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.28' filter='url(%23paper-fiber-fx)'/%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper-pulse-fx'%3E%3CfeTurbulence type='turbulence' baseFrequency='.16' numOctaves='2' seed='47' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.16' filter='url(%23paper-pulse-fx)'/%3E%3C/svg%3E");
+    background-size: 140px 140px, 320px 320px, 220px 220px;
+    background-position: 0 0, 71px 43px, 29px 97px;
 }
 
 /* ─── Theme switch: circular reveal ───
