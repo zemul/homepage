@@ -147,7 +147,7 @@ body.site-shell::after {
 
 /* ─── Typography ─── */
 .font-display {
-    font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    font-family: 'Playfair Display', Georgia, 'Times New Roman', 'Hiragino Sans GB', 'Source Han Sans SC', 'Noto Sans SC', 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', serif;
 }
 
 .font-mono {
@@ -237,12 +237,12 @@ html.dark .blog-card:hover {
 
 .prose h2 {
     padding-top: 0.5em;
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: 'Playfair Display', Georgia, 'Hiragino Sans GB', 'Source Han Sans SC', 'Noto Sans SC', 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', serif;
     letter-spacing: -0.02em;
 }
 
 .prose h3 {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: 'Playfair Display', Georgia, 'Hiragino Sans GB', 'Source Han Sans SC', 'Noto Sans SC', 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', serif;
     letter-spacing: -0.01em;
 }
 
