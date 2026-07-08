@@ -24,36 +24,18 @@ type IntroParagraph =
 
 const introPara: IntroParagraph[] = isZh
     ? [
-          "想起来自己的博客都没有认真写过 Intro，第一次正经自我介绍反而写在了公司内网。既然你点开了这里，相信你也是一个对这个世界还满怀好奇心的人。",
-          "你可以叫我小哲。工作上，我更多集中在飞书生态，以及 AI 在企业场景里的应用：如何把业务流程、数据结构、协作工具和模型能力结合起来，让 AI 不只是一个聊天入口，而是能真正进入企业日常工作的系统。",
-          "工作之外，我也会做一些个人项目，比如 App Store 价格、Pinlist、AI Token 用量统计，以及一些 macOS / iOS 原生应用和自托管工具。这些项目更像是我的试验场：用来验证产品想法、打磨交互细节，也训练自己从前端、后端、自动化到部署都能完整走一遍。",
-          "我习惯先把问题拆清楚再写代码：哪些是不变量，哪些是可演化的边界，最小可运行系统长什么样。让系统先跑起来，再通过迭代打磨结构、体验和性能。比起单纯堆功能，我更愿意花时间在工具链、文档和约束规则上，因为它们才是让一个项目能跑很久的基础设施。",
-          "生活轨迹上，我家在中原（河南洛阳），本科在东北（辽宁沈阳）待了四年，研究生跑到了「上有天堂，下有苏杭」的杭州。工作先到了北京，后来又回到杭州成家，也算是在这几座城市里都留下了人生的一段注脚。",
-          {
-              before: "我酷爱电子产品，几乎所有能通电的设备我都很感兴趣，也喜欢折腾它们。小时候是拆开电脑和手机研究内部结构，然后时常把它们搞坏；后来这种兴趣逐渐变成对产品、系统和故障排查的偏执。最近两年尤其迷恋电子产品维修及排障，甚至认真想过要去  Apple Store 做一名天才吧维修人员，至今仍然想去学习维修 Apple 设备（也可能未来某天就去了）。我最喜欢在 YouTube 观看 ",
-              linkText: "艾奥科技",
-              href: "https://www.youtube.com/results?search_query=%E8%89%BE%E5%A5%A5%E7%A7%91%E6%8A%80",
-              after: " 的维修视频。",
-          },
-          "从大学到现在，这么多年还在坚持的事情是学习英语。准备考研的时候，心里埋下了出国留学的念头，这也是我后来去考雅思的原因。结果雅思考完之后，因为疫情原因，出国计划就此搁置。但英语这件事留下来了，也慢慢变成我获取信息、阅读文档、看技术和维修视频的一部分。",
-          "此外，我还喜欢摄影，尽管经常被老婆吐槽说拍的照片都把她拍丑了。最近在阅读宁思潇潇老师的《摄影笔记》，读的时候发现，书中讲的摄影基础知识我都知晓，并且对某些方面还略有了解，但是拍出来的照片还是那么的丑。",
-          "在 yizhe.me，你能看到这些个人项目的一部分，也能看到一些关于 AI 原生产品、软件打磨，以及个人生活兴趣的记录。",
+          "我是 Zemul，一名全栈工程师，也是 AI 产品的构建者。这里记录我把 AI 用进真实需求里的方式，以及我做过的项目。",
+          "我喜欢用 AI 解决实际需求，而不是停留在演示。多数时候我先把一个问题拆成最小可运行的那一块，跑起来，再迭代打磨。",
+          "我把自己常用的流程封装成工具，并开放给 agent 调用——让重复性的事交给系统跑，人只负责定义边界和验收。这也是我构建产品的一条主线：把工作流暴露成可被程序调用的接口。",
+          "工作横跨前端、后端、自动化到部署。比起一次性堆功能，我更愿意把工具链、文档和约束先理清楚，因为它们是让一个项目能长期活下去的基础设施。",
+          "在 zemul 的站上，你能看到我的一部分个人项目，也能看到一些关于 AI 原生产品、工程实践和自动化工作流的记录。",
       ]
     : [
-          "I realized I had never written a proper intro for my own blog. The first serious self-introduction I wrote somehow ended up on the company intranet. Since you opened this page, I assume you are probably someone who still carries a healthy curiosity about the world.",
-          "You can call me Ethan. At work, I focus more on the Feishu ecosystem and how AI can be applied inside enterprise workflows: how business processes, data structures, collaboration tools, and model capabilities can come together so AI becomes part of daily work rather than just another chat interface.",
-          "Outside work, I build personal projects such as App Store Price, Pinlist, AI Token Usage, and a handful of native macOS / iOS apps and self-hosted tools. These projects are my testing ground: a place to validate product ideas, polish interaction details, and keep myself close to the full path from frontend and backend to automation and deployment.",
-          "I tend to define the problem before writing code: what the invariants are, where the soft edges live, and what the minimum runnable system looks like. Get it running first, then iterate on structure, experience, and performance. I spend disproportionate time on tooling, docs, and constraints because they are the infrastructure that lets a project live for years.",
-          "My home is in Luoyang, Henan, in China’s central plains. I spent four undergraduate years in Shenyang, Liaoning, then moved to Hangzhou for graduate school. Work first took me to Beijing, and later I returned to Hangzhou to build a family. Each of these cities now holds a different chapter of my life.",
-          {
-              before: "I love electronic products. Almost anything that runs on electricity interests me, and I like taking things apart. As a kid I opened computers and phones to study their internal structure, often breaking them in the process. Over time that curiosity became an obsession with products, systems, and troubleshooting. Over the past two years I have become especially fascinated with repair and diagnostics, to the point that I once seriously considered becoming a Genius Bar technician at an  Apple Store. I still want to learn how to repair Apple devices someday. My favorite repair videos on YouTube are from ",
-              linkText: "艾奥科技",
-              href: "https://www.youtube.com/results?search_query=%E8%89%BE%E5%A5%A5%E7%A7%91%E6%8A%80",
-              after: ".",
-          },
-          "One thing I have kept doing from university until now is learning English. While preparing for the postgraduate entrance exam, I started thinking about studying abroad, which was also why I took IELTS. After the exam, the pandemic put that plan on hold. But English stayed with me and gradually became part of how I read docs, follow technical material, and watch repair videos.",
-          "I also like photography, though my wife often complains that my photos make her look worse than she does. Recently I have been reading Photography Notes by Ning Si Xiaoxiao. While reading, I found that I already knew the basic concepts and even understood some topics in a bit more depth, yet my photos still somehow look terrible.",
-          "On yizhe.me you’ll find some of these personal projects, along with notes on AI-native products, software polish, and the personal interests that keep pulling me into new rabbit holes.",
+          "I'm Zemul, a full-stack engineer and AI product builder. This site is where I document how I put AI to work on real needs, and the projects that come out of it.",
+          "I like using AI to solve actual problems, not just demos. Most of the time I break a problem into its smallest runnable piece, ship it, then iterate.",
+          "I turn my own workflows into tools and expose them to agents — so repetitive work runs as a system, and I only define the boundaries and review the results. That's also the through-line of how I build products: surface workflows as callable interfaces.",
+          "My work spans frontend, backend, automation, and deployment. Rather than piling on features, I'd rather get the tooling, docs, and constraints right first — they're what let a project live for years.",
+          "On this site you'll find some of my personal projects, plus notes on AI-native products, engineering practice, and automated workflows.",
       ];
 
 type ClaudePoint = { title: string; body: string };
@@ -128,8 +110,8 @@ const claudePoints: ClaudePoint[] = isZh
       ];
 
 const closing = isZh
-    ? "— Claude（由 Ethan 让我读完了 ~/Projects 下的所有工程后写下）"
-    : "— Claude (after reading everything Ethan keeps under ~/Projects)";
+    ? "— Claude（由 Zemul 让我读完了 ~/Projects 下的所有工程后写下）"
+    : "— Claude (after reading everything Zemul keeps under ~/Projects)";
 ---
 
 <section class="about-page max-w-4xl mx-auto px-5 sm:px-8 pt-12 sm:pt-20 pb-16">

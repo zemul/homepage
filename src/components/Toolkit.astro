@@ -96,12 +96,12 @@ const t = useTranslations(lang);
         <div class="toolkit-group">
             <h3 class="toolkit-label">
                 {t("toolkit.tokenUsage")}
-                <a href="https://aiusage.yizhe.me" target="_blank" rel="noopener noreferrer" class="toolkit-label-link">{t("toolkit.tokenUsageLink")}</a>
+                <a href="https://aiusage.zemiaozhou.workers.dev" target="_blank" rel="noopener noreferrer" class="toolkit-label-link">{t("toolkit.tokenUsageLink")}</a>
             </h3>
             <div class="ai-usage-embed">
                 <iframe
                     class="stats-desktop"
-                    data-src="https://aiusage.yizhe.me/embed?widget=stats-row1&items=0,1,2,3&transparent=true"
+                    data-src="https://aiusage.zemiaozhou.workers.dev/embed?widget=stats-row1&items=0,1,2,3&transparent=true"
                     title={t("toolkit.tokenUsage")}
                     width="100%"
                     frameborder="0"
@@ -111,7 +111,7 @@ const t = useTranslations(lang);
                 ></iframe>
                 <iframe
                     class="stats-mobile"
-                    data-src="https://aiusage.yizhe.me/embed?widget=stats-row1&items=0,1&transparent=true"
+                    data-src="https://aiusage.zemiaozhou.workers.dev/embed?widget=stats-row1&items=0,1&transparent=true"
                     title={t("toolkit.tokenUsage")}
                     width="100%"
                     frameborder="0"
@@ -121,7 +121,7 @@ const t = useTranslations(lang);
                 ></iframe>
                 <iframe
                     class="cost-trend"
-                    data-src="https://aiusage.yizhe.me/embed?widget=cost-trend&transparent=true"
+                    data-src="https://aiusage.zemiaozhou.workers.dev/embed?widget=cost-trend&transparent=true"
                     title={t("toolkit.tokenUsage")}
                     width="100%"
                     frameborder="0"
@@ -178,7 +178,7 @@ const t = useTranslations(lang);
 
     // Auto-resize iframes via postMessage from embed
     window.addEventListener("message", (e) => {
-        if (e.origin !== "https://aiusage.yizhe.me") return;
+        if (e.origin !== "https://aiusage.zemiaozhou.workers.dev") return;
         const { widget, height } = e.data || {};
         const nextHeight = Number(height);
         if (!widget || !Number.isFinite(nextHeight) || nextHeight <= 0) return;
